@@ -273,7 +273,7 @@ export default {
                     console.log(`temp: ${temperature}°C, humidity: ${humidity}%`);
                     this.currentTemperature = Math.round(temperature * 10) / 10
                 }
-            });
+            }.bind(this));
         },
         tempReadLoop () {
             setInterval(function() { 

@@ -11851,7 +11851,7 @@ __webpack_require__.r(__webpack_exports__);
           console.log("temp: ".concat(temperature, "\xB0C, humidity: ").concat(humidity, "%"));
           this.currentTemperature = Math.round(temperature * 10) / 10;
         }
-      });
+      }.bind(this));
     },
     tempReadLoop: function tempReadLoop() {
       setInterval(function () {
