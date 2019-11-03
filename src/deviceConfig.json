@@ -1,0 +1,10 @@
+{   
+    "gebouw":"De Mate", 
+    "verdieping":0,
+    "naam": "Slaapkamer Tim en Amel",
+    "id": 1,
+    "min_temperatuur": 5,
+    "max_temperatuur": 22,
+    "standaard_temperatuur": 19,
+    "temperatuur_increments": 0.5
+}

@@ -1,0 +1,19 @@
+//$menu-item-active-background-color: #00D1B2;
+
+//Bulma
+@import 'bulma';
+
+html {
+    overflow-y: hidden !important;
+    // cursor: none !important;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.nowrap {
+    overflow: hidden;
+    white-space: nowrap;
+}
