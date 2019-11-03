@@ -270,7 +270,6 @@ export default {
         readTemperature () {
             window.tempsensor.read(22, this.tempsensorPin, function(err, temperature, humidity) {
                 if (!err) {
-                    console.log(`temp: ${temperature}°C, humidity: ${humidity}%`);
                     this.currentTemperature = Math.round(temperature * 10) / 10
                 }
             }.bind(this));
@@ -278,7 +277,7 @@ export default {
         tempReadLoop () {
             setInterval(function() { 
                 this.readTemperature()
-            }.bind(this), 1000);
+            }.bind(this), 10000);
         },
         setUpChannels(){
             this.verlichtingChannel = new Gpio(this.verlichtingPin, 'out')
@@ -320,7 +319,7 @@ export default {
         this.setTemperature = this.deviceConfig.standaard_temperatuur
         this.setUpChannels()
         this.readTemperature()
-        // this.tempReadLoop()
+        this.tempReadLoop()
     },
     mounted () {
         // window.Echo.channel(this.config.LIGHT_CHANNEL)

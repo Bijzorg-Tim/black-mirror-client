@@ -11848,7 +11848,6 @@ __webpack_require__.r(__webpack_exports__);
     readTemperature: function readTemperature() {
       window.tempsensor.read(22, this.tempsensorPin, function (err, temperature, humidity) {
         if (!err) {
-          console.log("temp: ".concat(temperature, "\xB0C, humidity: ").concat(humidity, "%"));
           this.currentTemperature = Math.round(temperature * 10) / 10;
         }
       }.bind(this));
@@ -11856,7 +11855,7 @@ __webpack_require__.r(__webpack_exports__);
     tempReadLoop: function tempReadLoop() {
       setInterval(function () {
         this.readTemperature();
-      }.bind(this), 1000);
+      }.bind(this), 10000);
     },
     setUpChannels: function setUpChannels() {
       this.verlichtingChannel = new Gpio(this.verlichtingPin, 'out');
@@ -11898,7 +11897,8 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     this.setTemperature = this.deviceConfig.standaard_temperatuur;
     this.setUpChannels();
-    this.readTemperature(); // this.tempReadLoop()
+    this.readTemperature();
+    this.tempReadLoop();
   },
   mounted: function mounted() {// window.Echo.channel(this.config.LIGHT_CHANNEL)
     // .listen('.toggle', (message) => {
