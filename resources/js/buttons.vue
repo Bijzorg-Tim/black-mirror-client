@@ -276,7 +276,6 @@ export default {
             });
         },
         tempReadLoop () {
-            this.readTemperature()
             setInterval(function() { 
                 this.readTemperature()
             }.bind(this), 1000);
@@ -320,7 +319,8 @@ export default {
     created () {
         this.setTemperature = this.deviceConfig.standaard_temperatuur
         this.setUpChannels()
-        this.tempReadLoop()
+        this.readTemperature()
+        // this.tempReadLoop()
     },
     mounted () {
         // window.Echo.channel(this.config.LIGHT_CHANNEL)
