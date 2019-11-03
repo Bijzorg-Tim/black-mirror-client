@@ -278,7 +278,7 @@ export default {
         tempReadLoop () {
             setInterval(function() { 
                 this.readTemperature()
-            }.bind(this), tempReadIntervalInMinutes * 1000 * 60);
+            }.bind(this), this.tempReadIntervalInMinutes * 1000 * 60);
         },
         setUpChannels(){
             this.verlichtingChannel = new Gpio(this.verlichtingPin, 'out')
