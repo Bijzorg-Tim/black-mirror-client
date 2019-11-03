@@ -11761,6 +11761,9 @@ __webpack_require__.r(__webpack_exports__);
     tempsensorPin: function tempsensorPin() {
       return this.config.TEMPSENSOR_PIN;
     },
+    tempReadIntervalInMinutes: function tempReadIntervalInMinutes() {
+      return this.config.TEMP_READ_INTERVAL_IN_MINUTES;
+    },
     deviceConfig: function deviceConfig() {
       return this.$store.getters['deviceConfig'];
     },
@@ -11855,7 +11858,7 @@ __webpack_require__.r(__webpack_exports__);
     tempReadLoop: function tempReadLoop() {
       setInterval(function () {
         this.readTemperature();
-      }.bind(this), 10000);
+      }.bind(this), tempReadIntervalInMinutes * 1000 * 60);
     },
     setUpChannels: function setUpChannels() {
       this.verlichtingChannel = new Gpio(this.verlichtingPin, 'out');
@@ -55558,7 +55561,8 @@ var config = {
   LIGHT_PIN: 17,
   TEMPSENSOR_PIN: 4,
   HEATING_PIN: 2,
-  DOOR_PIN: 3
+  DOOR_PIN: 3,
+  TEMP_READ_INTERVAL_IN_MINUTES: 1
 };
 /* harmony default export */ __webpack_exports__["default"] = (config);
 
