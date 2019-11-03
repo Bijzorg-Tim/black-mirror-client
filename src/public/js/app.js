@@ -11853,6 +11853,12 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
+    tempReadLoop: function tempReadLoop() {
+      this.readTemperature();
+      setInterval(function () {
+        this.readTemperature();
+      }.bind(this), 1000);
+    },
     setUpChannels: function setUpChannels() {
       this.verlichtingChannel = new Gpio(this.verlichtingPin, 'out');
       this.verlichtingChannel.writeSync(0); // this.verwarmingChannel = gpio.setup(this.verwarmingPin).then((response) => {
@@ -11893,6 +11899,7 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     this.setTemperature = this.deviceConfig.standaard_temperatuur;
     this.setUpChannels();
+    this.tempReadLoop();
   },
   mounted: function mounted() {// window.Echo.channel(this.config.LIGHT_CHANNEL)
     // .listen('.toggle', (message) => {
