@@ -1,6 +1,6 @@
 export default {
     deviceConfig: {},
     cards: [],
-    configMode: true
+    configMode: false
 
 }
