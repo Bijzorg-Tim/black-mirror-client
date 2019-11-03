@@ -11843,7 +11843,7 @@ __webpack_require__.r(__webpack_exports__);
       }.bind(this), 2500);
     },
     setUpChannels: function setUpChannels() {
-      this.verlichtingChannel = new gpio(this.verlichtingPin, 'OUT');
+      this.verlichtingChannel = new Gpio(17, 'out');
       this.verlichtingChannel.writeSync(0);
       console.log(this.verlichtingPin); // this.verwarmingChannel = gpio.setup(this.verwarmingPin).then((response) => {
       //     // console.log(response)
