@@ -271,7 +271,7 @@ export default {
             window.tempsensor.read(22, this.tempsensorPin, function(err, temperature, humidity) {
                 if (!err) {
                     console.log(`temp: ${temperature}°C, humidity: ${humidity}%`);
-                    this.currentTemperature = temperature
+                    // this.currentTemperature = temperature
                 }
             });
         },

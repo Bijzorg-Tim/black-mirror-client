@@ -11848,8 +11848,7 @@ __webpack_require__.r(__webpack_exports__);
     readTemperature: function readTemperature() {
       window.tempsensor.read(22, this.tempsensorPin, function (err, temperature, humidity) {
         if (!err) {
-          console.log("temp: ".concat(temperature, "\xB0C, humidity: ").concat(humidity, "%"));
-          this.currentTemperature = temperature;
+          console.log("temp: ".concat(temperature, "\xB0C, humidity: ").concat(humidity, "%")); // this.currentTemperature = temperature
         }
       });
     },
