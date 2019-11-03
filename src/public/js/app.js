@@ -11758,6 +11758,9 @@ __webpack_require__.r(__webpack_exports__);
     deurPin: function deurPin() {
       return this.config.DOOR_PIN;
     },
+    tempsensorPin: function tempsensorPin() {
+      return this.config.TEMPSENSOR_PIN;
+    },
     deviceConfig: function deviceConfig() {
       return this.$store.getters['deviceConfig'];
     },
@@ -11842,10 +11845,17 @@ __webpack_require__.r(__webpack_exports__);
         this[type] = false;
       }.bind(this), 2500);
     },
+    readTemperature: function readTemperature() {
+      window.tempsensor.read(22, this.tempsensorPin, function (err, temperature, humidity) {
+        if (!err) {
+          console.log("temp: ".concat(temperature, "\xB0C, humidity: ").concat(humidity, "%"));
+          this.currentTemperature = temperature;
+        }
+      });
+    },
     setUpChannels: function setUpChannels() {
-      this.verlichtingChannel = new Gpio(17, 'out');
-      this.verlichtingChannel.writeSync(0);
-      console.log(this.verlichtingPin); // this.verwarmingChannel = gpio.setup(this.verwarmingPin).then((response) => {
+      this.verlichtingChannel = new Gpio(this.verlichtingPin, 'out');
+      this.verlichtingChannel.writeSync(0); // this.verwarmingChannel = gpio.setup(this.verwarmingPin).then((response) => {
       //     // console.log(response)
       // }).catch((error) => {
       //     // console.log(error)
@@ -55539,7 +55549,8 @@ var config = {
   PUSHER_KEY: '6737c728e6c4407a675d',
   LIGHT_CHANNEL: 'doors',
   HEATING_CHANNEL: '',
-  LIGHT_PIN: 4,
+  LIGHT_PIN: 17,
+  TEMPSENSOR_PIN: 4,
   HEATING_PIN: 2,
   DOOR_PIN: 3
 };

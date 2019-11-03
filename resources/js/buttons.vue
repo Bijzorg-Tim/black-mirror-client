@@ -188,6 +188,7 @@ export default {
         verlichtingPin () {return this.config.LIGHT_PIN},
         verwarmingPin () {return this.config.HEATING_PIN},
         deurPin () {return this.config.DOOR_PIN},
+        tempsensorPin () {return this.config.TEMPSENSOR_PIN},
         deviceConfig(){
             return this.$store.getters['deviceConfig']
         },
@@ -266,10 +267,17 @@ export default {
                     this[type] = false
                 }.bind(this), 2500);
         },
+        readTemperature () {
+            window.tempsensor.read(22, this.tempsensorPin, function(err, temperature, humidity) {
+                if (!err) {
+                    console.log(`temp: ${temperature}°C, humidity: ${humidity}%`);
+                    this.currentTemperature = temperature
+                }
+            });
+        },
         setUpChannels(){
-            this.verlichtingChannel = new Gpio(17, 'out')
+            this.verlichtingChannel = new Gpio(this.verlichtingPin, 'out')
             this.verlichtingChannel.writeSync(0)
-            console.log(this.verlichtingPin)
             // this.verwarmingChannel = gpio.setup(this.verwarmingPin).then((response) => {
             //     // console.log(response)
             // }).catch((error) => {
