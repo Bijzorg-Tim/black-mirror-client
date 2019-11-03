@@ -6,7 +6,7 @@ const config = {
     TEMPSENSOR_PIN: 4,
     HEATING_PIN:2,
     DOOR_PIN:3,
-    TEMP_READ_INTERVAL_IN_MINUTES: 1
+    TEMP_READ_INTERVAL_IN_SECONDS: 60
 }
 
 export default config

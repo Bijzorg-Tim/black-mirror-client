@@ -189,7 +189,7 @@ export default {
         verwarmingPin () {return this.config.HEATING_PIN},
         deurPin () {return this.config.DOOR_PIN},
         tempsensorPin () {return this.config.TEMPSENSOR_PIN},
-        tempReadIntervalInMinutes () {return this.config.TEMP_READ_INTERVAL_IN_MINUTES},
+        tempReadIntervalInSeconds () {return this.config.TEMP_READ_INTERVAL_IN_SECONDS},
         deviceConfig(){
             return this.$store.getters['deviceConfig']
         },
@@ -278,7 +278,7 @@ export default {
         tempReadLoop () {
             setInterval(function() { 
                 this.readTemperature()
-            }.bind(this), this.tempReadIntervalInMinutes * 1000 * 60);
+            }.bind(this), this.tempReadIntervalInSeconds * 1000);
         },
         setUpChannels(){
             this.verlichtingChannel = new Gpio(this.verlichtingPin, 'out')
