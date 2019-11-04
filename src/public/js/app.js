@@ -55528,8 +55528,10 @@ var setNewConfig = function setNewConfig(state, payload) {
 };
 var documentClicked = function documentClicked(state) {
   clearTimeout(state.screenTimeout);
-  state.inputDisabled = false;
   window.backlight.powerOn();
+  setTimeout(function () {
+    state.inputDisabled = false;
+  }, 250);
   state.screenTimeout = setTimeout(function () {
     state.inputDisabled = true;
     window.backlight.powerOff(); //turn screen off

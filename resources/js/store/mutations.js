@@ -14,8 +14,13 @@ export const setNewConfig = (state, payload) => {
 
 export const documentClicked = (state) =>  {
     clearTimeout(state.screenTimeout);
-    state.inputDisabled = false
     window.backlight.powerOn();
+
+    setTimeout(function(){ 
+        state.inputDisabled = false
+    }, 250);
+
+
     state.screenTimeout = setTimeout(function(){ 
         state.inputDisabled = true
         window.backlight.powerOff();
