@@ -55531,7 +55531,7 @@ var documentClicked = function documentClicked(state) {
   window.backlight.powerOn();
   setTimeout(function () {
     state.inputDisabled = false;
-  }, 100);
+  }, 250);
   state.screenTimeout = setTimeout(function () {
     state.inputDisabled = true;
     window.backlight.powerOff(); //turn screen off

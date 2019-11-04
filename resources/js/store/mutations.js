@@ -18,7 +18,7 @@ export const documentClicked = (state) =>  {
 
     setTimeout(function(){ 
         state.inputDisabled = false
-    }, 100);
+    }, 250);
 
 
     state.screenTimeout = setTimeout(function(){ 
