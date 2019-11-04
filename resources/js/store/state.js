@@ -1,6 +1,7 @@
 export default {
     deviceConfig: {},
     cards: [],
-    configMode: false
-
+    configMode: false,
+    screenTimeout: null,
+    inputDisabled: false
 }

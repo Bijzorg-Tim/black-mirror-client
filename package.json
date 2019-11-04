@@ -41,10 +41,12 @@
     "electron-reload": "^1.5.0",
     "electron-squirrel-startup": "^1.0.0",
     "laravel-echo": "^1.6.1",
+    "mfrc522-rpi": "^2.0.0",
     "moment": "^2.24.0",
     "node-dht-sensor": "^0.4.0",
     "onoff": "^5.0.0",
     "pusher-js": "^5.0.2",
+    "rpi-backlight": "^0.3.0",
     "rpi-gpio": "^2.1.5",
     "vue": "^2.6.10",
     "vuex": "^3.1.1"

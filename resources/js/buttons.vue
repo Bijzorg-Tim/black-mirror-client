@@ -193,6 +193,9 @@ export default {
         deviceConfig(){
             return this.$store.getters['deviceConfig']
         },
+        inputDisabled(){
+            return this.$store.getters['inputDisabled']
+        },
         verwarmingStatus () {
             if (!this.verwarming) {
                 return false
@@ -207,6 +210,7 @@ export default {
     methods: {
         verlichtingButtonClicked () {
             //check if button is disabled
+            if (this.inputDisabled) {return}
             if (this.verlichtingDisabled) {
                 return
             }
@@ -221,6 +225,7 @@ export default {
         },
         verwarmingButtonClicked () {
             //check if button is disabled
+            if (this.inputDisabled) {return}
             if (this.verwarmingDisabled) {
                 return
             }
@@ -239,6 +244,7 @@ export default {
         },
         deurButtonClicked () {
             //check if button is disabled
+            if (this.inputDisabled) {return}
             if (this.deurDisabled) {
                 return
             }
@@ -250,11 +256,13 @@ export default {
             return this.deur = true
         },
         increaseTemperature () {
+            if (this.inputDisabled) {return}
             if (this.setTemperature < this.deviceConfig.max_temperatuur) {
                 this.setTemperature = this.setTemperature + this.deviceConfig.temperatuur_increments
             }
         },
         decreaseTemperature () {
+            if (this.inputDisabled) {return}
             if (this.setTemperature > this.deviceConfig.min_temperatuur) {
                 this.setTemperature = this.setTemperature - this.deviceConfig.temperatuur_increments
             }
@@ -317,10 +325,11 @@ export default {
 
     },
     created () {
-        this.setTemperature = this.deviceConfig.standaard_temperatuur
-        this.setUpChannels()
-        this.readTemperature()
-        this.tempReadLoop()
+        // this.setTemperature = this.deviceConfig.standaard_temperatuur
+        // this.setUpChannels()
+        // this.readTemperature()
+        // this.tempReadLoop()
+        // this.$store.dispatch('startCardReadLoop')
     },
     mounted () {
         // window.Echo.channel(this.config.LIGHT_CHANNEL)
@@ -331,6 +340,7 @@ export default {
         //     return this.verlichting = true
         // });
         // this.setUpChannels()
+        
     }
 }
 </script>

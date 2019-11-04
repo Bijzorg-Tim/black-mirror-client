@@ -11767,6 +11767,9 @@ __webpack_require__.r(__webpack_exports__);
     deviceConfig: function deviceConfig() {
       return this.$store.getters['deviceConfig'];
     },
+    inputDisabled: function inputDisabled() {
+      return this.$store.getters['inputDisabled'];
+    },
     verwarmingStatus: function verwarmingStatus() {
       if (!this.verwarming) {
         return false;
@@ -11782,6 +11785,10 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     verlichtingButtonClicked: function verlichtingButtonClicked() {
       //check if button is disabled
+      if (this.inputDisabled) {
+        return;
+      }
+
       if (this.verlichtingDisabled) {
         return;
       }
@@ -11798,6 +11805,10 @@ __webpack_require__.r(__webpack_exports__);
     },
     verwarmingButtonClicked: function verwarmingButtonClicked() {
       //check if button is disabled
+      if (this.inputDisabled) {
+        return;
+      }
+
       if (this.verwarmingDisabled) {
         return;
       }
@@ -11818,6 +11829,10 @@ __webpack_require__.r(__webpack_exports__);
     },
     deurButtonClicked: function deurButtonClicked() {
       //check if button is disabled
+      if (this.inputDisabled) {
+        return;
+      }
+
       if (this.deurDisabled) {
         return;
       }
@@ -11831,11 +11846,19 @@ __webpack_require__.r(__webpack_exports__);
       return this.deur = true;
     },
     increaseTemperature: function increaseTemperature() {
+      if (this.inputDisabled) {
+        return;
+      }
+
       if (this.setTemperature < this.deviceConfig.max_temperatuur) {
         this.setTemperature = this.setTemperature + this.deviceConfig.temperatuur_increments;
       }
     },
     decreaseTemperature: function decreaseTemperature() {
+      if (this.inputDisabled) {
+        return;
+      }
+
       if (this.setTemperature > this.deviceConfig.min_temperatuur) {
         this.setTemperature = this.setTemperature - this.deviceConfig.temperatuur_increments;
       }
@@ -11897,11 +11920,11 @@ __webpack_require__.r(__webpack_exports__);
       this.deurChannel.writeSync(0);
     }
   },
-  created: function created() {
-    this.setTemperature = this.deviceConfig.standaard_temperatuur;
-    this.setUpChannels();
-    this.readTemperature();
-    this.tempReadLoop();
+  created: function created() {// this.setTemperature = this.deviceConfig.standaard_temperatuur
+    // this.setUpChannels()
+    // this.readTemperature()
+    // this.tempReadLoop()
+    // this.$store.dispatch('startCardReadLoop')
   },
   mounted: function mounted() {// window.Echo.channel(this.config.LIGHT_CHANNEL)
     // .listen('.toggle', (message) => {
@@ -12053,6 +12076,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _secondBar_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/secondBar.vue */ "./resources/js/secondBar.vue");
 /* harmony import */ var _buttons_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/buttons.vue */ "./resources/js/buttons.vue");
 /* harmony import */ var _configMode_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/configMode.vue */ "./resources/js/configMode.vue");
+/* harmony import */ var _src_config_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! #/src/config.js */ "./src/config.js");
 //
 //
 //
@@ -12075,6 +12099,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 
@@ -12097,12 +12122,17 @@ __webpack_require__.r(__webpack_exports__);
       return this.$store.getters['configMode'];
     }
   },
-  methods: {},
-  mounted: function mounted() {// else {
-    //   fs.writeFile(window.dirname + '/cards.js', JSON.stringify(this.cards), 'utf8', function(err) {
-    //     console.log(err)
-    //   });
-    // }
+  methods: {
+    documentClicked: function documentClicked(e) {
+      e.stopPropagation();
+      this.$store.dispatch('documentClicked');
+    }
+  },
+  mounted: function mounted() {
+    document.addEventListener('click', this.documentClicked);
+    document.addEventListener('touchstart', this.documentClicked);
+    this.$store.dispatch('documentClicked');
+    window.backlight.setBrightness(this.config.SCREEN_BRIGHTNESS);
   }
 });
 
@@ -55332,13 +55362,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************!*\
   !*** ./resources/js/store/actions.js ***!
   \***************************************/
-/*! exports provided: setDeviceConfig, setNewConfig */
+/*! exports provided: setDeviceConfig, setNewConfig, documentClicked, startCardReadLoop */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDeviceConfig", function() { return setDeviceConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setNewConfig", function() { return setNewConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "documentClicked", function() { return documentClicked; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startCardReadLoop", function() { return startCardReadLoop; });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
@@ -55350,6 +55382,66 @@ var setNewConfig = function setNewConfig(_ref2, payload) {
   var commit = _ref2.commit;
   commit('setNewConfig', payload);
 };
+var documentClicked = function documentClicked(_ref3) {
+  var commit = _ref3.commit;
+  commit('documentClicked');
+};
+var startCardReadLoop = function startCardReadLoop(_ref4) {
+  var commit = _ref4.commit,
+      state = _ref4.state;
+  // console.log(window.SoftSPI)
+  console.log(window.Mfrc522);
+  var softSPI = new window.SoftSPI({
+    clock: 23,
+    // pin number of SCLK
+    mosi: 19,
+    // pin number of MOSI
+    miso: 21,
+    // pin number of MISO
+    client: 24 // pin number of CS
+
+  });
+  var mfrc522 = new window.Mfrc522(softSPI).setResetPin(22).setBuzzerPin(18);
+  setInterval(function () {
+    //# reset card
+    mfrc522.reset(); //# Scan for cards
+
+    var response = mfrc522.findCard();
+
+    if (!response.status) {
+      console.log("No Card");
+      return;
+    }
+
+    console.log("Card detected, CardType: " + response.bitSize); //# Get the UID of the card
+
+    response = mfrc522.getUid();
+
+    if (!response.status) {
+      console.log("UID Scan Error");
+      return;
+    } //# If we have the UID, continue
+
+
+    var uid = response.data;
+    console.log("Card read UID: %s %s %s %s", uid[0].toString(16), uid[1].toString(16), uid[2].toString(16), uid[3].toString(16)); //# Select the scanned card
+
+    var memoryCapacity = mfrc522.selectCard(uid);
+    console.log("Card Memory Capacity: " + memoryCapacity); //# This is the default key for authentication
+
+    var key = [0xff, 0xff, 0xff, 0xff, 0xff, 0xff]; //# Authenticate on Block 8 with key and uid
+
+    if (!mfrc522.authenticate(8, key, uid)) {
+      console.log("Authentication Error");
+      return;
+    } //# Dump Block 8
+
+
+    console.log("Block: 8 Data: " + mfrc522.getDataForBlock(8)); //# Stop
+
+    mfrc522.stopCrypto();
+  }, 500);
+};
 
 /***/ }),
 
@@ -55357,18 +55449,22 @@ var setNewConfig = function setNewConfig(_ref2, payload) {
 /*!***************************************!*\
   !*** ./resources/js/store/getters.js ***!
   \***************************************/
-/*! exports provided: configMode, deviceConfig */
+/*! exports provided: configMode, deviceConfig, inputDisabled */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "configMode", function() { return configMode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deviceConfig", function() { return deviceConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "inputDisabled", function() { return inputDisabled; });
 var configMode = function configMode(state) {
   return state.configMode;
 };
 var deviceConfig = function deviceConfig(state) {
   return state.deviceConfig;
+};
+var inputDisabled = function inputDisabled(state) {
+  return state.inputDisabled;
 };
 
 /***/ }),
@@ -55409,13 +55505,16 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*!*****************************************!*\
   !*** ./resources/js/store/mutations.js ***!
   \*****************************************/
-/*! exports provided: setDeviceConfig, setNewConfig */
+/*! exports provided: setDeviceConfig, setNewConfig, documentClicked */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDeviceConfig", function() { return setDeviceConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setNewConfig", function() { return setNewConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "documentClicked", function() { return documentClicked; });
+/* harmony import */ var _src_config_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! #/src/config.js */ "./src/config.js");
+
 var setDeviceConfig = function setDeviceConfig(state) {
   state.deviceConfig = JSON.parse(window.fs.readFileSync(window.dirname + '/deviceConfig.json', 'utf8'));
 
@@ -55426,6 +55525,15 @@ var setDeviceConfig = function setDeviceConfig(state) {
 var setNewConfig = function setNewConfig(state, payload) {
   window.fs.writeFileSync(window.dirname + '/deviceConfigTEMP.json', JSON.stringify(payload));
   state.configMode = false;
+};
+var documentClicked = function documentClicked(state) {
+  clearTimeout(state.screenTimeout);
+  state.inputDisabled = false; // window.backlight.powerOn();
+
+  state.screenTimeout = setTimeout(function () {
+    state.inputDisabled = true; // window.backlight.powerOff();
+    //turn screen off
+  }, _src_config_js__WEBPACK_IMPORTED_MODULE_0__["default"].SCREEN_TIMEOUT_IN_SECONDS * 1000);
 };
 
 /***/ }),
@@ -55442,7 +55550,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   deviceConfig: {},
   cards: [],
-  configMode: false
+  configMode: false,
+  screenTimeout: null,
+  inputDisabled: false
 });
 
 /***/ }),
@@ -55558,11 +55668,14 @@ var config = {
   PUSHER_KEY: '6737c728e6c4407a675d',
   LIGHT_CHANNEL: 'doors',
   HEATING_CHANNEL: '',
-  LIGHT_PIN: 17,
-  TEMPSENSOR_PIN: 4,
-  HEATING_PIN: 2,
-  DOOR_PIN: 3,
-  TEMP_READ_INTERVAL_IN_SECONDS: 60
+  LIGHT_PIN: 26,
+  TEMPSENSOR_PIN: 19,
+  HEATING_PIN: 13,
+  DOOR_PIN: 6,
+  TEMP_READ_INTERVAL_IN_SECONDS: 60,
+  SCREEN_TIMEOUT_IN_SECONDS: 20,
+  //screen brightness between 10 and 255
+  SCREEN_BRIGHTNESS: 50
 };
 /* harmony default export */ __webpack_exports__["default"] = (config);
 

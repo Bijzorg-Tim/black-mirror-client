@@ -5,7 +5,8 @@ mix.webpackConfig({
         alias: {
             '@': path.resolve(__dirname, 'resources', 'js'),
             '%': path.resolve(__dirname, 'resources', 'sass'),
-            '@@': path.resolve(__dirname, 'resources', 'images')
+            '@@': path.resolve(__dirname, 'resources', 'images'),
+            '#': path.resolve(__dirname)
         }
     }
 });
