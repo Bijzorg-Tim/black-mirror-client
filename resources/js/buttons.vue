@@ -329,7 +329,7 @@ export default {
         this.setUpChannels()
         // this.readTemperature()
         // this.tempReadLoop()
-        // this.$store.dispatch('startCardReadLoop')
+        this.$store.dispatch('startCardReadLoop')
     },
     mounted () {
         // window.Echo.channel(this.config.LIGHT_CHANNEL)

@@ -11924,7 +11924,8 @@ __webpack_require__.r(__webpack_exports__);
     // this.setTemperature = this.deviceConfig.standaard_temperatuur
     this.setUpChannels(); // this.readTemperature()
     // this.tempReadLoop()
-    // this.$store.dispatch('startCardReadLoop')
+
+    this.$store.dispatch('startCardReadLoop');
   },
   mounted: function mounted() {// window.Echo.channel(this.config.LIGHT_CHANNEL)
     // .listen('.toggle', (message) => {
@@ -12129,9 +12130,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    document.addEventListener('click', this.documentClicked);
-    document.addEventListener('touchstart', this.documentClicked);
-    this.$store.dispatch('documentClicked');
+    // document.addEventListener('click', this.documentClicked)
+    // document.addEventListener('touchstart', this.documentClicked)
+    // this.$store.dispatch('documentClicked')
     window.backlight.setBrightness(this.config.SCREEN_BRIGHTNESS);
   }
 });
