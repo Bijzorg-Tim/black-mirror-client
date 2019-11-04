@@ -11920,9 +11920,9 @@ __webpack_require__.r(__webpack_exports__);
       this.deurChannel.writeSync(0);
     }
   },
-  created: function created() {// this.setTemperature = this.deviceConfig.standaard_temperatuur
-    // this.setUpChannels()
-    // this.readTemperature()
+  created: function created() {
+    // this.setTemperature = this.deviceConfig.standaard_temperatuur
+    this.setUpChannels(); // this.readTemperature()
     // this.tempReadLoop()
     // this.$store.dispatch('startCardReadLoop')
   },

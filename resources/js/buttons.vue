@@ -326,7 +326,7 @@ export default {
     },
     created () {
         // this.setTemperature = this.deviceConfig.standaard_temperatuur
-        // this.setUpChannels()
+        this.setUpChannels()
         // this.readTemperature()
         // this.tempReadLoop()
         // this.$store.dispatch('startCardReadLoop')
