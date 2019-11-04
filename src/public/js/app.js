@@ -55528,11 +55528,11 @@ var setNewConfig = function setNewConfig(state, payload) {
 };
 var documentClicked = function documentClicked(state) {
   clearTimeout(state.screenTimeout);
-  state.inputDisabled = false; // window.backlight.powerOn();
-
+  state.inputDisabled = false;
+  window.backlight.powerOn();
   state.screenTimeout = setTimeout(function () {
-    state.inputDisabled = true; // window.backlight.powerOff();
-    //turn screen off
+    state.inputDisabled = true;
+    window.backlight.powerOff(); //turn screen off
   }, _src_config_js__WEBPACK_IMPORTED_MODULE_0__["default"].SCREEN_TIMEOUT_IN_SECONDS * 1000);
 };
 

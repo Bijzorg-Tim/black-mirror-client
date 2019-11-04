@@ -15,10 +15,10 @@ export const setNewConfig = (state, payload) => {
 export const documentClicked = (state) =>  {
     clearTimeout(state.screenTimeout);
     state.inputDisabled = false
-    // window.backlight.powerOn();
+    window.backlight.powerOn();
     state.screenTimeout = setTimeout(function(){ 
         state.inputDisabled = true
-        // window.backlight.powerOff();
+        window.backlight.powerOff();
         //turn screen off
     }, config.SCREEN_TIMEOUT_IN_SECONDS * 1000);
 }
