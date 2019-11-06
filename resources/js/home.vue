@@ -57,7 +57,7 @@ export default {
       // document.addEventListener('click', this.documentClicked)
       // document.addEventListener('touchstart', this.documentClicked)
       // this.$store.dispatch('documentClicked')
-      window.backlight.setBrightness(this.config.SCREEN_BRIGHTNESS);
+      // window.backlight.setBrightness(this.config.SCREEN_BRIGHTNESS);
     }
 }
 </script>

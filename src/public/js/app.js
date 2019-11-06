@@ -11922,9 +11922,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     // this.setTemperature = this.deviceConfig.standaard_temperatuur
-    this.setUpChannels(); // this.readTemperature()
+    // this.setUpChannels()
+    // this.readTemperature()
     // this.tempReadLoop()
-
     this.$store.dispatch('startCardReadLoop');
   },
   mounted: function mounted() {// window.Echo.channel(this.config.LIGHT_CHANNEL)
@@ -12129,11 +12129,10 @@ __webpack_require__.r(__webpack_exports__);
       this.$store.dispatch('documentClicked');
     }
   },
-  mounted: function mounted() {
-    // document.addEventListener('click', this.documentClicked)
+  mounted: function mounted() {// document.addEventListener('click', this.documentClicked)
     // document.addEventListener('touchstart', this.documentClicked)
     // this.$store.dispatch('documentClicked')
-    window.backlight.setBrightness(this.config.SCREEN_BRIGHTNESS);
+    // window.backlight.setBrightness(this.config.SCREEN_BRIGHTNESS);
   }
 });
 
@@ -55390,58 +55389,7 @@ var documentClicked = function documentClicked(_ref3) {
 var startCardReadLoop = function startCardReadLoop(_ref4) {
   var commit = _ref4.commit,
       state = _ref4.state;
-  // console.log(window.SoftSPI)
-  console.log(window.Mfrc522);
-  var softSPI = new window.SoftSPI({
-    clock: 23,
-    // pin number of SCLK
-    mosi: 19,
-    // pin number of MOSI
-    miso: 21,
-    // pin number of MISO
-    client: 24 // pin number of CS
-
-  });
-  var mfrc522 = new window.Mfrc522(softSPI).setResetPin(22).setBuzzerPin(18);
-  setInterval(function () {
-    //# reset card
-    mfrc522.reset(); //# Scan for cards
-
-    var response = mfrc522.findCard();
-
-    if (!response.status) {
-      console.log("No Card");
-      return;
-    }
-
-    console.log("Card detected, CardType: " + response.bitSize); //# Get the UID of the card
-
-    response = mfrc522.getUid();
-
-    if (!response.status) {
-      console.log("UID Scan Error");
-      return;
-    } //# If we have the UID, continue
-
-
-    var uid = response.data;
-    console.log("Card read UID: %s %s %s %s", uid[0].toString(16), uid[1].toString(16), uid[2].toString(16), uid[3].toString(16)); //# Select the scanned card
-
-    var memoryCapacity = mfrc522.selectCard(uid);
-    console.log("Card Memory Capacity: " + memoryCapacity); //# This is the default key for authentication
-
-    var key = [0xff, 0xff, 0xff, 0xff, 0xff, 0xff]; //# Authenticate on Block 8 with key and uid
-
-    if (!mfrc522.authenticate(8, key, uid)) {
-      console.log("Authentication Error");
-      return;
-    } //# Dump Block 8
-
-
-    console.log("Block: 8 Data: " + mfrc522.getDataForBlock(8)); //# Stop
-
-    mfrc522.stopCrypto();
-  }, 500);
+  commit('startCardReadLoop');
 };
 
 /***/ }),
@@ -55506,7 +55454,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*!*****************************************!*\
   !*** ./resources/js/store/mutations.js ***!
   \*****************************************/
-/*! exports provided: setDeviceConfig, setNewConfig, documentClicked */
+/*! exports provided: setDeviceConfig, setNewConfig, documentClicked, startCardReadLoop */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -55514,6 +55462,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDeviceConfig", function() { return setDeviceConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setNewConfig", function() { return setNewConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "documentClicked", function() { return documentClicked; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startCardReadLoop", function() { return startCardReadLoop; });
 /* harmony import */ var _src_config_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! #/src/config.js */ "./src/config.js");
 
 var setDeviceConfig = function setDeviceConfig(state) {
@@ -55537,6 +55486,21 @@ var documentClicked = function documentClicked(state) {
     state.inputDisabled = true;
     window.backlight.powerOff(); //turn screen off
   }, _src_config_js__WEBPACK_IMPORTED_MODULE_0__["default"].SCREEN_TIMEOUT_IN_SECONDS * 1000);
+};
+var startCardReadLoop = function startCardReadLoop(state, payload) {
+  var pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py');
+  pyshell.on('message', function (message) {
+    // received a message sent from the Python script (a simple "print" statement)
+    console.log(message);
+  }); // end the input stream and allow the process to exit
+
+  pyshell.end(function (err, code, signal) {
+    if (err) throw err;
+    console.log('The exit code was: ' + code);
+    console.log('The exit signal was: ' + signal);
+    console.log('finished');
+    console.log('finished');
+  });
 };
 
 /***/ }),
