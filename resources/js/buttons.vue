@@ -109,7 +109,7 @@ article {
         </div>
         <div class="customButton centerContent customButton-right" >
             <span class="innerButton notification centerContent" @click="verwarmingButtonClicked()">
-                <article @click="verwarmingButtonClicked()" :class="[{'tunrnedOn': verwarmingStatus}]">
+                <article @click="verwarmingButtonClicked()" :class="[{'tunrnedOn': verwarmingKnopStatus}]">
                     <div class="content centerText">
                         <loadingSpinner v-if="verwarmingDisabled" />
                         <span v-else class="nowrap">
@@ -171,25 +171,20 @@ export default {
             verlichting: false,
             verlichtingDisabled: false,
             verlichtingTimeout: null,
-            verlichtingChannel: null,
+            verlichtingPin: null,
             verwarming: false,
             verwarmingDisabled: false,
             verwarmingTimeout: null,
-            verwarmingChannel: null,
+            verwarmingPin: null,
             deur: false,
             deurDisabled: false,
             deurTimeout: null,
-            deurChannel: null,
+            deurPin: null,
             currentTemperature: 14,
             setTemperature: 0,
         }
     },
     computed: {
-        verlichtingPin () {return this.config.LIGHT_PIN},
-        verwarmingPin () {return this.config.HEATING_PIN},
-        deurPin () {return this.config.DOOR_PIN},
-        tempsensorPin () {return this.config.TEMPSENSOR_PIN},
-        tempReadIntervalInSeconds () {return this.config.TEMP_READ_INTERVAL_IN_SECONDS},
         deviceConfig(){
             return this.$store.getters['deviceConfig']
         },
@@ -201,10 +196,26 @@ export default {
                 return false
             } 
 
-            if (this.setTemperature < this.currentTemperature) {
+            if (this.setTemperature + this.deviceConfig.verwarming_uit_na_graden_extra < this.currentTemperature) {
                 return false
             }
             return true
+        },
+        verwarmingKnopStatus () {
+            if (!this.verwarming) {
+                return false
+            } 
+
+            if (this.setTemperature <= this.currentTemperature) {
+                return false
+            }
+            return true
+        },
+        cardRead () {
+            return this.$store.getters['cardRead']
+        },
+        cards () {
+            return this.$store.getters['cards']
         }
     },
     methods: {
@@ -217,10 +228,8 @@ export default {
             this.setDisableWithTimeout('verlichtingDisabled')
             //toggle lighting
             if (this.verlichting) {
-                this.verlichtingChannel.writeSync(0)
                return this.verlichting = false
             } 
-            this.verlichtingChannel.writeSync(1)
             return this.verlichting = true
         },
         verwarmingButtonClicked () {
@@ -232,14 +241,8 @@ export default {
            this.setDisableWithTimeout('verwarmingDisabled')
             //toggle heating
             if (this.verwarming) {
-                window.gpio.write(this.verlichtingPin, 0, function (err) {
-                    console.log(err)
-                })
                 return this.verwarming = false
             } 
-            window.gpio.write(this.verlichtingPin, 1, function(err){
-                console.log(err)
-            })
             return this.verwarming = true
         },
         deurButtonClicked () {
@@ -249,7 +252,7 @@ export default {
                 return
             }
            this.setDisableWithTimeout('deurDisabled')
-            //toggle heating
+            //toggle door
             if (this.deur) {
                return this.deur = false
             } 
@@ -277,7 +280,7 @@ export default {
                 }.bind(this), 2500);
         },
         readTemperature () {
-            window.tempsensor.read(22, this.tempsensorPin, function(err, temperature, humidity) {
+            window.tempsensor.read(22, this.deviceConfig.tempsensor_pin, function(err, temperature, humidity) {
                 if (!err) {
                     this.currentTemperature = Math.round(temperature * 10) / 10
                 }
@@ -286,49 +289,61 @@ export default {
         tempReadLoop () {
             setInterval(function() { 
                 this.readTemperature()
-            }.bind(this), this.tempReadIntervalInSeconds * 1000);
+            }.bind(this), this.deviceConfig.temp_read_interval_in_seconds * 1000);
         },
-        setUpChannels(){
-            this.verlichtingChannel = new Gpio(this.verlichtingPin, 'out')
-            this.verlichtingChannel.writeSync(0)
-            // this.verwarmingChannel = gpio.setup(this.verwarmingPin).then((response) => {
-            //     // console.log(response)
-            // }).catch((error) => {
-            //     // console.log(error)
-            // })
-            // this.deurChannel = gpio.setup(this.deurPin).then((response) => {
-            //     // console.log(response)
-            // }).catch((error) => {
-            //     // console.log(error)
-            // })
+        setUpPins(){
+            this.verlichtingPin = new Gpio(this.deviceConfig.light_pin, 'out')
+            this.verlichtingPin.writeSync(0)
+            this.verwarmingPin = new Gpio(this.deviceConfig.heating_pin, 'out')
+            this.verwarmingPin.writeSync(0)
+            this.deurPin = new Gpio(this.deviceConfig.door_pin, 'out')
+            this.deurPin.writeSync(0)
+        },
+        ExternalDoorToggle () {
+            //check if button is disabled
+            if (this.deur) {
+                this.verlichting = false
+                this.verwarming = false
+                return this.deur = false
+            } 
+            return this.deur = true
         }
     },
     watch: {
         verwarmingStatus () {
             if (this.verwarmingStatus) {
-                return this.verwarmingChannel.writeSync(1)
+                return this.verwarmingPin.writeSync(1)
             }
-                this.verwarmingChannel.writeSync(0)
+                this.verwarmingPin.writeSync(0)
         },
         verlichting () {
             if (this.verlichting) {
-                return this.verlichtingChannel.writeSync(1)
+                return this.verlichtingPin.writeSync(1)
             }
-            this.verlichtingChannel.writeSync(0)
+            this.verlichtingPin.writeSync(0)
         },
         deur () {
             if (this.deur) {
-                return this.deurChannel.writeSync(1)
+                return this.deurPin.writeSync(1)
             }
-            this.deurChannel.writeSync(0)
-        }
+            this.deurPin.writeSync(0)
+        },
+        cardRead () {
+            if (this.cardRead === null) {return}
 
+            const card = this.cards.find(a => a.cardId === this.cardRead)
+
+            if (card !== undefined) {
+                this.ExternalDoorToggle()
+            }
+        }
     },
     created () {
-        // this.setTemperature = this.deviceConfig.standaard_temperatuur
-        // this.setUpChannels()
+        this.setTemperature = this.deviceConfig.standaard_temperatuur
+        // this.setUpPins()
         // this.readTemperature()
         // this.tempReadLoop()
+        this.$store.dispatch('setCards')
         this.$store.dispatch('startCardReadLoop')
     },
     mounted () {
@@ -340,7 +355,6 @@ export default {
         //     return this.verlichting = true
         // });
         // this.setUpChannels()
-        
     }
 }
 </script>

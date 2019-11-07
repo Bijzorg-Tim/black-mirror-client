@@ -12,6 +12,10 @@ export const documentClicked = ({commit}) => {
     commit('documentClicked')
 }
 
+export const setCards = ({commit, state}) => {
+    commit('setCards')
+}
+
 export const startCardReadLoop = ({commit, state}) => {
     commit('startCardReadLoop')
 }

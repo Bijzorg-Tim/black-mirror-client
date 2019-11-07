@@ -11735,35 +11735,20 @@ __webpack_require__.r(__webpack_exports__);
       verlichting: false,
       verlichtingDisabled: false,
       verlichtingTimeout: null,
-      verlichtingChannel: null,
+      verlichtingPin: null,
       verwarming: false,
       verwarmingDisabled: false,
       verwarmingTimeout: null,
-      verwarmingChannel: null,
+      verwarmingPin: null,
       deur: false,
       deurDisabled: false,
       deurTimeout: null,
-      deurChannel: null,
+      deurPin: null,
       currentTemperature: 14,
       setTemperature: 0
     };
   },
   computed: {
-    verlichtingPin: function verlichtingPin() {
-      return this.config.LIGHT_PIN;
-    },
-    verwarmingPin: function verwarmingPin() {
-      return this.config.HEATING_PIN;
-    },
-    deurPin: function deurPin() {
-      return this.config.DOOR_PIN;
-    },
-    tempsensorPin: function tempsensorPin() {
-      return this.config.TEMPSENSOR_PIN;
-    },
-    tempReadIntervalInSeconds: function tempReadIntervalInSeconds() {
-      return this.config.TEMP_READ_INTERVAL_IN_SECONDS;
-    },
     deviceConfig: function deviceConfig() {
       return this.$store.getters['deviceConfig'];
     },
@@ -11775,11 +11760,28 @@ __webpack_require__.r(__webpack_exports__);
         return false;
       }
 
-      if (this.setTemperature < this.currentTemperature) {
+      if (this.setTemperature + this.deviceConfig.verwarming_uit_na_graden_extra < this.currentTemperature) {
         return false;
       }
 
       return true;
+    },
+    verwarmingKnopStatus: function verwarmingKnopStatus() {
+      if (!this.verwarming) {
+        return false;
+      }
+
+      if (this.setTemperature <= this.currentTemperature) {
+        return false;
+      }
+
+      return true;
+    },
+    cardRead: function cardRead() {
+      return this.$store.getters['cardRead'];
+    },
+    cards: function cards() {
+      return this.$store.getters['cards'];
     }
   },
   methods: {
@@ -11796,11 +11798,9 @@ __webpack_require__.r(__webpack_exports__);
       this.setDisableWithTimeout('verlichtingDisabled'); //toggle lighting
 
       if (this.verlichting) {
-        this.verlichtingChannel.writeSync(0);
         return this.verlichting = false;
       }
 
-      this.verlichtingChannel.writeSync(1);
       return this.verlichting = true;
     },
     verwarmingButtonClicked: function verwarmingButtonClicked() {
@@ -11816,15 +11816,9 @@ __webpack_require__.r(__webpack_exports__);
       this.setDisableWithTimeout('verwarmingDisabled'); //toggle heating
 
       if (this.verwarming) {
-        window.gpio.write(this.verlichtingPin, 0, function (err) {
-          console.log(err);
-        });
         return this.verwarming = false;
       }
 
-      window.gpio.write(this.verlichtingPin, 1, function (err) {
-        console.log(err);
-      });
       return this.verwarming = true;
     },
     deurButtonClicked: function deurButtonClicked() {
@@ -11837,7 +11831,7 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      this.setDisableWithTimeout('deurDisabled'); //toggle heating
+      this.setDisableWithTimeout('deurDisabled'); //toggle door
 
       if (this.deur) {
         return this.deur = false;
@@ -11872,7 +11866,7 @@ __webpack_require__.r(__webpack_exports__);
       }.bind(this), 2500);
     },
     readTemperature: function readTemperature() {
-      window.tempsensor.read(22, this.tempsensorPin, function (err, temperature, humidity) {
+      window.tempsensor.read(22, this.deviceConfig.tempsensor_pin, function (err, temperature, humidity) {
         if (!err) {
           this.currentTemperature = Math.round(temperature * 10) / 10;
         }
@@ -11881,50 +11875,71 @@ __webpack_require__.r(__webpack_exports__);
     tempReadLoop: function tempReadLoop() {
       setInterval(function () {
         this.readTemperature();
-      }.bind(this), this.tempReadIntervalInSeconds * 1000);
+      }.bind(this), this.deviceConfig.temp_read_interval_in_seconds * 1000);
     },
-    setUpChannels: function setUpChannels() {
-      this.verlichtingChannel = new Gpio(this.verlichtingPin, 'out');
-      this.verlichtingChannel.writeSync(0); // this.verwarmingChannel = gpio.setup(this.verwarmingPin).then((response) => {
-      //     // console.log(response)
-      // }).catch((error) => {
-      //     // console.log(error)
-      // })
-      // this.deurChannel = gpio.setup(this.deurPin).then((response) => {
-      //     // console.log(response)
-      // }).catch((error) => {
-      //     // console.log(error)
-      // })
+    setUpPins: function setUpPins() {
+      this.verlichtingPin = new Gpio(this.deviceConfig.light_pin, 'out');
+      this.verlichtingPin.writeSync(0);
+      this.verwarmingPin = new Gpio(this.deviceConfig.heating_pin, 'out');
+      this.verwarmingPin.writeSync(0);
+      this.deurPin = new Gpio(this.deviceConfig.door_pin, 'out');
+      this.deurPin.writeSync(0);
+    },
+    ExternalDoorToggle: function ExternalDoorToggle() {
+      //check if button is disabled
+      if (this.deur) {
+        this.verlichting = false;
+        this.verwarming = false;
+        return this.deur = false;
+      }
+
+      return this.deur = true;
     }
   },
   watch: {
     verwarmingStatus: function verwarmingStatus() {
       if (this.verwarmingStatus) {
-        return this.verwarmingChannel.writeSync(1);
+        return this.verwarmingPin.writeSync(1);
       }
 
-      this.verwarmingChannel.writeSync(0);
+      this.verwarmingPin.writeSync(0);
     },
     verlichting: function verlichting() {
       if (this.verlichting) {
-        return this.verlichtingChannel.writeSync(1);
+        return this.verlichtingPin.writeSync(1);
       }
 
-      this.verlichtingChannel.writeSync(0);
+      this.verlichtingPin.writeSync(0);
     },
     deur: function deur() {
       if (this.deur) {
-        return this.deurChannel.writeSync(1);
+        return this.deurPin.writeSync(1);
       }
 
-      this.deurChannel.writeSync(0);
+      this.deurPin.writeSync(0);
+    },
+    cardRead: function cardRead() {
+      var _this = this;
+
+      if (this.cardRead === null) {
+        return;
+      }
+
+      var card = this.cards.find(function (a) {
+        return a.cardId === _this.cardRead;
+      });
+
+      if (card !== undefined) {
+        this.ExternalDoorToggle();
+      }
     }
   },
   created: function created() {
-    // this.setTemperature = this.deviceConfig.standaard_temperatuur
-    // this.setUpChannels()
+    this.setTemperature = this.deviceConfig.standaard_temperatuur; // this.setUpPins()
     // this.readTemperature()
     // this.tempReadLoop()
+
+    this.$store.dispatch('setCards');
     this.$store.dispatch('startCardReadLoop');
   },
   mounted: function mounted() {// window.Echo.channel(this.config.LIGHT_CHANNEL)
@@ -12077,7 +12092,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _secondBar_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/secondBar.vue */ "./resources/js/secondBar.vue");
 /* harmony import */ var _buttons_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/buttons.vue */ "./resources/js/buttons.vue");
 /* harmony import */ var _configMode_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/configMode.vue */ "./resources/js/configMode.vue");
-/* harmony import */ var _src_config_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! #/src/config.js */ "./src/config.js");
 //
 //
 //
@@ -12100,7 +12114,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 
 
 
@@ -12114,13 +12127,14 @@ __webpack_require__.r(__webpack_exports__);
   },
   props: [],
   data: function data() {
-    return {
-      cards: []
-    };
+    return {};
   },
   computed: {
     configMode: function configMode() {
       return this.$store.getters['configMode'];
+    },
+    deviceConfig: function deviceConfig() {
+      return this.$store.getters['deviceConfig'];
     }
   },
   methods: {
@@ -12132,7 +12146,7 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {// document.addEventListener('click', this.documentClicked)
     // document.addEventListener('touchstart', this.documentClicked)
     // this.$store.dispatch('documentClicked')
-    // window.backlight.setBrightness(this.config.SCREEN_BRIGHTNESS);
+    // window.backlight.setBrightness(this.deviceConfig.screen_brightness);
   }
 });
 
@@ -41179,7 +41193,7 @@ var render = function() {
               _c(
                 "article",
                 {
-                  class: [{ tunrnedOn: _vm.verwarmingStatus }],
+                  class: [{ tunrnedOn: _vm.verwarmingKnopStatus }],
                   on: {
                     click: function($event) {
                       return _vm.verwarmingButtonClicked()
@@ -54904,7 +54918,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./store */ "./resources/js/store/index.js");
 /* harmony import */ var _home_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/home.vue */ "./resources/js/home.vue");
-/* harmony import */ var _src_config_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../src/config.js */ "./src/config.js");
+/* harmony import */ var _src_config_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../src/config.json */ "./src/config.json");
+var _src_config_json__WEBPACK_IMPORTED_MODULE_3___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../../src/config.json */ "./src/config.json", 1);
 /* harmony import */ var _fortawesome_fontawesome_svg_core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @fortawesome/fontawesome-svg-core */ "./node_modules/@fortawesome/fontawesome-svg-core/index.es.js");
 /* harmony import */ var _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @fortawesome/free-solid-svg-icons */ "./node_modules/@fortawesome/free-solid-svg-icons/index.es.js");
 /* harmony import */ var _fortawesome_vue_fontawesome__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @fortawesome/vue-fontawesome */ "./node_modules/@fortawesome/vue-fontawesome/index.es.js");
@@ -54930,7 +54945,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('stacked-icons', _fortaweso
 
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_7__["default"]({
   broadcaster: 'pusher',
-  key: _src_config_js__WEBPACK_IMPORTED_MODULE_3__["default"].PUSHER_KEY,
+  key: _src_config_json__WEBPACK_IMPORTED_MODULE_3__.pusher_key,
   cluster: 'eu',
   forceTLS: true
 });
@@ -54939,7 +54954,7 @@ var vueConfig = {
     Vue.mixin({
       data: function data() {
         return {
-          config: _src_config_js__WEBPACK_IMPORTED_MODULE_3__["default"]
+          config: _src_config_json__WEBPACK_IMPORTED_MODULE_3__
         };
       }
     });
@@ -55362,7 +55377,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************!*\
   !*** ./resources/js/store/actions.js ***!
   \***************************************/
-/*! exports provided: setDeviceConfig, setNewConfig, documentClicked, startCardReadLoop */
+/*! exports provided: setDeviceConfig, setNewConfig, documentClicked, setCards, startCardReadLoop */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -55370,6 +55385,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDeviceConfig", function() { return setDeviceConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setNewConfig", function() { return setNewConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "documentClicked", function() { return documentClicked; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCards", function() { return setCards; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startCardReadLoop", function() { return startCardReadLoop; });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
@@ -55386,9 +55402,14 @@ var documentClicked = function documentClicked(_ref3) {
   var commit = _ref3.commit;
   commit('documentClicked');
 };
-var startCardReadLoop = function startCardReadLoop(_ref4) {
+var setCards = function setCards(_ref4) {
   var commit = _ref4.commit,
       state = _ref4.state;
+  commit('setCards');
+};
+var startCardReadLoop = function startCardReadLoop(_ref5) {
+  var commit = _ref5.commit,
+      state = _ref5.state;
   commit('startCardReadLoop');
 };
 
@@ -55398,7 +55419,7 @@ var startCardReadLoop = function startCardReadLoop(_ref4) {
 /*!***************************************!*\
   !*** ./resources/js/store/getters.js ***!
   \***************************************/
-/*! exports provided: configMode, deviceConfig, inputDisabled */
+/*! exports provided: configMode, deviceConfig, inputDisabled, cardRead, cards */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -55406,6 +55427,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "configMode", function() { return configMode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deviceConfig", function() { return deviceConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "inputDisabled", function() { return inputDisabled; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cardRead", function() { return cardRead; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cards", function() { return cards; });
 var configMode = function configMode(state) {
   return state.configMode;
 };
@@ -55414,6 +55437,12 @@ var deviceConfig = function deviceConfig(state) {
 };
 var inputDisabled = function inputDisabled(state) {
   return state.inputDisabled;
+};
+var cardRead = function cardRead(state) {
+  return state.cardRead;
+};
+var cards = function cards(state) {
+  return state.cards;
 };
 
 /***/ }),
@@ -55454,7 +55483,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*!*****************************************!*\
   !*** ./resources/js/store/mutations.js ***!
   \*****************************************/
-/*! exports provided: setDeviceConfig, setNewConfig, documentClicked, startCardReadLoop */
+/*! exports provided: setDeviceConfig, setNewConfig, documentClicked, setCards, startCardReadLoop */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -55462,9 +55491,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDeviceConfig", function() { return setDeviceConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setNewConfig", function() { return setNewConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "documentClicked", function() { return documentClicked; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCards", function() { return setCards; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startCardReadLoop", function() { return startCardReadLoop; });
-/* harmony import */ var _src_config_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! #/src/config.js */ "./src/config.js");
-
 var setDeviceConfig = function setDeviceConfig(state) {
   state.deviceConfig = JSON.parse(window.fs.readFileSync(window.dirname + '/deviceConfig.json', 'utf8'));
 
@@ -55485,21 +55513,25 @@ var documentClicked = function documentClicked(state) {
   state.screenTimeout = setTimeout(function () {
     state.inputDisabled = true;
     window.backlight.powerOff(); //turn screen off
-  }, _src_config_js__WEBPACK_IMPORTED_MODULE_0__["default"].SCREEN_TIMEOUT_IN_SECONDS * 1000);
+  }, config.SCREEN_TIMEOUT_IN_SECONDS * 1000);
 };
-var startCardReadLoop = function startCardReadLoop(state, payload) {
-  var pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py');
+var setCards = function setCards(state) {
+  state.cards = JSON.parse(window.fs.readFileSync(window.dirname + '/cards.json', 'utf8'));
+};
+var startCardReadLoop = function startCardReadLoop(state) {
+  setTimeout(function () {
+    state.cardRead = 1234;
+  }, 4000);
+  var pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', {
+    pythonOptions: ['-u']
+  });
   pyshell.on('message', function (message) {
     // received a message sent from the Python script (a simple "print" statement)
-    console.log(message);
+    state.cardRead = message;
   }); // end the input stream and allow the process to exit
 
   pyshell.end(function (err, code, signal) {
     if (err) throw err;
-    console.log('The exit code was: ' + code);
-    console.log('The exit signal was: ' + signal);
-    console.log('finished');
-    console.log('finished');
   });
 };
 
@@ -55517,6 +55549,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   deviceConfig: {},
   cards: [],
+  cardRead: null,
   configMode: false,
   screenTimeout: null,
   inputDisabled: false
@@ -55622,29 +55655,14 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/config.js":
-/*!***********************!*\
-  !*** ./src/config.js ***!
-  \***********************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/config.json":
+/*!*************************!*\
+  !*** ./src/config.json ***!
+  \*************************/
+/*! exports provided: pusher_key, default */
+/***/ (function(module) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-var config = {
-  PUSHER_KEY: '6737c728e6c4407a675d',
-  LIGHT_CHANNEL: 'doors',
-  HEATING_CHANNEL: '',
-  LIGHT_PIN: 26,
-  TEMPSENSOR_PIN: 19,
-  HEATING_PIN: 13,
-  DOOR_PIN: 6,
-  TEMP_READ_INTERVAL_IN_SECONDS: 60,
-  SCREEN_TIMEOUT_IN_SECONDS: 20,
-  //screen brightness between 10 and 255
-  SCREEN_BRIGHTNESS: 50
-};
-/* harmony default export */ __webpack_exports__["default"] = (config);
+module.exports = JSON.parse("{\"pusher_key\":\"6737c728e6c4407a675d\"}");
 
 /***/ }),
 

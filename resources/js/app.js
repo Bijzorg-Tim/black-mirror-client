@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import store from './store'
 import home from '@/home.vue'
-import config from '../../src/config.js'
+import config from '../../src/config.json'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { 
@@ -31,7 +31,7 @@ import Pusher from "pusher-js"
 
 window.Echo = new Echo({
   broadcaster: 'pusher',
-  key: config.PUSHER_KEY,
+  key: config.pusher_key,
   cluster: 'eu',
   forceTLS: true
 });
