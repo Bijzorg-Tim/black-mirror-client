@@ -11935,12 +11935,11 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    this.setTemperature = this.deviceConfig.standaard_temperatuur; // this.setUpPins()
-    // this.readTemperature()
-    // this.tempReadLoop()
-
-    this.$store.dispatch('setCards');
-    this.$store.dispatch('startCardReadLoop');
+    this.setTemperature = this.deviceConfig.standaard_temperatuur;
+    this.setUpPins();
+    this.readTemperature();
+    this.tempReadLoop(); // this.$store.dispatch('setCards')
+    // this.$store.dispatch('startCardReadLoop')
   },
   mounted: function mounted() {// window.Echo.channel(this.config.LIGHT_CHANNEL)
     // .listen('.toggle', (message) => {
@@ -12114,6 +12113,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -12141,6 +12141,10 @@ __webpack_require__.r(__webpack_exports__);
     documentClicked: function documentClicked(e) {
       e.stopPropagation();
       this.$store.dispatch('documentClicked');
+    },
+    close: function close() {
+      app.relaunch();
+      app.quit();
     }
   },
   mounted: function mounted() {// document.addEventListener('click', this.documentClicked)
@@ -55519,9 +55523,6 @@ var setCards = function setCards(state) {
   state.cards = JSON.parse(window.fs.readFileSync(window.dirname + '/cards.json', 'utf8'));
 };
 var startCardReadLoop = function startCardReadLoop(state) {
-  setTimeout(function () {
-    state.cardRead = 1234;
-  }, 4000);
   var pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', {
     pythonOptions: ['-u']
   });

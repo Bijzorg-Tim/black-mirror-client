@@ -9,6 +9,7 @@
    </div>
    </span>
 
+  <!-- <button @click="close"><i class="fa fa-cube" aria-hidden="true"></i>&nbsp; Close application</button> -->
 
    <span v-if="configMode">
      <div class="container">
@@ -50,7 +51,11 @@ export default {
       documentClicked (e) {
         e.stopPropagation()
         this.$store.dispatch('documentClicked')
-      }
+      },
+       close() {
+                app.relaunch()
+                app.quit()
+            }
     },
     mounted () {
       // document.addEventListener('click', this.documentClicked)
@@ -60,7 +65,3 @@ export default {
     }
 }
 </script>
-
-
-
-

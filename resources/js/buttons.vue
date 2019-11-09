@@ -340,11 +340,11 @@ export default {
     },
     created () {
         this.setTemperature = this.deviceConfig.standaard_temperatuur
-        // this.setUpPins()
-        // this.readTemperature()
-        // this.tempReadLoop()
-        this.$store.dispatch('setCards')
-        this.$store.dispatch('startCardReadLoop')
+        this.setUpPins()
+        this.readTemperature()
+        this.tempReadLoop()
+        // this.$store.dispatch('setCards')
+        // this.$store.dispatch('startCardReadLoop')
     },
     mounted () {
         // window.Echo.channel(this.config.LIGHT_CHANNEL)

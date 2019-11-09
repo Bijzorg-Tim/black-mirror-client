@@ -31,10 +31,6 @@ export const setCards = (state) => {
 }
 
 export const startCardReadLoop = (state) => {
-    setTimeout(function(){
-        state.cardRead = 1234
-    }, 4000)
-
     let pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', { pythonOptions: ['-u']});
  
     pyshell.on('message', function (message) {
