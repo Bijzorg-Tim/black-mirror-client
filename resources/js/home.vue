@@ -58,10 +58,10 @@ export default {
             }
     },
     mounted () {
-      // document.addEventListener('click', this.documentClicked)
-      // document.addEventListener('touchstart', this.documentClicked)
-      // this.$store.dispatch('documentClicked')
-      // window.backlight.setBrightness(this.deviceConfig.screen_brightness);
+      document.addEventListener('click', this.documentClicked)
+      document.addEventListener('touchstart', this.documentClicked)
+      this.$store.dispatch('documentClicked')
+      window.backlight.setBrightness(this.deviceConfig.screen_brightness);
     }
 }
 </script>
