@@ -5,7 +5,7 @@
   "description": "My Electron application description",
   "main": "src/index.js",
   "scripts": {
-    "prestart": "git pull && npm install",
+    "prestart": "git pull",
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",

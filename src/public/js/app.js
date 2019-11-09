@@ -55510,6 +55510,7 @@ var setNewConfig = function setNewConfig(state, payload) {
   state.configMode = false;
 };
 var documentClicked = function documentClicked(state) {
+  console.log(state.deviceConfig.screen_timeout_in_seconds);
   clearTimeout(state.screenTimeout);
   window.backlight.powerOn();
   setTimeout(function () {
@@ -55518,7 +55519,7 @@ var documentClicked = function documentClicked(state) {
   state.screenTimeout = setTimeout(function () {
     state.inputDisabled = true;
     window.backlight.powerOff(); //turn screen off
-  }, config.SCREEN_TIMEOUT_IN_SECONDS * 1000);
+  }, state.deviceConfig.screen_timeout_in_seconds * 1000);
 };
 var setCards = function setCards(state) {
   state.cards = JSON.parse(window.fs.readFileSync(window.dirname + '/cards.json', 'utf8'));

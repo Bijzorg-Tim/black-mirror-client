@@ -11,6 +11,7 @@ export const setNewConfig = (state, payload) => {
 }
 
 export const documentClicked = (state) =>  {
+    console.log(state.deviceConfig.screen_timeout_in_seconds)
     clearTimeout(state.screenTimeout);
     window.backlight.powerOn();
 
@@ -23,7 +24,7 @@ export const documentClicked = (state) =>  {
         state.inputDisabled = true
         window.backlight.powerOff();
         //turn screen off
-    }, config.SCREEN_TIMEOUT_IN_SECONDS * 1000);
+    }, state.deviceConfig.screen_timeout_in_seconds * 1000);
 }
 
 export const setCards = (state) => {
