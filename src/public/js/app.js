@@ -12147,10 +12147,11 @@ __webpack_require__.r(__webpack_exports__);
       app.quit();
     }
   },
-  mounted: function mounted() {// document.addEventListener('click', this.documentClicked)
-    // document.addEventListener('touchstart', this.documentClicked)
-    // this.$store.dispatch('documentClicked')
-    // window.backlight.setBrightness(this.deviceConfig.screen_brightness);
+  mounted: function mounted() {
+    document.addEventListener('click', this.documentClicked);
+    document.addEventListener('touchstart', this.documentClicked);
+    this.$store.dispatch('documentClicked');
+    window.backlight.setBrightness(this.deviceConfig.screen_brightness);
   }
 });
 
