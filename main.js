@@ -13,13 +13,13 @@ if (fs.existsSync('./src/deviceconfig.json')) {
 } else {
     console.log('waiting for config')
 
-    var interface = {
-        interface: mainconfig.interface_name,
-        dhcp: true
-    }
+    // var interface = {
+    //     interface: mainconfig.interface_name,
+    //     dhcp: true
+    // }
     
-    set_ip_address.configure([interface])
-    child_process.exec("sudo netplan apply" , function(err, stdout,stderr){});
+    // set_ip_address.configure([interface])
+    // child_process.exec("sudo netplan apply" , function(err, stdout,stderr){});
 
 
     const pin = Math.floor(Math.random() * 1000000)
@@ -115,15 +115,22 @@ http.createServer(function (req, res) {
 
                 //change ip
                 
-                var interface = {
-                    interface: mainconfig.interface_name,
-                    ip_address: deviceconfig.ip,
-                    prefix: deviceconfig.prefix,
-                    gateway: deviceconfig.gateway,
-                    nameservers: [deviceconfig.dns]
-                }
+                // var interface = {
+                //     interface: mainconfig.interface_name,
+                //     ip_address: deviceconfig.ip,
+                //     prefix: deviceconfig.prefix,
+                //     gateway: deviceconfig.gateway,
+                //     nameservers: [deviceconfig.dns]
+                // }
 
-                set_ip_address.configure([interface])
+                // set_ip_address.configure([interface])
+                child_process.exec("sudo cp /etc/dhcpcd.conf /etc/dhcpcd_old.conf", function(err, stdout,stderr){});
+                child_process.exec("sudo echo 'interface '" + mainconfig.interface_name + " >> /etc/dhcpcd.conf" , function(err, stdout,stderr){});
+                child_process.exec("sudo echo 'static ip_address='" + deviceconfig.ip + "'/'" + deviceconfig.prefix + " >> /etc/dhcpcd.conf" , function(err, stdout,stderr){});
+                child_process.exec("sudo echo 'static routers='" + deviceconfig.gateway + " >> /etc/dhcpcd.conf" , function(err, stdout,stderr){});
+                child_process.exec("sudo echo 'static domain_name_servers='" + deviceconfig.dns + " >> /etc/dhcpcd.conf" , function(err, stdout,stderr){});
+
+
 
                 //change hostname
                 console.log(deviceconfig.room.slug)
