@@ -13,13 +13,13 @@ if (fs.existsSync('./src/deviceconfig.json')) {
 } else {
     console.log('waiting for config')
 
-    var interface = {
-        interface: mainconfig.interface_name,
-        dhcp: true
-    }
+    // var interface = {
+    //     interface: mainconfig.interface_name,
+    //     dhcp: true
+    // }
     
-    set_ip_address.configure([interface])
-    child_process.exec("sudo netplan apply" , function(err, stdout,stderr){});
+    // set_ip_address.configure([interface])
+    // child_process.exec("sudo netplan apply" , function(err, stdout,stderr){});
 
 
     const pin = Math.floor(Math.random() * 1000000)
@@ -115,21 +115,22 @@ http.createServer(function (req, res) {
 
                 //change ip
                 
-                var interface = {
-                    interface: mainconfig.interface_name,
-                    ip_address: deviceconfig.ip,
-                    prefix: deviceconfig.prefix,
-                    gateway: deviceconfig.gateway,
-                    nameservers: [deviceconfig.dns]
-                }
+                // var interface = {
+                //     interface: mainconfig.interface_name,
+                //     ip_address: deviceconfig.ip,
+                //     prefix: deviceconfig.prefix,
+                //     gateway: deviceconfig.gateway,
+                //     nameservers: [deviceconfig.dns]
+                // }
 
-                set_ip_address.configure([interface])
+                // set_ip_address.configure([interface])
 
                 //change hostname
-                child_process.exec("sudo hostnamectl set-hostname " + deviceconfig.slug, function(err, stdout,stderr){});
-                child_process.exec("sudo sed -i 's/" + os.hostname + "/" + deviceconfig.room.slug + "/g /etc/hosts", function(err, stdout,stderr){});
+                console.log(deviceconfig.room.slug)
+                // child_process.exec("sudo hostnamectl set-hostname " + deviceconfig.room.slug, function(err, stdout,stderr){});
+                // child_process.exec("sudo sed -i 's/" + os.hostname + "/" + deviceconfig.room.slug + "/g /etc/hosts", function(err, stdout,stderr){});
 
-                child_process.exec("sudo reboot now", function(err, stdout,stderr){});
+                // child_process.exec("sudo reboot now", function(err, stdout,stderr){});
 
 
             });
