@@ -124,13 +124,13 @@ http.createServer(function (req, res) {
                 }
 
                 set_ip_address.configure([interface])
-                child_process.exec("sudo netplan apply" , function(err, stdout,stderr){});
 
                 //change hostname
                 child_process.exec("sudo hostnamectl set-hostname " + deviceconfig.slug, function(err, stdout,stderr){});
                 child_process.exec("sudo sed -i 's/" + os.hostname + "/" + deviceconfig.room.slug + "/g /etc/hosts", function(err, stdout,stderr){});
 
-                child_process.exec("cd " + mainconfig.black_mirror_location + " && npm start" , function(err, stdout,stderr){});
+                child_process.exec("sudo reboot now", function(err, stdout,stderr){});
+
 
             });
 
