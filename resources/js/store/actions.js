@@ -4,8 +4,8 @@ export const setDeviceConfig = ({commit}) => {
     commit('setDeviceConfig')
 }
 
-export const setNewConfig = ({commit}, payload) => {
-    commit('setNewConfig', payload)
+export const getTempConfig = ({commit}) => {
+    commit('getTempConfig')
 }
 
 export const documentClicked = ({commit}) => {

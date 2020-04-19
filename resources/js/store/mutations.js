@@ -1,17 +1,15 @@
 export const setDeviceConfig = (state) => {
-    state.deviceConfig = JSON.parse(window.fs.readFileSync(window.dirname + '/deviceConfig.json','utf8'))
-    if (state.deviceConfig.id === undefined) {
-        state.configMode = true
+    if (window.fs.existsSync(window.dirname + '/deviceconfig.json')) {
+        state.deviceConfig = JSON.parse(fs.readFileSync(window.dirname + '/deviceconfig.json','utf8'))
+        state.configMode = false
     }
 }
 
-export const setNewConfig = (state, payload) => {
-    window.fs.writeFileSync(window.dirname + '/deviceConfigTEMP.json', JSON.stringify(payload));
-    state.configMode = false
+export const getTempConfig = (state) => {
+    state.tempConfig = JSON.parse(fs.readFileSync(window.dirname + '/tempconfig.json','utf8'))
 }
 
 export const documentClicked = (state) =>  {
-    console.log(state.deviceConfig.screen_timeout_in_seconds)
     clearTimeout(state.screenTimeout);
     window.backlight.powerOn();
 
@@ -24,7 +22,7 @@ export const documentClicked = (state) =>  {
         state.inputDisabled = true
         window.backlight.powerOff();
         //turn screen off
-    }, state.deviceConfig.screen_timeout_in_seconds * 1000);
+    }, state.deviceConfig.room.screen_timeout_in_seconds * 1000);
 }
 
 export const setCards = (state) => {

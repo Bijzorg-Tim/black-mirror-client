@@ -11,7 +11,7 @@
     <nav class="level is-mobile">
         <div class="level-item has-text-centered">
             <div class="centerContent">
-            <p class="title">{{deviceConfig.id}} - {{deviceConfig.naam}}</p>
+            <p class="title">{{deviceConfig.room.naam}}</p>
             </div>
         </div>
     </nav>

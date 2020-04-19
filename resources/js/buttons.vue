@@ -84,8 +84,8 @@ article {
 
 <div>
     <div class="row">
-        <div class="customButton centerContent customButton-left" >
-            <span class="innerButton notification centerContent" @click="verlichtingButtonClicked()">
+        <div class="customButton centerContent customButton-left">
+            <span class="innerButton notification centerContent" @click="verlichtingButtonClicked()" v-if="deviceConfig.room.verlichting">
                 <article @click="verlichtingButtonClicked()" :class="[{'tunrnedOn': verlichting}]">
                     <div class="content">
                         <loadingSpinner v-if="verlichtingDisabled" />
@@ -95,7 +95,7 @@ article {
             </span>
         </div>
         <div class="customButton centerContent" >
-            <span class="innerButton notification centerContent" @click="deurButtonClicked()">
+            <span class="innerButton notification centerContent" @click="deurButtonClicked()" v-if="deviceConfig.room.deur">
                 <article @click="deurButtonClicked()" :class="[{'tunrnedOn': deur}]">
                 <div class="content centerText">
                     <loadingSpinner v-if="deurDisabled" />
@@ -108,7 +108,7 @@ article {
             </span>
         </div>
         <div class="customButton centerContent customButton-right" >
-            <span class="innerButton notification centerContent" @click="verwarmingButtonClicked()">
+            <span class="innerButton notification centerContent" @click="verwarmingButtonClicked()" v-if="deviceConfig.room.verwarming">
                 <article @click="verwarmingButtonClicked()" :class="[{'tunrnedOn': verwarmingKnopStatus}]">
                     <div class="content centerText">
                         <loadingSpinner v-if="verwarmingDisabled" />
@@ -196,7 +196,7 @@ export default {
                 return false
             } 
 
-            if (this.setTemperature + this.deviceConfig.verwarming_uit_na_graden_extra < this.currentTemperature) {
+            if (this.setTemperature + this.deviceConfig.room.verwarming_uit_na_graden_extra < this.currentTemperature) {
                 return false
             }
             return true
@@ -260,14 +260,14 @@ export default {
         },
         increaseTemperature () {
             if (this.inputDisabled) {return}
-            if (this.setTemperature < this.deviceConfig.max_temperatuur) {
-                this.setTemperature = this.setTemperature + this.deviceConfig.temperatuur_increments
+            if (this.setTemperature < this.deviceConfig.room.max_temperatuur) {
+                this.setTemperature = this.setTemperature + parseFloat(this.deviceConfig.room.temperatuur_increments)
             }
         },
         decreaseTemperature () {
             if (this.inputDisabled) {return}
-            if (this.setTemperature > this.deviceConfig.min_temperatuur) {
-                this.setTemperature = this.setTemperature - this.deviceConfig.temperatuur_increments
+            if (this.setTemperature > this.deviceConfig.room.min_temperatuur) {
+                this.setTemperature = this.setTemperature - parseFloat(this.deviceConfig.room.temperatuur_increments)
             }
         },
         setDisableWithTimeout (type) {
@@ -280,7 +280,7 @@ export default {
                 }.bind(this), 2500);
         },
         readTemperature () {
-            window.tempsensor.read(22, this.deviceConfig.tempsensor_pin, function(err, temperature, humidity) {
+            window.tempsensor.read(22, this.deviceConfig.room.tempsensor_pin, function(err, temperature, humidity) {
                 if (!err) {
                     this.currentTemperature = Math.round(temperature * 10) / 10
                 }
@@ -289,14 +289,14 @@ export default {
         tempReadLoop () {
             setInterval(function() { 
                 this.readTemperature()
-            }.bind(this), this.deviceConfig.temp_read_interval_in_seconds * 1000);
+            }.bind(this), this.deviceConfig.room.temp_read_interval_in_seconds * 1000);
         },
         setUpPins(){
-            this.verlichtingPin = new Gpio(this.deviceConfig.light_pin, 'out')
+            this.verlichtingPin = new Gpio(this.deviceConfig.room.light_pin, 'out')
             this.verlichtingPin.writeSync(0)
-            this.verwarmingPin = new Gpio(this.deviceConfig.heating_pin, 'out')
+            this.verwarmingPin = new Gpio(this.deviceConfig.room.heating_pin, 'out')
             this.verwarmingPin.writeSync(0)
-            this.deurPin = new Gpio(this.deviceConfig.door_pin, 'out')
+            this.deurPin = new Gpio(this.deviceConfig.room.door_pin, 'out')
             this.deurPin.writeSync(0)
         },
         ExternalDoorToggle () {
@@ -307,6 +307,78 @@ export default {
                 return this.deur = false
             } 
             return this.deur = true
+        },
+        startServer () {
+            // window.http.createServer(function (req, res) {
+            //     if (req.url === "/light-on") {
+            //         this.verlichting = true
+            //     }
+            //     if (req.url === "/light-off") {
+            //         this.verlichting = false
+            //     }
+            //     if (req.url === "/heating-on") {
+            //         this.verwarming = true
+            //     }
+            //     if (req.url === "/heating-off") {
+            //         this.verwarming = false
+            //     }
+            //     if (req.url === "/door-open") {
+            //         this.deur = true
+            //     }
+            //     if (req.url === "/door-close") {
+            //         this.deur = false
+            //     }
+            //     if (req.url === "/ping") {
+            //         res.status = 200
+            //         res.write('online')
+            //     }
+            //     res.end(); //end the response
+            // }.bind(this)).listen(8844); //the server object listens on port 8040
+
+            var app = window.express()
+            
+            app.get('/ping', function(req, res) {
+                res.json({
+                    status: 'online',
+                    verlichting: this.verlichting,
+                    verwarming: this.verwarming,
+                    deur: this.deur,
+                    currentTemperature: this.currentTemperature,
+                    setTemperature: this.setTemperature
+                })
+            }.bind(this))
+
+            app.get('/verlichtingstatus-on', function(req, res) {
+                res.sendStatus(200)
+                this.verlichting = true
+            }.bind(this))
+
+            app.get('/verlichtingstatus-off', function(req, res) {
+                res.sendStatus(200)
+                this.verlichting = false
+            }.bind(this))
+
+            app.get('/verwarmingstatus-on', function(req, res) {
+                res.sendStatus(200)
+                this.verwarming = true
+            }.bind(this))
+
+            app.get('/verwarmingstatus-off', function(req, res) {
+                res.sendStatus(200)
+                this.verwarming = false
+            }.bind(this))
+
+            app.get('/deurstatus-on', function(req, res) {
+                res.sendStatus(200)
+                this.deur = true
+            }.bind(this))
+
+            app.get('/deurstatus-off', function(req, res) {
+                res.sendStatus(200)
+                this.deur = false
+            }.bind(this))
+
+            app.listen(8844)
         }
     },
     watch: {
@@ -339,7 +411,7 @@ export default {
         }
     },
     created () {
-        this.setTemperature = this.deviceConfig.standaard_temperatuur
+        this.setTemperature = parseInt(this.deviceConfig.room.standaard_temperatuur)
         this.setUpPins()
         this.readTemperature()
         this.tempReadLoop()
@@ -355,6 +427,7 @@ export default {
         //     return this.verlichting = true
         // });
         // this.setUpChannels()
+        this.startServer()
     }
 }
 </script>

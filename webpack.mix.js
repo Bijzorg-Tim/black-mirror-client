@@ -6,6 +6,7 @@ mix.webpackConfig({
             '@': path.resolve(__dirname, 'resources', 'js'),
             '%': path.resolve(__dirname, 'resources', 'sass'),
             '@@': path.resolve(__dirname, 'resources', 'images'),
+            '@@@': path.resolve(__dirname),
             '#': path.resolve(__dirname)
         }
     }
