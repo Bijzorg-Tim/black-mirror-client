@@ -5,8 +5,8 @@
   "description": "My Electron application description",
   "main": "src/index.js",
   "scripts": {
-    "prestart": "npm run dev",
-    "start": "electron-forge start",
+    "prestart": "git pull && npm run dev",
+    "start": "electron-forge start -- --no-sandbox",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
