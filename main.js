@@ -3,7 +3,6 @@ const child_process = require("child_process");
 const os = require('os')
 const fs = require('fs')
 const mainconfig = JSON.parse(fs.readFileSync('./mainconfig.json'))
-const set_ip_address = require('set-ip-address')
 var deviceconfig = ""
 
 
@@ -32,7 +31,7 @@ if (fs.existsSync('./src/deviceconfig.json')) {
     
     fs.writeFileSync('./src/tempconfig.json', JSON.stringify(tempconfig))
     
-    child_process.exec("cd " + mainconfig.black_mirror_location + " && npm start" , function(err, stdout,stderr){});
+    child_process.exec("export DISPLAY=:0 && cd /home/pi/Desktop/black-mirror-client && npm start" , function(err, stdout,stderr){});
 
     const data = JSON.stringify({
         pin: pin,
