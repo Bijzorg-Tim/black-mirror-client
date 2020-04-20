@@ -84,6 +84,12 @@ http.createServer(function (req, res) {
         //kill all electrons
         child_process.exec("sudo shutdown now" , function(err, stdout,stderr){});
     }
+    if (req.url === "/updatesoftware") {
+        //kill all electrons
+        child_process.exec("killall electron" , function(err, stdout,stderr){});
+        child_process.exec("cd /home/pi/Desktop/black-mirror-client/ && git pull && npm install" , function(err, stdout,stderr){});
+        child_process.exec("sudo reboot now" , function(err, stdout,stderr){});
+    }
     if (req.url === "/reboot") {
         //kill all electrons
         child_process.exec("sudo reboot now" , function(err, stdout,stderr){});
