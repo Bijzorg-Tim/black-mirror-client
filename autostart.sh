@@ -1,3 +1,2 @@
 #!/bin/sh
-
-cd /home/pi/Desktop/black-mirror-client/ && sudo node main.js
+cd /home/pi/black-mirror-client/ && sudo npm start
