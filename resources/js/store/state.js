@@ -1,5 +1,6 @@
 export default {
     deviceConfig: {},
+    mainconfig: {},
     tempConfig: {},
     cards: [],
     cardRead: null,

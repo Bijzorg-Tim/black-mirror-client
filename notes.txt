@@ -1,0 +1,5 @@
+I solved the problem, you should config like this in your ~/.npmrc file:
+
+arch=armv7l
+
+You can get arch from uname -m

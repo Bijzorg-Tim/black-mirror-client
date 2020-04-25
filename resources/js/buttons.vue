@@ -159,6 +159,9 @@ article {
 <script>
 
 import loadingSpinner from '@/loadingSpinner.vue'
+import Echo from 'laravel-echo'
+window.io = require('socket.io-client');
+
 
 export default {
     components: {
@@ -182,6 +185,7 @@ export default {
             deurPin: null,
             currentTemperature: 14,
             setTemperature: 0,
+            echo: null
         }
     },
     computed: {
@@ -307,78 +311,6 @@ export default {
                 return this.deur = false
             } 
             return this.deur = true
-        },
-        startServer () {
-            // window.http.createServer(function (req, res) {
-            //     if (req.url === "/light-on") {
-            //         this.verlichting = true
-            //     }
-            //     if (req.url === "/light-off") {
-            //         this.verlichting = false
-            //     }
-            //     if (req.url === "/heating-on") {
-            //         this.verwarming = true
-            //     }
-            //     if (req.url === "/heating-off") {
-            //         this.verwarming = false
-            //     }
-            //     if (req.url === "/door-open") {
-            //         this.deur = true
-            //     }
-            //     if (req.url === "/door-close") {
-            //         this.deur = false
-            //     }
-            //     if (req.url === "/ping") {
-            //         res.status = 200
-            //         res.write('online')
-            //     }
-            //     res.end(); //end the response
-            // }.bind(this)).listen(8844); //the server object listens on port 8040
-
-            var app = window.express()
-            
-            app.get('/ping', function(req, res) {
-                res.json({
-                    status: 'online',
-                    verlichting: this.verlichting,
-                    verwarming: this.verwarming,
-                    deur: this.deur,
-                    currentTemperature: this.currentTemperature,
-                    setTemperature: this.setTemperature
-                })
-            }.bind(this))
-
-            app.get('/verlichtingstatus-on', function(req, res) {
-                res.sendStatus(200)
-                this.verlichting = true
-            }.bind(this))
-
-            app.get('/verlichtingstatus-off', function(req, res) {
-                res.sendStatus(200)
-                this.verlichting = false
-            }.bind(this))
-
-            app.get('/verwarmingstatus-on', function(req, res) {
-                res.sendStatus(200)
-                this.verwarming = true
-            }.bind(this))
-
-            app.get('/verwarmingstatus-off', function(req, res) {
-                res.sendStatus(200)
-                this.verwarming = false
-            }.bind(this))
-
-            app.get('/deurstatus-on', function(req, res) {
-                res.sendStatus(200)
-                this.deur = true
-            }.bind(this))
-
-            app.get('/deurstatus-off', function(req, res) {
-                res.sendStatus(200)
-                this.deur = false
-            }.bind(this))
-
-            app.listen(8844)
         }
     },
     watch: {
@@ -419,15 +351,43 @@ export default {
         // this.$store.dispatch('startCardReadLoop')
     },
     mounted () {
-        // window.Echo.channel(this.config.LIGHT_CHANNEL)
-        // .listen('.toggle', (message) => {
-        //     if (this.verlichting) {
-        //        return this.verlichting = false
-        //     } 
+        this.echo = new Echo({
+            broadcaster: 'socket.io',
+            host: 'http://192.168.0.30:6001',
+            authEndpoint: '/custom/broadcast/auth/route'
+        })
+
+        this.echo.channel('devicechannel')
+        .listen('.ping', (message) => {
+            var payload = {}
+            payload.verlichting = this.verlichting
+            payload.verwarming = this.verwarming
+            payload.deur = this.deur
+            payload.currentTemperature = this.currentTemperature
+            payload.setTemperature = this.setTemperature
+            this.$store.dispatch('pong', payload)
+            return this.verlichting = true
+        })
+        .listen('.verlichtingAan', (message) => {
+            var payload = {}
+            payload.button = 'verlichting'
+            payload.status = true
+
+            this.$store.dispatch('buttonUpdate', payload)
+            return this.verlichting = true
+        })
+        //  console.log(window.Echo)
+        // .listen('.verlichtingAan', (message) => {
+        //     var payload = {}
+        //     payload.button = 'verlichting'
+        //     payload.status = true
+
+        //     this.$store.dispatch('buttonUpdate', payload)
         //     return this.verlichting = true
-        // });
-        // this.setUpChannels()
-        this.startServer()
+        // })
+        // .listen('.verlichtingUit', (message) => {
+        //     return this.verlichting = false
+        // })
     }
 }
 </script>

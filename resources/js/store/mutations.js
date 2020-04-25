@@ -1,4 +1,6 @@
 export const setDeviceConfig = (state) => {
+    state.mainconfig = JSON.parse(fs.readFileSync(window.dirname + '/mainconfig.json','utf8'))
+    
     if (window.fs.existsSync(window.dirname + '/deviceconfig.json')) {
         state.deviceConfig = JSON.parse(fs.readFileSync(window.dirname + '/deviceconfig.json','utf8'))
         state.configMode = false
