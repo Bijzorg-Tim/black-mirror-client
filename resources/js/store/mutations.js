@@ -44,3 +44,8 @@ export const startCardReadLoop = (state) => {
     if (err) throw err;
     });
 }
+
+export const addDeviceStatusToDeviceConfig = (state, payload) => {
+    state.deviceConfig.devicestatus = payload
+}
+

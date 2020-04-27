@@ -8,5 +8,6 @@ window.PythonShell = PythonShell
 let {app} = require('electron').remote
 window.remote = app
 window.mainconfig = JSON.parse(window.fs.readFileSync('../mainconfig.json'))
+window.os = require('os')
 
 

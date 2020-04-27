@@ -223,6 +223,23 @@ export default {
         }
     },
     methods: {
+        sendButtonChangeToServer (action) {
+            const payload = {}
+            payload.action = action
+            payload.device = this.deviceConfig
+            payload.status = this.createStatusPayload()
+            this.$store.dispatch('sendButtonChangeToServer', payload)
+        },
+        createStatusPayload () {
+            var status = {}
+            status.verlichting = this.verlichting
+            status.verwarming = this.verwarming
+            status.deur = this.deur
+            status.currentTemperature = this.currentTemperature
+            status.setTemperature = this.setTemperature
+
+            return status
+        },
         verlichtingButtonClicked () {
             //check if button is disabled
             if (this.inputDisabled) {return}
@@ -232,9 +249,11 @@ export default {
             this.setDisableWithTimeout('verlichtingDisabled')
             //toggle lighting
             if (this.verlichting) {
-               return this.verlichting = false
+                this.verlichting = false
+                return this.sendButtonChangeToServer('verlichting')
             } 
-            return this.verlichting = true
+            this.verlichting = true
+            return this.sendButtonChangeToServer('verlichting')
         },
         verwarmingButtonClicked () {
             //check if button is disabled
@@ -243,11 +262,14 @@ export default {
                 return
             }
            this.setDisableWithTimeout('verwarmingDisabled')
+           
             //toggle heating
             if (this.verwarming) {
-                return this.verwarming = false
+                this.verwarming = false
+                return this.sendButtonChangeToServer('verwarming')
             } 
-            return this.verwarming = true
+            this.verwarming = true
+            return this.sendButtonChangeToServer('verwarming')
         },
         deurButtonClicked () {
             //check if button is disabled
@@ -256,11 +278,14 @@ export default {
                 return
             }
            this.setDisableWithTimeout('deurDisabled')
+           
             //toggle door
             if (this.deur) {
-               return this.deur = false
+               this.deur = false
+               return this.sendButtonChangeToServer('deur')
             } 
-            return this.deur = true
+            this.deur = true
+            return this.sendButtonChangeToServer('deur')
         },
         increaseTemperature () {
             if (this.inputDisabled) {return}
@@ -296,10 +321,6 @@ export default {
             }.bind(this), this.deviceConfig.room.temp_read_interval_in_seconds * 1000);
         },
         setUpPins(){
-            this.verlichtingPin = new Gpio(this.deviceConfig.room.light_pin, 'out')
-            this.verlichtingPin.writeSync(0)
-            this.verwarmingPin = new Gpio(this.deviceConfig.room.heating_pin, 'out')
-            this.verwarmingPin.writeSync(0)
             this.deurPin = new Gpio(this.deviceConfig.room.door_pin, 'out')
             this.deurPin.writeSync(0)
         },
@@ -316,15 +337,31 @@ export default {
     watch: {
         verwarmingStatus () {
             if (this.verwarmingStatus) {
-                return this.verwarmingPin.writeSync(1)
+                const payload = {
+                    action: 'verwarming',
+                    value: true
+                }
+                return this.$store.dispatch('buttonaction', payload)
             }
-                this.verwarmingPin.writeSync(0)
+            const payload = {
+                action: 'verwarming',
+                value: false
+            }
+            return this.$store.dispatch('buttonaction', payload)
         },
         verlichting () {
             if (this.verlichting) {
-                return this.verlichtingPin.writeSync(1)
+                const payload = {
+                    action: 'verlichting',
+                    value: true
+                }
+                return this.$store.dispatch('buttonaction', payload)
             }
-            this.verlichtingPin.writeSync(0)
+            const payload = {
+                    action: 'verlichting',
+                    value: false
+                }
+            return this.$store.dispatch('buttonaction', payload)
         },
         deur () {
             if (this.deur) {
@@ -358,36 +395,20 @@ export default {
         })
 
         this.echo.channel('devicechannel')
+        .listen('.updateDevice', (message) => {
+            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+                this[message.channelrequest.action] = message.channelrequest.status
+            }
+        })
+
+        .listen('.updateIp', (message) => {
+            this.$store.dispatch('sendIp', this.deviceConfig)
+        })
+
         .listen('.ping', (message) => {
-            var payload = {}
-            payload.verlichting = this.verlichting
-            payload.verwarming = this.verwarming
-            payload.deur = this.deur
-            payload.currentTemperature = this.currentTemperature
-            payload.setTemperature = this.setTemperature
+            var payload = this.createStatusPayload()
             this.$store.dispatch('pong', payload)
-            return this.verlichting = true
         })
-        .listen('.verlichtingAan', (message) => {
-            var payload = {}
-            payload.button = 'verlichting'
-            payload.status = true
-
-            this.$store.dispatch('buttonUpdate', payload)
-            return this.verlichting = true
-        })
-        //  console.log(window.Echo)
-        // .listen('.verlichtingAan', (message) => {
-        //     var payload = {}
-        //     payload.button = 'verlichting'
-        //     payload.status = true
-
-        //     this.$store.dispatch('buttonUpdate', payload)
-        //     return this.verlichting = true
-        // })
-        // .listen('.verlichtingUit', (message) => {
-        //     return this.verlichting = false
-        // })
     }
 }
 </script>

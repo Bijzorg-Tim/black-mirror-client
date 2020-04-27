@@ -12204,6 +12204,22 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     }
   },
   methods: {
+    sendButtonChangeToServer: function sendButtonChangeToServer(action) {
+      var payload = {};
+      payload.action = action;
+      payload.device = this.deviceConfig;
+      payload.status = this.createStatusPayload();
+      this.$store.dispatch('sendButtonChangeToServer', payload);
+    },
+    createStatusPayload: function createStatusPayload() {
+      var status = {};
+      status.verlichting = this.verlichting;
+      status.verwarming = this.verwarming;
+      status.deur = this.deur;
+      status.currentTemperature = this.currentTemperature;
+      status.setTemperature = this.setTemperature;
+      return status;
+    },
     verlichtingButtonClicked: function verlichtingButtonClicked() {
       //check if button is disabled
       if (this.inputDisabled) {
@@ -12217,10 +12233,12 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       this.setDisableWithTimeout('verlichtingDisabled'); //toggle lighting
 
       if (this.verlichting) {
-        return this.verlichting = false;
+        this.verlichting = false;
+        return this.sendButtonChangeToServer('verlichting');
       }
 
-      return this.verlichting = true;
+      this.verlichting = true;
+      return this.sendButtonChangeToServer('verlichting');
     },
     verwarmingButtonClicked: function verwarmingButtonClicked() {
       //check if button is disabled
@@ -12235,10 +12253,12 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       this.setDisableWithTimeout('verwarmingDisabled'); //toggle heating
 
       if (this.verwarming) {
-        return this.verwarming = false;
+        this.verwarming = false;
+        return this.sendButtonChangeToServer('verwarming');
       }
 
-      return this.verwarming = true;
+      this.verwarming = true;
+      return this.sendButtonChangeToServer('verwarming');
     },
     deurButtonClicked: function deurButtonClicked() {
       //check if button is disabled
@@ -12253,10 +12273,12 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       this.setDisableWithTimeout('deurDisabled'); //toggle door
 
       if (this.deur) {
-        return this.deur = false;
+        this.deur = false;
+        return this.sendButtonChangeToServer('deur');
       }
 
-      return this.deur = true;
+      this.deur = true;
+      return this.sendButtonChangeToServer('deur');
     },
     increaseTemperature: function increaseTemperature() {
       if (this.inputDisabled) {
@@ -12297,10 +12319,6 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       }.bind(this), this.deviceConfig.room.temp_read_interval_in_seconds * 1000);
     },
     setUpPins: function setUpPins() {
-      this.verlichtingPin = new Gpio(this.deviceConfig.room.light_pin, 'out');
-      this.verlichtingPin.writeSync(0);
-      this.verwarmingPin = new Gpio(this.deviceConfig.room.heating_pin, 'out');
-      this.verwarmingPin.writeSync(0);
       this.deurPin = new Gpio(this.deviceConfig.room.door_pin, 'out');
       this.deurPin.writeSync(0);
     },
@@ -12318,17 +12336,33 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
   watch: {
     verwarmingStatus: function verwarmingStatus() {
       if (this.verwarmingStatus) {
-        return this.verwarmingPin.writeSync(1);
+        var _payload = {
+          action: 'verwarming',
+          value: true
+        };
+        return this.$store.dispatch('buttonaction', _payload);
       }
 
-      this.verwarmingPin.writeSync(0);
+      var payload = {
+        action: 'verwarming',
+        value: false
+      };
+      return this.$store.dispatch('buttonaction', payload);
     },
     verlichting: function verlichting() {
       if (this.verlichting) {
-        return this.verlichtingPin.writeSync(1);
+        var _payload2 = {
+          action: 'verlichting',
+          value: true
+        };
+        return this.$store.dispatch('buttonaction', _payload2);
       }
 
-      this.verlichtingPin.writeSync(0);
+      var payload = {
+        action: 'verlichting',
+        value: false
+      };
+      return this.$store.dispatch('buttonaction', payload);
     },
     deur: function deur() {
       if (this.deur) {
@@ -12368,36 +12402,17 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       host: 'http://192.168.0.30:6001',
       authEndpoint: '/custom/broadcast/auth/route'
     });
-    this.echo.channel('devicechannel').listen('.ping', function (message) {
-      var payload = {};
-      payload.verlichting = _this2.verlichting;
-      payload.verwarming = _this2.verwarming;
-      payload.deur = _this2.deur;
-      payload.currentTemperature = _this2.currentTemperature;
-      payload.setTemperature = _this2.setTemperature;
+    this.echo.channel('devicechannel').listen('.updateDevice', function (message) {
+      if (_this2.deviceConfig.id === message.device.id || message.device === 'all') {
+        _this2[message.channelrequest.action] = message.channelrequest.status;
+      }
+    }).listen('.updateIp', function (message) {
+      _this2.$store.dispatch('sendIp', _this2.deviceConfig);
+    }).listen('.ping', function (message) {
+      var payload = _this2.createStatusPayload();
 
       _this2.$store.dispatch('pong', payload);
-
-      return _this2.verlichting = true;
-    }).listen('.verlichtingAan', function (message) {
-      var payload = {};
-      payload.button = 'verlichting';
-      payload.status = true;
-
-      _this2.$store.dispatch('buttonUpdate', payload);
-
-      return _this2.verlichting = true;
-    }); //  console.log(window.Echo)
-    // .listen('.verlichtingAan', (message) => {
-    //     var payload = {}
-    //     payload.button = 'verlichting'
-    //     payload.status = true
-    //     this.$store.dispatch('buttonUpdate', payload)
-    //     return this.verlichting = true
-    // })
-    // .listen('.verlichtingUit', (message) => {
-    //     return this.verlichting = false
-    // })
+    });
   }
 });
 
@@ -57070,7 +57085,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************!*\
   !*** ./resources/js/store/actions.js ***!
   \***************************************/
-/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, setCards, startCardReadLoop, buttonUpdate, pong */
+/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, setCards, startCardReadLoop, buttonUpdate, pong, sendButtonChangeToServer, sendIp, buttonaction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57082,6 +57097,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startCardReadLoop", function() { return startCardReadLoop; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttonUpdate", function() { return buttonUpdate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pong", function() { return pong; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendButtonChangeToServer", function() { return sendButtonChangeToServer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendIp", function() { return sendIp; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttonaction", function() { return buttonaction; });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
@@ -57120,12 +57138,42 @@ var buttonUpdate = function buttonUpdate(_ref6) {
 var pong = function pong(_ref7, payload) {
   var commit = _ref7.commit,
       state = _ref7.state;
-  var data = {
-    devicestatus: payload,
-    device: state.deviceConfig
-  };
+  commit('addDeviceStatusToDeviceConfig', payload);
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/pong',
+    method: 'POST',
+    data: state.deviceConfig
+  }).then(function () {})["catch"](function () {});
+};
+var sendButtonChangeToServer = function sendButtonChangeToServer(_ref8, payload) {
+  var commit = _ref8.commit,
+      state = _ref8.state;
+  return axios__WEBPACK_IMPORTED_MODULE_0___default()({
+    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/button-change-from-device',
+    method: 'POST',
+    data: payload
+  }).then(function () {})["catch"](function () {});
+};
+var sendIp = function sendIp(_ref9, payload) {
+  var state = _ref9.state;
+  var data = state.mainconfig;
+  return axios__WEBPACK_IMPORTED_MODULE_0___default()({
+    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/sendIpFromDevice/' + payload.id,
+    method: 'POST',
+    data: data
+  }).then(function () {})["catch"](function () {});
+};
+var buttonaction = function buttonaction(_ref10, payload) {
+  var state = _ref10.state;
+  var devicefunction = state.deviceConfig.functions.find(function (a) {
+    return a["function"] === payload.action;
+  });
+  var data = {
+    pin: devicefunction.pin,
+    action: payload.value
+  };
+  return axios__WEBPACK_IMPORTED_MODULE_0___default()({
+    url: 'http://' + devicefunction.ip + '/action',
     method: 'POST',
     data: data
   }).then(function () {})["catch"](function () {});
@@ -57205,7 +57253,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*!*****************************************!*\
   !*** ./resources/js/store/mutations.js ***!
   \*****************************************/
-/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, setCards, startCardReadLoop */
+/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, setCards, startCardReadLoop, addDeviceStatusToDeviceConfig */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57215,6 +57263,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "documentClicked", function() { return documentClicked; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCards", function() { return setCards; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startCardReadLoop", function() { return startCardReadLoop; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addDeviceStatusToDeviceConfig", function() { return addDeviceStatusToDeviceConfig; });
 var setDeviceConfig = function setDeviceConfig(state) {
   state.mainconfig = JSON.parse(fs.readFileSync(window.dirname + '/mainconfig.json', 'utf8'));
 
@@ -57252,6 +57301,9 @@ var startCardReadLoop = function startCardReadLoop(state) {
   pyshell.end(function (err, code, signal) {
     if (err) throw err;
   });
+};
+var addDeviceStatusToDeviceConfig = function addDeviceStatusToDeviceConfig(state, payload) {
+  state.deviceConfig.devicestatus = payload;
 };
 
 /***/ }),
