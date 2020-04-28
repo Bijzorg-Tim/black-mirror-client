@@ -14,7 +14,7 @@ export const getTempConfig = (state) => {
 export const documentClicked = (state) =>  {
     clearTimeout(state.screenTimeout);
 
-    child_process.exec("sudo node" + window.dirname + "/turnon.js", function(err, stdout,stderr){
+    child_process.exec("sudo node " + window.dirname + "/turnon.js", function(err, stdout,stderr){
         console.log(err, stdout, stderr)
     });
     console.log('turning on')
@@ -27,7 +27,7 @@ export const documentClicked = (state) =>  {
 
     state.screenTimeout = setTimeout(function(){ 
         state.inputDisabled = true
-        child_process.exec("sudo node" + window.dirname + "/turnoff.js", function(err, stdout,stderr){
+        child_process.exec("sudo node " + window.dirname + "/turnoff.js", function(err, stdout,stderr){
             console.log(err, stdout, stderr)
         });
         console.log('turning off')
