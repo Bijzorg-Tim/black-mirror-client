@@ -33,25 +33,15 @@ child_process.exec("cp " + mainconfig.black_mirror_location + "/mainconfig.json 
 
 const startElectron = function (mainconfig, arguments) {
     if (arguments === undefined) {
-        child_process.exec("cd " + mainconfig.black_mirror_location + " && export DISPLAY=:0 && npm start" , function(err, stdout,stderr){
-            console.log(stdout)
-            console.log(stderr)
-            console.log(err)
-        });
+        child_process.exec("cd " + mainconfig.black_mirror_location + " && export DISPLAY=:0 && npm start" , function(err, stdout,stderr){});
     } else {
-        child_process.exec("cd " + mainconfig.black_mirror_location + " && export DISPLAY=:0 && " + arguments , function(err, stdout,stderr){
-            console.log(stdout)
-            console.log(stderr)
-            console.log(err)
-        });
+        child_process.exec("cd " + mainconfig.black_mirror_location + " && export DISPLAY=:0 && " + arguments , function(err, stdout,stderr){});
     }
 }
 
 const killElectron = function () {
     child_process.exec("killall electron" , function(err, stdout,stderr){});
 }
-
-
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

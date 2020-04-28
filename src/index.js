@@ -18,7 +18,7 @@ let mainWindow;
 const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    // frame:false,
+    frame:false,
     width: 800,
     height: 480,
     useContentSize: true,
@@ -26,7 +26,7 @@ const createWindow = () => {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true
     },
-    fullscreen: false,
+    fullscreen: true,
   });
 
   // and load the index.html of the app.
