@@ -2,7 +2,6 @@ const child_process = require("child_process");
 const os = require('os')
 const fs = require('fs')
 const mainconfig = JSON.parse(fs.readFileSync(__dirname + '/mainconfig.json'))
-console.log(mainconfig)
 const axios = require('axios')
 const app = require('express')();
 const server = require('http').Server(app);
@@ -26,7 +25,7 @@ const setupDevice = function (mainconfig) {
 
       })
 
-    fs.writeFileSync('./src/tempconfig.json', JSON.stringify(tempconfig))
+    fs.writeFileSync(__dirname + '/src/tempconfig.json', JSON.stringify(tempconfig))
 }
 
 //copy to directory below to make available to electron
