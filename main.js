@@ -103,7 +103,7 @@ app.get('/reboot', function (req, res) {
 });
 
 app.get('/shutdown', function (req, res) {
-    child_process.exec("sudo shutdown" , function(err, stdout,stderr){});
+    child_process.exec("sudo shutdown now" , function(err, stdout,stderr){});
 
     res.send()
 });
