@@ -57293,13 +57293,13 @@ var getTempConfig = function getTempConfig(state) {
 };
 var documentClicked = function documentClicked(state) {
   clearTimeout(state.screenTimeout);
-  window.backlight.powerOn();
+  child_process.exec("sudo node" + window.dirname + "/turnon.js", function (err, stdout, stderr) {});
   setTimeout(function () {
     state.inputDisabled = false;
   }, 250);
   state.screenTimeout = setTimeout(function () {
     state.inputDisabled = true;
-    window.backlight.powerOff(); //turn screen off
+    child_process.exec("sudo node" + window.dirname + "/turnoff.js", function (err, stdout, stderr) {}); //turn screen off
   }, state.deviceConfig.room.screen_timeout_in_seconds * 1000);
 };
 var setCards = function setCards(state) {
