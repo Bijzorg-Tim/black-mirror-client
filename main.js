@@ -94,6 +94,8 @@ app.get('/updatesoftware', function (req, res) {
 
 app.get('/restartapp', function (req, res) {
     process.exit()
+
+    res.send()
 });
 
 app.post('/updateconfig', function (req, res) {
