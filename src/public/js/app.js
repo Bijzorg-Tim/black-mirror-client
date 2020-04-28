@@ -12331,6 +12331,20 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       }
 
       return this.deur = true;
+    },
+    turnOffHeating: function turnOffHeating() {
+      var payload = {
+        action: 'verwarming',
+        value: false
+      };
+      return this.$store.dispatch('buttonaction', payload);
+    },
+    turnOffLightning: function turnOffLightning() {
+      var payload = {
+        action: 'verlichting',
+        value: false
+      };
+      return this.$store.dispatch('buttonaction', payload);
     }
   },
   watch: {
@@ -12397,6 +12411,8 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
   mounted: function mounted() {
     var _this2 = this;
 
+    this.turnOffLightning();
+    this.turnOffHeating();
     this.echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
       broadcaster: 'socket.io',
       host: 'http://192.168.0.30:6001',

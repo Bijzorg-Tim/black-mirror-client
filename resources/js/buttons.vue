@@ -332,6 +332,20 @@ export default {
                 return this.deur = false
             } 
             return this.deur = true
+        },
+        turnOffHeating() {
+            const payload = {
+                action: 'verwarming',
+                value: false
+            }
+            return this.$store.dispatch('buttonaction', payload)
+        },
+        turnOffLightning() {
+            const payload = {
+                    action: 'verlichting',
+                    value: false
+                }
+            return this.$store.dispatch('buttonaction', payload)
         }
     },
     watch: {
@@ -388,6 +402,9 @@ export default {
         // this.$store.dispatch('startCardReadLoop')
     },
     mounted () {
+        this.turnOffLightning()
+        this.turnOffHeating()
+
         this.echo = new Echo({
             broadcaster: 'socket.io',
             host: 'http://192.168.0.30:6001',
