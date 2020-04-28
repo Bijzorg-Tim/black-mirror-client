@@ -95,7 +95,7 @@ app.get('/deleteconfig', function (req, res) {
 })
 
 app.get('/updatesoftware', function (req, res) {
-    startElectron(mainconfig, "git pull && npm install && killall electron && pm2 restart")
+    startElectron(mainconfig, "git pull && npm install && killall electron && pm2 restart all")
     
     res.send()
 });
