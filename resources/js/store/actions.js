@@ -21,6 +21,10 @@ export const startCardReadLoop = ({commit, state}) => {
     commit('startCardReadLoop')
 }
 
+export const turnonscreen = ({commit, state}) => {
+    commit('turnonscreen')
+}
+
 export const buttonUpdate = ({commit, state}) => {
     console.log(state.deviceConfig)
     // return axios({

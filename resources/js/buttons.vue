@@ -346,6 +346,9 @@ export default {
                     value: false
                 }
             return this.$store.dispatch('buttonaction', payload)
+        },
+        turnOnScreen() {
+            return this.$store.dispatch('turnonscreen')
         }
     },
     watch: {
@@ -404,6 +407,7 @@ export default {
     mounted () {
         this.turnOffLightning()
         this.turnOffHeating()
+        this.turnOnScreen()
 
         this.echo = new Echo({
             broadcaster: 'socket.io',

@@ -28,6 +28,10 @@ export const documentClicked = (state) =>  {
     }, state.deviceConfig.room.screen_timeout_in_seconds * 1000);
 }
 
+export const turnonscreen = (state) =>  {
+    child_process.exec("sudo node " + window.dirname + "/turnon.js", function(err, stdout,stderr){});
+}
+
 export const setCards = (state) => {
     state.cards = JSON.parse(window.fs.readFileSync(window.dirname + '/cards.json','utf8'))
 }

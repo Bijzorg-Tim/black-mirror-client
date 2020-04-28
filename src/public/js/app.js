@@ -12345,6 +12345,9 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
         value: false
       };
       return this.$store.dispatch('buttonaction', payload);
+    },
+    turnOnScreen: function turnOnScreen() {
+      return this.$store.dispatch('turnonscreen');
     }
   },
   watch: {
@@ -12413,6 +12416,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
 
     this.turnOffLightning();
     this.turnOffHeating();
+    this.turnOnScreen();
     this.echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
       broadcaster: 'socket.io',
       host: 'http://192.168.0.30:6001',
@@ -57101,7 +57105,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************!*\
   !*** ./resources/js/store/actions.js ***!
   \***************************************/
-/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, setCards, startCardReadLoop, buttonUpdate, pong, sendButtonChangeToServer, sendIp, buttonaction */
+/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, setCards, startCardReadLoop, turnonscreen, buttonUpdate, pong, sendButtonChangeToServer, sendIp, buttonaction */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57111,6 +57115,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "documentClicked", function() { return documentClicked; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCards", function() { return setCards; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startCardReadLoop", function() { return startCardReadLoop; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "turnonscreen", function() { return turnonscreen; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttonUpdate", function() { return buttonUpdate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pong", function() { return pong; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendButtonChangeToServer", function() { return sendButtonChangeToServer; });
@@ -57141,9 +57146,14 @@ var startCardReadLoop = function startCardReadLoop(_ref5) {
       state = _ref5.state;
   commit('startCardReadLoop');
 };
-var buttonUpdate = function buttonUpdate(_ref6) {
+var turnonscreen = function turnonscreen(_ref6) {
   var commit = _ref6.commit,
       state = _ref6.state;
+  commit('turnonscreen');
+};
+var buttonUpdate = function buttonUpdate(_ref7) {
+  var commit = _ref7.commit,
+      state = _ref7.state;
   console.log(state.deviceConfig); // return axios({
   //     url: 'http://' + mainconfig.api_url + ':' + mainconfig.api_port + '/device-deleting-config',
   //     method: 'POST',
@@ -57151,9 +57161,9 @@ var buttonUpdate = function buttonUpdate(_ref6) {
   // }).then(() => {})
   // .catch(() => {})
 };
-var pong = function pong(_ref7, payload) {
-  var commit = _ref7.commit,
-      state = _ref7.state;
+var pong = function pong(_ref8, payload) {
+  var commit = _ref8.commit,
+      state = _ref8.state;
   commit('addDeviceStatusToDeviceConfig', payload);
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/pong',
@@ -57161,17 +57171,17 @@ var pong = function pong(_ref7, payload) {
     data: state.deviceConfig
   }).then(function () {})["catch"](function () {});
 };
-var sendButtonChangeToServer = function sendButtonChangeToServer(_ref8, payload) {
-  var commit = _ref8.commit,
-      state = _ref8.state;
+var sendButtonChangeToServer = function sendButtonChangeToServer(_ref9, payload) {
+  var commit = _ref9.commit,
+      state = _ref9.state;
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/button-change-from-device',
     method: 'POST',
     data: payload
   }).then(function () {})["catch"](function () {});
 };
-var sendIp = function sendIp(_ref9, payload) {
-  var state = _ref9.state;
+var sendIp = function sendIp(_ref10, payload) {
+  var state = _ref10.state;
   var data = state.mainconfig;
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/sendIpFromDevice/' + payload.id,
@@ -57179,8 +57189,8 @@ var sendIp = function sendIp(_ref9, payload) {
     data: data
   }).then(function () {})["catch"](function () {});
 };
-var buttonaction = function buttonaction(_ref10, payload) {
-  var state = _ref10.state;
+var buttonaction = function buttonaction(_ref11, payload) {
+  var state = _ref11.state;
   var devicefunction = state.deviceConfig.functions.find(function (a) {
     return a["function"] === payload.action;
   });
@@ -57269,7 +57279,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*!*****************************************!*\
   !*** ./resources/js/store/mutations.js ***!
   \*****************************************/
-/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, setCards, startCardReadLoop, addDeviceStatusToDeviceConfig */
+/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, turnonscreen, setCards, startCardReadLoop, addDeviceStatusToDeviceConfig */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57277,6 +57287,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDeviceConfig", function() { return setDeviceConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTempConfig", function() { return getTempConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "documentClicked", function() { return documentClicked; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "turnonscreen", function() { return turnonscreen; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCards", function() { return setCards; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startCardReadLoop", function() { return startCardReadLoop; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addDeviceStatusToDeviceConfig", function() { return addDeviceStatusToDeviceConfig; });
@@ -57301,6 +57312,9 @@ var documentClicked = function documentClicked(state) {
     state.inputDisabled = true;
     child_process.exec("sudo node " + window.dirname + "/turnoff.js", function (err, stdout, stderr) {}); //turn screen off
   }, state.deviceConfig.room.screen_timeout_in_seconds * 1000);
+};
+var turnonscreen = function turnonscreen(state) {
+  child_process.exec("sudo node " + window.dirname + "/turnon.js", function (err, stdout, stderr) {});
 };
 var setCards = function setCards(state) {
   state.cards = JSON.parse(window.fs.readFileSync(window.dirname + '/cards.json', 'utf8'));
