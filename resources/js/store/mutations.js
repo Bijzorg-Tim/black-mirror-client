@@ -26,6 +26,8 @@ export const documentClicked = (state) =>  {
     state.screenTimeout = setTimeout(function(){ 
         state.inputDisabled = true
         child_process.exec("sudo node" + window.dirname + "/turnoff.js", function(err, stdout,stderr){});
+        console.log('turning off')
+        console.log('running command: sudo node' + window.dirname + "/turnoff.js")
         //turn screen off
     }, state.deviceConfig.room.screen_timeout_in_seconds * 1000);
 }
