@@ -57294,6 +57294,8 @@ var getTempConfig = function getTempConfig(state) {
 var documentClicked = function documentClicked(state) {
   clearTimeout(state.screenTimeout);
   child_process.exec("sudo node" + window.dirname + "/turnon.js", function (err, stdout, stderr) {});
+  console.log('turning on');
+  console.log('running command: sudo node' + window.dirname + "/turnon.js");
   setTimeout(function () {
     state.inputDisabled = false;
   }, 250);
