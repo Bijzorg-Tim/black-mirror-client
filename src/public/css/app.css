@@ -13027,6 +13027,7 @@ label.panel-block:hover {
 
 html {
   overflow-y: hidden !important;
+  cursor: none !important;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
