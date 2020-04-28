@@ -57293,7 +57293,9 @@ var getTempConfig = function getTempConfig(state) {
 };
 var documentClicked = function documentClicked(state) {
   clearTimeout(state.screenTimeout);
-  child_process.exec("sudo node" + window.dirname + "/turnon.js", function (err, stdout, stderr) {});
+  child_process.exec("sudo node" + window.dirname + "/turnon.js", function (err, stdout, stderr) {
+    console.log(err, stdout, stderr);
+  });
   console.log('turning on');
   console.log('running command: sudo node' + window.dirname + "/turnon.js");
   setTimeout(function () {
@@ -57301,7 +57303,9 @@ var documentClicked = function documentClicked(state) {
   }, 250);
   state.screenTimeout = setTimeout(function () {
     state.inputDisabled = true;
-    child_process.exec("sudo node" + window.dirname + "/turnoff.js", function (err, stdout, stderr) {});
+    child_process.exec("sudo node" + window.dirname + "/turnoff.js", function (err, stdout, stderr) {
+      console.log(err, stdout, stderr);
+    });
     console.log('turning off');
     console.log('running command: sudo node' + window.dirname + "/turnoff.js"); //turn screen off
   }, state.deviceConfig.room.screen_timeout_in_seconds * 1000);
