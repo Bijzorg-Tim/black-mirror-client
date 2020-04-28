@@ -101,7 +101,19 @@ app.get('/updatesoftware', function (req, res) {
 });
 
 app.get('/restartapp', function (req, res) {
-    process.exit()
+    child_process.exec("pm2 restart all" , function(err, stdout,stderr){});
+
+    res.send()
+});
+
+app.get('/reboot', function (req, res) {
+    child_process.exec("sudo reboot now" , function(err, stdout,stderr){});
+
+    res.send()
+});
+
+app.get('/shutdown', function (req, res) {
+    child_process.exec("sudo shutdown now" , function(err, stdout,stderr){});
 
     res.send()
 });
