@@ -1,4 +1,5 @@
 window.fs = require('fs')
+window.child_process = require("child_process");
 window.dirname = __dirname
 window.Gpio = require('onoff').Gpio
 window.tempsensor = require("node-dht-sensor");
@@ -9,6 +10,5 @@ let {app} = require('electron').remote
 window.remote = app
 window.mainconfig = JSON.parse(window.fs.readFileSync('../mainconfig.json'))
 window.os = require('os')
-window.child_process = require("child_process");
 
 
