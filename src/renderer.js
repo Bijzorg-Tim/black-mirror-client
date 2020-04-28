@@ -9,5 +9,6 @@ let {app} = require('electron').remote
 window.remote = app
 window.mainconfig = JSON.parse(window.fs.readFileSync('../mainconfig.json'))
 window.os = require('os')
+window.child_process = require("child_process");
 
 
