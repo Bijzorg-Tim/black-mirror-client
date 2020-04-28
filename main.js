@@ -92,6 +92,10 @@ app.get('/updatesoftware', function (req, res) {
     res.send()
 });
 
+app.get('/restartapp', function (req, res) {
+    process.exit()
+});
+
 app.post('/updateconfig', function (req, res) {
     killElectron()
     
