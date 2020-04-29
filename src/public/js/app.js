@@ -12398,7 +12398,6 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       }
 
       if (this.sendNextCardToWeb) {
-        console.log(this.cardRead);
         this.$store.dispatch('sendCardToWeb', this.cardRead);
         this.sendNextCardToWeb = false;
       }
@@ -57227,11 +57226,13 @@ var buttonaction = function buttonaction(_ref11, payload) {
 };
 var sendCardToWeb = function sendCardToWeb(_ref12, payload) {
   var state = _ref12.state;
-  var data = state.mainconfig;
+  var data = {
+    sleutel: payload
+  };
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/send-card-from-device-to-web/',
     method: 'POST',
-    data: payload
+    data: data
   }).then(function () {})["catch"](function () {});
 };
 
