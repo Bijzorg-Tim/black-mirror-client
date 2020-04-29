@@ -23,7 +23,7 @@ export const documentClicked = (state) =>  {
 
     state.screenTimeout = setTimeout(function(){ 
         state.inputDisabled = true
-        child_process.exec("sudo node " + window.dirname + "/turnoff.js", function(err, stdout,stderr){});
+        // child_process.exec("sudo node " + window.dirname + "/turnoff.js", function(err, stdout,stderr){});
         //turn screen off
     }, state.deviceConfig.room.screen_timeout_in_seconds * 1000);
 }
@@ -40,7 +40,7 @@ export const setCards = (state) => {
 
 export const startCardReadLoop = (state) => {
     let pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', { pythonOptions: ['-u']});
- 
+    
     pyshell.on('message', function (message) {
     // received a message sent from the Python script (a simple "print" statement)
         state.cardRead = message
