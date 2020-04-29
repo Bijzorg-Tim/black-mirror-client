@@ -79,6 +79,16 @@ export const buttonaction = ({state}, payload) => {
     .catch(() => {})
 }
 
+export const sendCardToWeb = ({state}, payload) => {
+    const data = state.mainconfig
+    return axios({
+        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/send-card-from-device-to-web/',
+        method: 'POST',
+        data: payload,
+    }).then(() => {})
+    .catch(() => {})
+}
+
 
 
 

@@ -185,7 +185,9 @@ export default {
             deurPin: null,
             currentTemperature: 14,
             setTemperature: 0,
-            echo: null
+            echo: null,
+            sendNextCardToWeb: false,
+            sendNextCardToWebTimeout: null
         }
     },
     computed: {
@@ -389,6 +391,11 @@ export default {
         cardRead () {
             if (this.cardRead === null) {return}
 
+            if (this.sendNextCardToWeb) {
+                this.$store.dispatch('sendCardToWeb', this.cardRead)
+                this.sendNextCardToWeb = false
+            }
+
             const card = this.cards.find(a => a.cardId === this.cardRead)
 
             if (card !== undefined) {
@@ -429,6 +436,17 @@ export default {
         .listen('.ping', (message) => {
             var payload = this.createStatusPayload()
             this.$store.dispatch('pong', payload)
+        })
+
+        .listen('.sendCardID', (message) => {
+            if (this.deviceConfig.id === message.device.id) {
+                this.sendNextCardToWeb = true
+                clearTimeout(this.sendNextCardToWebTimeout);
+
+                this.sendNextCardToWebTimeout = setTimeout(function() { 
+                    this.sendNextCardToWeb = false
+                }.bind(this), 300 * 1000);
+            }
         })
     }
 }

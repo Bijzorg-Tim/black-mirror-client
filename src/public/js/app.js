@@ -12164,7 +12164,9 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       deurPin: null,
       currentTemperature: 14,
       setTemperature: 0,
-      echo: null
+      echo: null,
+      sendNextCardToWeb: false,
+      sendNextCardToWebTimeout: null
     };
   },
   computed: {
@@ -12395,6 +12397,11 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
         return;
       }
 
+      if (this.sendNextCardToWeb) {
+        this.$store.dispatch('sendCardToWeb', this.cardRead);
+        this.sendNextCardToWeb = false;
+      }
+
       var card = this.cards.find(function (a) {
         return a.cardId === _this.cardRead;
       });
@@ -12408,8 +12415,9 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     this.setTemperature = parseInt(this.deviceConfig.room.standaard_temperatuur);
     this.setUpPins();
     this.readTemperature();
-    this.tempReadLoop(); // this.$store.dispatch('setCards')
-    // this.$store.dispatch('startCardReadLoop')
+    this.tempReadLoop();
+    this.$store.dispatch('setCards');
+    this.$store.dispatch('startCardReadLoop');
   },
   mounted: function mounted() {
     var _this2 = this;
@@ -12432,6 +12440,14 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       var payload = _this2.createStatusPayload();
 
       _this2.$store.dispatch('pong', payload);
+    }).listen('.sendCardID', function (message) {
+      if (_this2.deviceConfig.id === message.device.id) {
+        _this2.sendNextCardToWeb = true;
+        clearTimeout(_this2.sendNextCardToWebTimeout);
+        _this2.sendNextCardToWebTimeout = setTimeout(function () {
+          this.sendNextCardToWeb = false;
+        }.bind(_this2), 300 * 1000);
+      }
     });
   }
 });
@@ -12679,6 +12695,9 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     deviceConfig: function deviceConfig() {
       return this.$store.getters['deviceConfig'];
+    },
+    card: function card() {
+      return this.$store.getters['cardRead'];
     }
   },
   methods: {
@@ -57105,7 +57124,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************!*\
   !*** ./resources/js/store/actions.js ***!
   \***************************************/
-/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, setCards, startCardReadLoop, turnonscreen, buttonUpdate, pong, sendButtonChangeToServer, sendIp, buttonaction */
+/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, setCards, startCardReadLoop, turnonscreen, buttonUpdate, pong, sendButtonChangeToServer, sendIp, buttonaction, sendCardToWeb */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57121,6 +57140,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendButtonChangeToServer", function() { return sendButtonChangeToServer; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendIp", function() { return sendIp; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttonaction", function() { return buttonaction; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendCardToWeb", function() { return sendCardToWeb; });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
@@ -57202,6 +57222,15 @@ var buttonaction = function buttonaction(_ref11, payload) {
     url: 'http://' + devicefunction.ip + '/action',
     method: 'POST',
     data: data
+  }).then(function () {})["catch"](function () {});
+};
+var sendCardToWeb = function sendCardToWeb(_ref12, payload) {
+  var state = _ref12.state;
+  var data = state.mainconfig;
+  return axios__WEBPACK_IMPORTED_MODULE_0___default()({
+    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/send-card-from-device-to-web/',
+    method: 'POST',
+    data: payload
   }).then(function () {})["catch"](function () {});
 };
 
@@ -57309,15 +57338,17 @@ var documentClicked = function documentClicked(state) {
     state.inputDisabled = false;
   }, 400);
   state.screenTimeout = setTimeout(function () {
-    state.inputDisabled = true;
-    child_process.exec("sudo node " + window.dirname + "/turnoff.js", function (err, stdout, stderr) {}); //turn screen off
+    state.inputDisabled = true; // child_process.exec("sudo node " + window.dirname + "/turnoff.js", function(err, stdout,stderr){});
+    //turn screen off
   }, state.deviceConfig.room.screen_timeout_in_seconds * 1000);
 };
 var turnonscreen = function turnonscreen(state) {
   child_process.exec("sudo node " + window.dirname + "/turnon.js", function (err, stdout, stderr) {});
 };
 var setCards = function setCards(state) {
-  state.cards = JSON.parse(window.fs.readFileSync(window.dirname + '/cards.json', 'utf8'));
+  if (fs.existsSync(window.dirname + '/cards.json')) {
+    state.cards = JSON.parse(window.fs.readFileSync(window.dirname + '/cards.json', 'utf8'));
+  }
 };
 var startCardReadLoop = function startCardReadLoop(state) {
   var pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', {
