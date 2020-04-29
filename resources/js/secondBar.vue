@@ -11,7 +11,7 @@
     <nav class="level is-mobile">
         <div class="level-item has-text-centered">
             <div class="centerContent">
-            <p class="title">{{deviceConfig.room.naam}}</p>
+            <p class="title">{{deviceConfig.room.naam}}{{card}}</p>
             </div>
         </div>
     </nav>
@@ -42,6 +42,9 @@ export default {
     computed: {
         deviceConfig() {
             return this.$store.getters['deviceConfig']
+        },
+        card() {
+            return this.$store.getters['cardRead']
         }
     },
     methods: {

@@ -401,8 +401,8 @@ export default {
         this.setUpPins()
         this.readTemperature()
         this.tempReadLoop()
-        // this.$store.dispatch('setCards')
-        // this.$store.dispatch('startCardReadLoop')
+        this.$store.dispatch('setCards')
+        this.$store.dispatch('startCardReadLoop')
     },
     mounted () {
         this.turnOffLightning()
