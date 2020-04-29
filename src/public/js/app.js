@@ -12398,6 +12398,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       }
 
       if (this.sendNextCardToWeb) {
+        console.log(this.cardRead);
         this.$store.dispatch('sendCardToWeb', this.cardRead);
         this.sendNextCardToWeb = false;
       }

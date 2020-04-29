@@ -392,6 +392,7 @@ export default {
             if (this.cardRead === null) {return}
 
             if (this.sendNextCardToWeb) {
+                console.log(this.cardRead)
                 this.$store.dispatch('sendCardToWeb', this.cardRead)
                 this.sendNextCardToWeb = false
             }
