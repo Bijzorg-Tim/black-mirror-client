@@ -12399,6 +12399,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
 
       if (this.sendNextCardToWeb) {
         this.$store.dispatch('sendCardToWeb', this.cardRead);
+        this.$store.dispatch('resetCard', this.cardRead);
         this.sendNextCardToWeb = false;
       }
 
@@ -57124,7 +57125,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************!*\
   !*** ./resources/js/store/actions.js ***!
   \***************************************/
-/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, setCards, startCardReadLoop, turnonscreen, buttonUpdate, pong, sendButtonChangeToServer, sendIp, buttonaction, sendCardToWeb */
+/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, setCards, startCardReadLoop, turnonscreen, resetCard, buttonUpdate, pong, sendButtonChangeToServer, sendIp, buttonaction, sendCardToWeb */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57135,6 +57136,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCards", function() { return setCards; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startCardReadLoop", function() { return startCardReadLoop; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "turnonscreen", function() { return turnonscreen; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resetCard", function() { return resetCard; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "buttonUpdate", function() { return buttonUpdate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pong", function() { return pong; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendButtonChangeToServer", function() { return sendButtonChangeToServer; });
@@ -57171,9 +57173,14 @@ var turnonscreen = function turnonscreen(_ref6) {
       state = _ref6.state;
   commit('turnonscreen');
 };
-var buttonUpdate = function buttonUpdate(_ref7) {
+var resetCard = function resetCard(_ref7) {
   var commit = _ref7.commit,
       state = _ref7.state;
+  commit('resetCard');
+};
+var buttonUpdate = function buttonUpdate(_ref8) {
+  var commit = _ref8.commit,
+      state = _ref8.state;
   console.log(state.deviceConfig); // return axios({
   //     url: 'http://' + mainconfig.api_url + ':' + mainconfig.api_port + '/device-deleting-config',
   //     method: 'POST',
@@ -57181,9 +57188,9 @@ var buttonUpdate = function buttonUpdate(_ref7) {
   // }).then(() => {})
   // .catch(() => {})
 };
-var pong = function pong(_ref8, payload) {
-  var commit = _ref8.commit,
-      state = _ref8.state;
+var pong = function pong(_ref9, payload) {
+  var commit = _ref9.commit,
+      state = _ref9.state;
   commit('addDeviceStatusToDeviceConfig', payload);
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/pong',
@@ -57191,17 +57198,17 @@ var pong = function pong(_ref8, payload) {
     data: state.deviceConfig
   }).then(function () {})["catch"](function () {});
 };
-var sendButtonChangeToServer = function sendButtonChangeToServer(_ref9, payload) {
-  var commit = _ref9.commit,
-      state = _ref9.state;
+var sendButtonChangeToServer = function sendButtonChangeToServer(_ref10, payload) {
+  var commit = _ref10.commit,
+      state = _ref10.state;
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/button-change-from-device',
     method: 'POST',
     data: payload
   }).then(function () {})["catch"](function () {});
 };
-var sendIp = function sendIp(_ref10, payload) {
-  var state = _ref10.state;
+var sendIp = function sendIp(_ref11, payload) {
+  var state = _ref11.state;
   var data = state.mainconfig;
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/sendIpFromDevice/' + payload.id,
@@ -57209,8 +57216,8 @@ var sendIp = function sendIp(_ref10, payload) {
     data: data
   }).then(function () {})["catch"](function () {});
 };
-var buttonaction = function buttonaction(_ref11, payload) {
-  var state = _ref11.state;
+var buttonaction = function buttonaction(_ref12, payload) {
+  var state = _ref12.state;
   var devicefunction = state.deviceConfig.functions.find(function (a) {
     return a["function"] === payload.action;
   });
@@ -57224,8 +57231,8 @@ var buttonaction = function buttonaction(_ref11, payload) {
     data: data
   }).then(function () {})["catch"](function () {});
 };
-var sendCardToWeb = function sendCardToWeb(_ref12, payload) {
-  var state = _ref12.state;
+var sendCardToWeb = function sendCardToWeb(_ref13, payload) {
+  var state = _ref13.state;
   var data = {
     sleutel: payload
   };
@@ -57310,7 +57317,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*!*****************************************!*\
   !*** ./resources/js/store/mutations.js ***!
   \*****************************************/
-/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, turnonscreen, setCards, startCardReadLoop, addDeviceStatusToDeviceConfig */
+/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, turnonscreen, setCards, startCardReadLoop, addDeviceStatusToDeviceConfig, resetCard */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57322,6 +57329,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCards", function() { return setCards; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startCardReadLoop", function() { return startCardReadLoop; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addDeviceStatusToDeviceConfig", function() { return addDeviceStatusToDeviceConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resetCard", function() { return resetCard; });
 var setDeviceConfig = function setDeviceConfig(state) {
   state.mainconfig = JSON.parse(fs.readFileSync(window.dirname + '/mainconfig.json', 'utf8'));
 
@@ -57367,6 +57375,9 @@ var startCardReadLoop = function startCardReadLoop(state) {
 };
 var addDeviceStatusToDeviceConfig = function addDeviceStatusToDeviceConfig(state, payload) {
   state.deviceConfig.devicestatus = payload;
+};
+var resetCard = function resetCard(state, payload) {
+  state.cardRead = null;
 };
 
 /***/ }),

@@ -56,3 +56,8 @@ export const addDeviceStatusToDeviceConfig = (state, payload) => {
     state.deviceConfig.devicestatus = payload
 }
 
+export const resetCard = (state, payload) => {
+    state.cardRead = null
+}
+
+

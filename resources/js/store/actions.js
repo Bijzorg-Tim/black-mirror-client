@@ -25,6 +25,10 @@ export const turnonscreen = ({commit, state}) => {
     commit('turnonscreen')
 }
 
+export const resetCard = ({commit, state}) => {
+    commit('resetCard')
+}
+
 export const buttonUpdate = ({commit, state}) => {
     console.log(state.deviceConfig)
     // return axios({
