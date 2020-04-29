@@ -33,7 +33,9 @@ export const turnonscreen = (state) =>  {
 }
 
 export const setCards = (state) => {
-    state.cards = JSON.parse(window.fs.readFileSync(window.dirname + '/cards.json','utf8'))
+    if (fs.existsSync(window.dirname + '/cards.json')) {
+        state.cards = JSON.parse(window.fs.readFileSync(window.dirname + '/cards.json','utf8'))
+    }
 }
 
 export const startCardReadLoop = (state) => {
