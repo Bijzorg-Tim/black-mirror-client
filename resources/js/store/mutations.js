@@ -41,11 +41,9 @@ export const setCards = (state) => {
 export const startCardReadLoop = (state) => {
     let pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', { pythonOptions: ['-u']});
     
-    console.log('hi timmy')
     pyshell.on('message', function (message) {
     // received a message sent from the Python script (a simple "print" statement)
         state.cardRead = message
-        console.log('this is  the card')
     });
     
     // end the input stream and allow the process to exit

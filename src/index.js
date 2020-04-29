@@ -18,7 +18,7 @@ let mainWindow;
 const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    frame:true,
+    frame:false,
     width: 800,
     height: 480,
     useContentSize: true,
@@ -29,7 +29,7 @@ const createWindow = () => {
     fullscreen: true,
   });
 
-  mainWindow.webContents.openDevTools(),
+  // mainWindow.webContents.openDevTools(),
 
 
   // and load the index.html of the app.
