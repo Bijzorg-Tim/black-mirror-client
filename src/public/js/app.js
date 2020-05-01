@@ -57463,8 +57463,8 @@ var documentClicked = function documentClicked(state) {
     state.inputDisabled = false;
   }, 400);
   state.screenTimeout = setTimeout(function () {
-    state.inputDisabled = true; // child_process.exec("sudo node " + window.dirname + "/turnoff.js", function(err, stdout,stderr){});
-    //turn screen off
+    state.inputDisabled = true;
+    child_process.exec("sudo node " + window.dirname + "/turnoff.js", function (err, stdout, stderr) {}); //turn screen off
   }, state.deviceConfig.room.screen_timeout_in_seconds * 1000);
 };
 var turnonscreen = function turnonscreen(state) {
