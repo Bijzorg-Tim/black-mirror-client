@@ -12341,13 +12341,13 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       };
       return this.$store.dispatch('buttonaction', payload);
     },
-    // turnOffLightning() {
-    //     const payload = {
-    //             action: 'verlichting',
-    //             value: false
-    //         }
-    //     return this.$store.dispatch('buttonaction', payload)
-    // },
+    turnOffLightning: function turnOffLightning() {
+      var payload = {
+        action: 'verlichting',
+        value: false
+      };
+      return this.$store.dispatch('buttonaction', payload);
+    },
     turnOnScreen: function turnOnScreen() {
       return this.$store.dispatch('turnonscreen');
     }
