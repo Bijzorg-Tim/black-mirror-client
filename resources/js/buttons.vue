@@ -475,6 +475,14 @@ export default {
             }
         })
 
+        .listen('.updateCards', (message) => {
+            if (this.deviceConfig.id === message.device || message.device === 'all') {
+                this.$store.dispatch('setCardsFromServer').then(() => {
+                    this.$store.dispatch('setCards')
+                })
+            }
+        })
+
         .listen('.sendCardID', (message) => {
             if (this.deviceConfig.id === message.device.id) {
                 this.sendNextCardToWeb = true
