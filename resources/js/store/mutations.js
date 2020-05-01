@@ -11,6 +11,17 @@ export const getTempConfig = (state) => {
     state.tempConfig = JSON.parse(fs.readFileSync(window.dirname + '/tempconfig.json','utf8'))
 }
 
+export const updateSoftware = (state) => {
+    child_process.exec("bash " + window.dirname + "/update.sh", function(err, stdout,stderr){
+        console.log(err)
+        console.log(stdout)
+        console.log(stderr)
+    });
+}
+
+
+
+
 export const documentClicked = (state) =>  {
     clearTimeout(state.screenTimeout);
 

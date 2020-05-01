@@ -29,15 +29,11 @@ export const resetCard = ({commit, state}) => {
     commit('resetCard')
 }
 
-export const buttonUpdate = ({commit, state}) => {
-    console.log(state.deviceConfig)
-    // return axios({
-    //     url: 'http://' + mainconfig.api_url + ':' + mainconfig.api_port + '/device-deleting-config',
-    //     method: 'POST',
-    //     data: config,
-    // }).then(() => {})
-    // .catch(() => {})
+export const updateSoftware = ({commit, state}) => {
+    commit('updateSoftware')
 }
+
+
 
 export const pong = ({commit, state}, payload) => {
     commit('addDeviceStatusToDeviceConfig', payload)

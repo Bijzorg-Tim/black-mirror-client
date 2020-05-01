@@ -442,7 +442,7 @@ export default {
         this.echo.channel('devicechannel')
         .listen('.updateSoftware', (message) => {
             if (this.deviceConfig.id === message.device.id || message.device === 'all') {
-                console.log(message)
+                this.$store.dispatch('updateSoftware')
             }
         })
 
