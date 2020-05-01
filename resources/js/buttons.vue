@@ -468,6 +468,7 @@ export default {
         .listen('.sendCardID', (message) => {
             if (this.deviceConfig.id === message.device.id) {
                 this.sendNextCardToWeb = true
+                console.log('testing event')
                 clearTimeout(this.sendNextCardToWebTimeout);
 
                 this.sendNextCardToWebTimeout = setTimeout(function() { 

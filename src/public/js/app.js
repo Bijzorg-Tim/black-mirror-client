@@ -12462,6 +12462,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     }).listen('.sendCardID', function (message) {
       if (_this2.deviceConfig.id === message.device.id) {
         _this2.sendNextCardToWeb = true;
+        console.log('testing event');
         clearTimeout(_this2.sendNextCardToWebTimeout);
         _this2.sendNextCardToWebTimeout = setTimeout(function () {
           this.sendNextCardToWeb = false;
