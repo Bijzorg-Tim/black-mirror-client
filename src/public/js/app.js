@@ -57301,6 +57301,7 @@ var buttonaction = function buttonaction(_ref17, payload) {
 };
 var sendCardToWeb = function sendCardToWeb(_ref18, payload) {
   var state = _ref18.state;
+  console.log('test to waeb card');
   var data = {
     sleutel: payload
   };

@@ -134,6 +134,7 @@ export const buttonaction = ({state}, payload) => {
 }
 
 export const sendCardToWeb = ({state}, payload) => {
+    console.log('test to waeb card')
     const data = {
         sleutel: payload
     }
