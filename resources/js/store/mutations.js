@@ -71,11 +71,7 @@ export const setCardsFromServer = (state, payload) => {
 }
 
 export const startCardReadLoop = (state) => {
-    if (state.pyshell !== null) {
-        state.pyshell.childProcess.kill('SIGINT');
-    }
     state.pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', { pythonOptions: ['-u']});
-    console.log('restarting card read loop')
     state.pyshell.on('message', function (message) {
     // received a message sent from the Python script (a simple "print" statement)
         state.cardRead = message
