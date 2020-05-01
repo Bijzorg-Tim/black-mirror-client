@@ -57375,10 +57375,8 @@ var deleteConfig = function deleteConfig(state) {
   }
 
   var pin = Math.floor(Math.random() * 1000000);
-  var ip = os.networkInterfaces()[mainconfig.interface_name][0].address;
   var tempconfig = {
-    pin: pin,
-    ip: ip
+    pin: pin
   };
   axios({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-needs-setup',

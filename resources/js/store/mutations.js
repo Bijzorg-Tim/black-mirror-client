@@ -37,10 +37,8 @@ export const deleteConfig = (state) => {
     
 
     const pin = Math.floor(Math.random() * 1000000)
-    const ip = os.networkInterfaces()[mainconfig.interface_name][0].address
     const tempconfig = {
         pin: pin,
-        ip: ip
     }
 
     axios({
