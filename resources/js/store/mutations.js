@@ -12,6 +12,7 @@ export const getTempConfig = (state) => {
 }
 
 export const updateSoftware = (state) => {
+    console.log('updating')
     child_process.exec("bash " + window.dirname + "/update.sh", function(err, stdout,stderr){
         console.log(err)
         console.log(stdout)
