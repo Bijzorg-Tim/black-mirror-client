@@ -12468,9 +12468,9 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
         _this2.$store.dispatch('deleteConfig');
       }
     }).listen('.updateCards', function (message) {
-      if (_this2.deviceConfig.id === message.device || message.device === 'all') {
-        console.log('updating cards');
+      console.log('updating cards');
 
+      if (_this2.deviceConfig.id === message.device || message.device === 'all') {
         _this2.$store.dispatch('setCardsFromServer').then(function () {
           _this2.$store.dispatch('setCards');
         });
