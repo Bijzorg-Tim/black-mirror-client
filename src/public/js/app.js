@@ -12431,9 +12431,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     this.turnOffLightning();
     this.turnOffHeating();
     this.turnOnScreen();
-    this.$store.dispatch('setCardsFromServer').then(function () {
-      _this2.$store.dispatch('setCards');
-    });
+    this.$store.dispatch('setCardsFromServer');
     this.echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
       broadcaster: 'socket.io',
       host: 'http://192.168.0.30:6001',
@@ -12473,9 +12471,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       if (_this2.deviceConfig.id === message.device || message.device.device === 'all') {
         console.log('updating cards');
 
-        _this2.$store.dispatch('setCardsFromServer').then(function () {
-          _this2.$store.dispatch('setCards');
-        });
+        _this2.$store.dispatch('setCardsFromServer');
       }
     }).listen('.sendCardID', function (message) {
       if (_this2.deviceConfig.id === message.device.id) {
@@ -57236,6 +57232,7 @@ var setCardsFromServer = function setCardsFromServer(_ref9) {
     method: 'POST'
   }).then(function (response) {
     fs.writeFileSync(window.dirname + '/cards.json', JSON.stringify(response.data), 'utf-8');
+    commit('setCards');
   })["catch"](function () {});
 };
 var startCardReadLoop = function startCardReadLoop(_ref10) {

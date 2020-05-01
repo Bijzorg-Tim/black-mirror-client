@@ -421,11 +421,7 @@ export default {
         this.turnOffLightning()
         this.turnOffHeating()
         this.turnOnScreen()
-        this.$store.dispatch('setCardsFromServer').then(() => {
-            this.$store.dispatch('setCards')
-        })
-        
-
+        this.$store.dispatch('setCardsFromServer')
 
         this.echo = new Echo({
             broadcaster: 'socket.io',
@@ -479,9 +475,7 @@ export default {
             console.log(message.device)
             if (this.deviceConfig.id === message.device || message.device.device === 'all') {
                 console.log('updating cards')
-                this.$store.dispatch('setCardsFromServer').then(() => {
-                    this.$store.dispatch('setCards')
-                })
+                this.$store.dispatch('setCardsFromServer')
             }
         })
 

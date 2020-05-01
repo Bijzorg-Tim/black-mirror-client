@@ -48,6 +48,7 @@ export const setCardsFromServer = ({commit, state}) => {
         method: 'POST',
     }).then((response) => {
         fs.writeFileSync(window.dirname + '/cards.json', JSON.stringify(response.data), 'utf-8')
+        commit('setCards')
     })
     .catch(() => {})
 }
