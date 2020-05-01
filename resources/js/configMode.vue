@@ -53,7 +53,6 @@ export default {
         .listen('.setConfig', (message) => {
             if (this.tempConfig.pin == message.channelrequest.pin) {
                 this.$store.dispatch('setNewDeviceConfig', message.channelrequest).then(() => {
-                    this.$store.dispatch('resetApplication')
                 })
             }
         })

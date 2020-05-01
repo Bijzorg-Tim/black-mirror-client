@@ -65,6 +65,7 @@ export const setCards = (state) => {
 }
 
 export const startCardReadLoop = (state) => {
+    console.log('starting cardread load')
     let pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', { pythonOptions: ['-u']});
     
     pyshell.on('message', function (message) {

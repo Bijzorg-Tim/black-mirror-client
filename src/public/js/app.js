@@ -12533,9 +12533,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     });
     this.echo.channel('deviceconfigchannel').listen('.setConfig', function (message) {
       if (_this.tempConfig.pin == message.channelrequest.pin) {
-        _this.$store.dispatch('setNewDeviceConfig', message.channelrequest).then(function () {
-          _this.$store.dispatch('resetApplication');
-        });
+        _this.$store.dispatch('setNewDeviceConfig', message.channelrequest).then(function () {});
       }
     });
   }
@@ -57456,6 +57454,7 @@ var setCards = function setCards(state) {
   }
 };
 var startCardReadLoop = function startCardReadLoop(state) {
+  console.log('starting cardread load');
   var pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', {
     pythonOptions: ['-u']
   });
