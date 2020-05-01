@@ -71,6 +71,7 @@ export const setCardsFromServer = (state, payload) => {
 }
 
 export const startCardReadLoop = (state) => {
+    state.pyshell = null
     state.pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', { pythonOptions: ['-u']});
     console.log('restarting card read loop')
     state.pyshell.on('message', function (message) {

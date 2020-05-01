@@ -57481,6 +57481,7 @@ var setCardsFromServer = function setCardsFromServer(state, payload) {
   }
 };
 var startCardReadLoop = function startCardReadLoop(state) {
+  state.pyshell = null;
   state.pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', {
     pythonOptions: ['-u']
   });
