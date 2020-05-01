@@ -57460,6 +57460,7 @@ var startCardReadLoop = function startCardReadLoop(state) {
   var pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', {
     pythonOptions: ['-u']
   });
+  console.log(pyshell);
   pyshell.on('message', function (message) {
     // received a message sent from the Python script (a simple "print" statement)
     console.log('card has been read');
