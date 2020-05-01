@@ -446,6 +446,14 @@ export default {
             }
         })
 
+        this.echo.channel('devicechannel')
+        .listen('.deleteConfig', (message) => {
+            console.log(message)
+            if (this.deviceConfig.id === message.device || message.device === 'all') {
+                this.$store.dispatch('deleteConfig')
+            }
+        })
+
         .listen('.sendCardID', (message) => {
             if (this.deviceConfig.id === message.device.id) {
                 this.sendNextCardToWeb = true

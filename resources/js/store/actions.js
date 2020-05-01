@@ -33,6 +33,10 @@ export const updateSoftware = ({commit, state}) => {
     commit('updateSoftware')
 }
 
+export const deleteConfig = ({commit, state}) => {
+    commit('deleteConfig')
+}
+
 
 
 export const pong = ({commit, state}, payload) => {

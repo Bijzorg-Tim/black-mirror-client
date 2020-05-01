@@ -92,12 +92,6 @@ app.get('/deleteconfig', function (req, res) {
     res.send('delete config')
 })
 
-app.get('/updatesoftware', function (req, res) {
-    startElectron(mainconfig, "git pull && npm install && killall electron && pm2 restart all")
-    
-    res.send()
-});
-
 app.get('/restartapp', function (req, res) {
     child_process.exec("pm2 restart all" , function(err, stdout,stderr){});
 

@@ -12446,6 +12446,13 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       if (_this2.deviceConfig.id === message.device.id || message.device === 'all') {
         _this2.$store.dispatch('updateSoftware');
       }
+    });
+    this.echo.channel('devicechannel').listen('.deleteConfig', function (message) {
+      console.log(message);
+
+      if (_this2.deviceConfig.id === message.device || message.device === 'all') {
+        _this2.$store.dispatch('deleteConfig');
+      }
     }).listen('.sendCardID', function (message) {
       if (_this2.deviceConfig.id === message.device.id) {
         _this2.sendNextCardToWeb = true;
@@ -57130,7 +57137,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************!*\
   !*** ./resources/js/store/actions.js ***!
   \***************************************/
-/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, setCards, startCardReadLoop, turnonscreen, resetCard, updateSoftware, pong, sendButtonChangeToServer, sendIp, buttonaction, sendCardToWeb */
+/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, setCards, startCardReadLoop, turnonscreen, resetCard, updateSoftware, deleteConfig, pong, sendButtonChangeToServer, sendIp, buttonaction, sendCardToWeb */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57143,6 +57150,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "turnonscreen", function() { return turnonscreen; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resetCard", function() { return resetCard; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "updateSoftware", function() { return updateSoftware; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deleteConfig", function() { return deleteConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pong", function() { return pong; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendButtonChangeToServer", function() { return sendButtonChangeToServer; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendIp", function() { return sendIp; });
@@ -57188,9 +57196,14 @@ var updateSoftware = function updateSoftware(_ref8) {
       state = _ref8.state;
   commit('updateSoftware');
 };
-var pong = function pong(_ref9, payload) {
+var deleteConfig = function deleteConfig(_ref9) {
   var commit = _ref9.commit,
       state = _ref9.state;
+  commit('deleteConfig');
+};
+var pong = function pong(_ref10, payload) {
+  var commit = _ref10.commit,
+      state = _ref10.state;
   commit('addDeviceStatusToDeviceConfig', payload);
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/pong',
@@ -57198,17 +57211,17 @@ var pong = function pong(_ref9, payload) {
     data: state.deviceConfig
   }).then(function () {})["catch"](function () {});
 };
-var sendButtonChangeToServer = function sendButtonChangeToServer(_ref10, payload) {
-  var commit = _ref10.commit,
-      state = _ref10.state;
+var sendButtonChangeToServer = function sendButtonChangeToServer(_ref11, payload) {
+  var commit = _ref11.commit,
+      state = _ref11.state;
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/button-change-from-device',
     method: 'POST',
     data: payload
   }).then(function () {})["catch"](function () {});
 };
-var sendIp = function sendIp(_ref11, payload) {
-  var state = _ref11.state;
+var sendIp = function sendIp(_ref12, payload) {
+  var state = _ref12.state;
   var data = state.mainconfig;
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/sendIpFromDevice/' + payload.id,
@@ -57216,8 +57229,8 @@ var sendIp = function sendIp(_ref11, payload) {
     data: data
   }).then(function () {})["catch"](function () {});
 };
-var buttonaction = function buttonaction(_ref12, payload) {
-  var state = _ref12.state;
+var buttonaction = function buttonaction(_ref13, payload) {
+  var state = _ref13.state;
   var devicefunction = state.deviceConfig.functions.find(function (a) {
     return a["function"] === payload.action;
   });
@@ -57231,8 +57244,8 @@ var buttonaction = function buttonaction(_ref12, payload) {
     data: data
   }).then(function () {})["catch"](function () {});
 };
-var sendCardToWeb = function sendCardToWeb(_ref13, payload) {
-  var state = _ref13.state;
+var sendCardToWeb = function sendCardToWeb(_ref14, payload) {
+  var state = _ref14.state;
   var data = {
     sleutel: payload
   };
@@ -57317,7 +57330,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*!*****************************************!*\
   !*** ./resources/js/store/mutations.js ***!
   \*****************************************/
-/*! exports provided: setDeviceConfig, getTempConfig, updateSoftware, documentClicked, turnonscreen, setCards, startCardReadLoop, addDeviceStatusToDeviceConfig, resetCard */
+/*! exports provided: setDeviceConfig, getTempConfig, updateSoftware, deleteConfig, documentClicked, turnonscreen, setCards, startCardReadLoop, addDeviceStatusToDeviceConfig, resetCard */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57325,6 +57338,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDeviceConfig", function() { return setDeviceConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTempConfig", function() { return getTempConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "updateSoftware", function() { return updateSoftware; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deleteConfig", function() { return deleteConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "documentClicked", function() { return documentClicked; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "turnonscreen", function() { return turnonscreen; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCards", function() { return setCards; });
@@ -57343,12 +57357,36 @@ var getTempConfig = function getTempConfig(state) {
   state.tempConfig = JSON.parse(fs.readFileSync(window.dirname + '/tempconfig.json', 'utf8'));
 };
 var updateSoftware = function updateSoftware(state) {
-  console.log('updating');
-  child_process.exec("bash " + window.dirname + "/update.sh", function (err, stdout, stderr) {
-    console.log(err);
-    console.log(stdout);
-    console.log(stderr);
-  });
+  child_process.exec("bash " + window.dirname + "/update.sh", function (err, stdout, stderr) {});
+};
+var deleteConfig = function deleteConfig(state) {
+  if (fs.existsSync(window.dirname + 'deviceconfig.json')) {
+    config = JSON.parse(fs.readFileSync(window.dirname + 'deviceconfig.json'));
+    axios({
+      url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-deleting-config',
+      method: 'POST',
+      data: config
+    }).then(function () {})["catch"](function () {});
+    fs.unlinkSync(window.dirname + 'deviceconfig.json');
+  }
+
+  if (fs.existsSync(window.dirname + 'tempconfig.json')) {
+    fs.unlinkSync(window.dirname + 'tempconfig.json');
+  }
+
+  var pin = Math.floor(Math.random() * 1000000);
+  var ip = os.networkInterfaces()[mainconfig.interface_name][0].address;
+  var tempconfig = {
+    pin: pin,
+    ip: ip
+  };
+  axios({
+    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-needs-setup',
+    method: 'POST',
+    data: tempconfig
+  }).then(function () {})["catch"](function () {});
+  fs.writeFileSync(window.dirname + 'tempconfig.json', JSON.stringify(tempconfig));
+  child_process.exec("pm2 restart");
 };
 var documentClicked = function documentClicked(state) {
   clearTimeout(state.screenTimeout);
