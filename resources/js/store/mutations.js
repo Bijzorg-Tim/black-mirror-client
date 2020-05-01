@@ -71,7 +71,9 @@ export const setCardsFromServer = (state, payload) => {
 }
 
 export const startCardReadLoop = (state) => {
-    state.childProcess.kill('SIGINT');
+    if (state.pyshell !== null) {
+        state.pyshell.childProcess.kill('SIGINT');
+    }
     state.pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', { pythonOptions: ['-u']});
     console.log('restarting card read loop')
     state.pyshell.on('message', function (message) {
@@ -83,10 +85,6 @@ export const startCardReadLoop = (state) => {
     state.pyshell.end(function (err,code,signal) {
     if (err) throw err;
     });
-   
- 
-// create an instance of the rpi-mfrc522 class using the default settings
-
 }
 
 export const addDeviceStatusToDeviceConfig = (state, payload) => {

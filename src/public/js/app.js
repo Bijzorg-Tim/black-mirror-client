@@ -57481,7 +57481,10 @@ var setCardsFromServer = function setCardsFromServer(state, payload) {
   }
 };
 var startCardReadLoop = function startCardReadLoop(state) {
-  state.childProcess.kill('SIGINT');
+  if (state.pyshell !== null) {
+    state.pyshell.childProcess.kill('SIGINT');
+  }
+
   state.pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', {
     pythonOptions: ['-u']
   });
@@ -57493,7 +57496,7 @@ var startCardReadLoop = function startCardReadLoop(state) {
 
   state.pyshell.end(function (err, code, signal) {
     if (err) throw err;
-  }); // create an instance of the rpi-mfrc522 class using the default settings
+  });
 };
 var addDeviceStatusToDeviceConfig = function addDeviceStatusToDeviceConfig(state, payload) {
   state.deviceConfig.devicestatus = payload;
