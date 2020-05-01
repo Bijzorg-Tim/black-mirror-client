@@ -58271,6 +58271,12 @@ var startCardReadLoop = function startCardReadLoop(state) {
 
   function reLoop() {
     setTimeout(loop, 25);
+  }
+
+  function uidToString(uid) {
+    return uid.reduce(function (s, b) {
+      return s + (b < 16 ? '0' : '') + b.toString(16);
+    }, '');
   } // call the rpi-mfrc522 methods to detect a card
 
 
