@@ -354,10 +354,6 @@ export default {
         },
         startCardReadLoop() {
             this.$store.dispatch('startCardReadLoop')
-
-            setInterval(function() {
-                this.$store.dispatch('startCardReadLoop')
-            }.bind(this), 60000)
         }
     },
     watch: {

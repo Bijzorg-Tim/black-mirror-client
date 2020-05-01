@@ -12353,9 +12353,6 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     },
     startCardReadLoop: function startCardReadLoop() {
       this.$store.dispatch('startCardReadLoop');
-      setInterval(function () {
-        this.$store.dispatch('startCardReadLoop');
-      }.bind(this), 60000);
     }
   },
   watch: {
