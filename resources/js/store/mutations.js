@@ -70,6 +70,7 @@ export const startCardReadLoop = (state) => {
     
     pyshell.on('message', function (message) {
     // received a message sent from the Python script (a simple "print" statement)
+    console.log('card has been read')
         state.cardRead = message
     });
     
