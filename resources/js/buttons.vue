@@ -439,6 +439,13 @@ export default {
             this.$store.dispatch('pong', payload)
         })
 
+        this.echo.channel('devicechannel')
+        .listen('.updateSoftware', (message) => {
+            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+                console.log(message)
+            }
+        })
+
         .listen('.sendCardID', (message) => {
             if (this.deviceConfig.id === message.device.id) {
                 this.sendNextCardToWeb = true
