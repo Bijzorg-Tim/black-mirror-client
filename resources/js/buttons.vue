@@ -477,6 +477,7 @@ export default {
 
         .listen('.updateCards', (message) => {
             if (this.deviceConfig.id === message.device || message.device === 'all') {
+                console.log('updating cards')
                 this.$store.dispatch('setCardsFromServer').then(() => {
                     this.$store.dispatch('setCards')
                 })
