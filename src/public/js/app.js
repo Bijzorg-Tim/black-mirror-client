@@ -12470,7 +12470,9 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     }).listen('.updateCards', function (message) {
       console.log(message.device);
 
-      if (_this2.deviceConfig.id === message.device || message.device === 'all') {
+      if (_this2.deviceConfig.id === message.device || message.device.device === 'all') {
+        console.log('updating cards');
+
         _this2.$store.dispatch('setCardsFromServer').then(function () {
           _this2.$store.dispatch('setCards');
         });
