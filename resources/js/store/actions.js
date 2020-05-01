@@ -38,8 +38,18 @@ export const documentClicked = ({commit}) => {
     commit('documentClicked')
 }
 
-export const setCards = ({commit, state}) => {
+export const setCards = ({commit}) => {
     commit('setCards')
+}
+
+export const setCardsFromServer = ({commit, state}) => {
+    axios({
+        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/get-cards-for-device/' + state.deviceConfig.id,
+        method: 'POST',
+    }).then((response) => {
+        fs.writeFileSync(window.dirname + '/cards.json', JSON.stringify(response.data), 'utf-8')
+    })
+    .catch(() => {})
 }
 
 export const startCardReadLoop = ({commit, state}) => {
@@ -134,7 +144,6 @@ export const buttonaction = ({state}, payload) => {
 }
 
 export const sendCardToWeb = ({state}, payload) => {
-    console.log('test to waeb card')
     const data = {
         sleutel: payload
     }

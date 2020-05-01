@@ -342,13 +342,13 @@ export default {
             }
             return this.$store.dispatch('buttonaction', payload)
         },
-        turnOffLightning() {
-            const payload = {
-                    action: 'verlichting',
-                    value: false
-                }
-            return this.$store.dispatch('buttonaction', payload)
-        },
+        // turnOffLightning() {
+        //     const payload = {
+        //             action: 'verlichting',
+        //             value: false
+        //         }
+        //     return this.$store.dispatch('buttonaction', payload)
+        // },
         turnOnScreen() {
             return this.$store.dispatch('turnonscreen')
         }
@@ -397,7 +397,7 @@ export default {
                 this.sendNextCardToWeb = false
             }
 
-            const card = this.cards.find(a => a.cardId === this.cardRead)
+            const card = this.cards.find(a => a.sleutel === this.cardRead)
 
             if (card !== undefined) {
                 this.ExternalDoorToggle()
@@ -409,13 +409,19 @@ export default {
         this.setUpPins()
         this.readTemperature()
         this.tempReadLoop()
-        this.$store.dispatch('setCards')
+        
         this.$store.dispatch('startCardReadLoop')
     },
     mounted () {
+        this.$store.dispatch('setCards')
         this.turnOffLightning()
         this.turnOffHeating()
         this.turnOnScreen()
+        this.$store.dispatch('setCardsFromServer').then(() => {
+            this.$store.dispatch('setCards')
+        })
+        
+
 
         this.echo = new Echo({
             broadcaster: 'socket.io',
@@ -468,7 +474,6 @@ export default {
         .listen('.sendCardID', (message) => {
             if (this.deviceConfig.id === message.device.id) {
                 this.sendNextCardToWeb = true
-                console.log('testing event')
                 clearTimeout(this.sendNextCardToWebTimeout);
 
                 this.sendNextCardToWebTimeout = setTimeout(function() { 
