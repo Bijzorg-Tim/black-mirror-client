@@ -10,5 +10,6 @@ let {app} = require('electron').remote
 window.remote = app
 window.mainconfig = JSON.parse(window.fs.readFileSync('./mainconfig.json'))
 window.os = require('os')
+window.RPiMfrc522 = require('rpi-mfrc522');
 
 
