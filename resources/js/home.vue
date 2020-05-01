@@ -51,11 +51,7 @@ export default {
       documentClicked (e) {
         e.stopPropagation()
         this.$store.dispatch('documentClicked')
-      },
-       close() {
-                app.relaunch()
-                app.quit()
-            }
+      }
     },
     mounted () {
       document.addEventListener('click', this.documentClicked)

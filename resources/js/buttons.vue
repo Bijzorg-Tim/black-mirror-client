@@ -430,25 +430,36 @@ export default {
             }
         })
 
-        .listen('.updateIp', (message) => {
-            this.$store.dispatch('sendIp', this.deviceConfig)
-        })
-
         .listen('.ping', (message) => {
             var payload = this.createStatusPayload()
             this.$store.dispatch('pong', payload)
         })
 
-        this.echo.channel('devicechannel')
         .listen('.updateSoftware', (message) => {
             if (this.deviceConfig.id === message.device.id || message.device === 'all') {
                 this.$store.dispatch('updateSoftware')
             }
         })
 
-        this.echo.channel('devicechannel')
+        .listen('.restartapp', (message) => {
+            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+                this.$store.dispatch('resetApplication')
+            }
+        })
+
+        .listen('.reboot', (message) => {
+            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+                this.$store.dispatch('rebootDevice')
+            }
+        })
+
+        .listen('.shutdown', (message) => {
+            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+                this.$store.dispatch('shutdownDevice')
+            }
+        })
+
         .listen('.deleteConfig', (message) => {
-            console.log(message)
             if (this.deviceConfig.id === message.device || message.device === 'all') {
                 this.$store.dispatch('deleteConfig')
             }

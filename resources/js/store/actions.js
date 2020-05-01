@@ -1,12 +1,37 @@
 import axios from 'axios'
 
-
-export const setDeviceConfig = ({commit}) => {
-    commit('setDeviceConfig')
+export const setNewDeviceConfig = ({commit}, payload) => {
+    commit('setNewDeviceConfig', payload)
 }
 
-export const getTempConfig = ({commit}) => {
+export const setDeviceConfig = ({commit}, payload) => {
+    commit('setDeviceConfig', payload)
+}
+
+export const rebootDevice = ({commit}, payload) => {
+    commit('rebootDevice', payload)
+}
+
+export const shutdownDevice = ({commit}, payload) => {
+    commit('shutdownDevice', payload)
+}
+
+export const resetApplication = ({commit}, payload) => {
+    commit('resetApplication', payload)
+}
+
+export const getTempConfig = ({state, commit}) => {
     commit('getTempConfig')
+    axios({
+        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-needs-setup',
+        method: 'POST',
+        data: state.tempConfig,
+        }).then(() => {
+
+        }).catch(() => {
+
+        })
+
 }
 
 export const documentClicked = ({commit}) => {
@@ -34,9 +59,8 @@ export const updateSoftware = ({commit, state}) => {
 }
 
 export const deleteConfig = ({commit, state}) => {
-    if (fs.existsSync(window.dirname + 'deviceconfig.json')) {
-
-        config = JSON.parse(fs.readFileSync(window.dirname + 'deviceconfig.json'))
+    if (fs.existsSync(window.dirname + '/deviceconfig.json')) {
+        const config = JSON.parse(fs.readFileSync(window.dirname + '/deviceconfig.json'))
         
         axios({
             url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-deleting-config',
@@ -45,33 +69,22 @@ export const deleteConfig = ({commit, state}) => {
         }).then(() => {})
         .catch(() => {})
 
-        fs.unlinkSync(window.dirname + 'deviceconfig.json')
+        fs.unlinkSync(window.dirname + '/deviceconfig.json')
     }
 
-    if (fs.existsSync(window.dirname + 'tempconfig.json')) {
-        fs.unlinkSync(window.dirname + 'tempconfig.json') 
+    if (fs.existsSync(window.dirname + '/tempconfig.json')) {
+        fs.unlinkSync(window.dirname + '/tempconfig.json') 
     }
-    
 
     const pin = Math.floor(Math.random() * 1000000)
     const tempconfig = {
         pin: pin,
     }
-
-    axios({
-        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-needs-setup',
-        method: 'POST',
-        data: tempconfig,
-        }).then(() => {
-
-        }).catch(() => {
-
-        })
-
-    fs.writeFileSync(window.dirname + 'tempconfig.json', JSON.stringify(tempconfig))
+    
+    fs.writeFileSync(window.dirname + '/tempconfig.json', JSON.stringify(tempconfig))
+    state.configMode = true
 
 
-    child_process.exec("pm2 restart")
 }
 
 

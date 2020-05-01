@@ -66,38 +66,6 @@ else {
 }
 
 
-app.get('/deleteconfig', function (req, res) {
-    killElectron()
-
-    if (fs.existsSync('./src/deviceconfig.json')) {
-
-        config = JSON.parse(fs.readFileSync('./src/deviceconfig.json'))
-        
-        axios({
-            url: 'http://' + mainconfig.api_url + ':' + mainconfig.api_port + '/device-deleting-config',
-            method: 'POST',
-            data: config,
-        }).then(() => {})
-        .catch(() => {})
-
-        fs.unlinkSync('./src/deviceconfig.json')
-    }
-    
-    
-    if (fs.existsSync('./src/tempconfig.json')) {
-        fs.unlinkSync('./src/tempconfig.json') 
-    }
-    setupDevice(mainconfig)
-    startElectron(mainconfig)
-    res.send('delete config')
-})
-
-app.get('/restartapp', function (req, res) {
-    child_process.exec("pm2 restart all" , function(err, stdout,stderr){});
-
-    res.send()
-});
-
 app.get('/reboot', function (req, res) {
     child_process.exec("sudo reboot now" , function(err, stdout,stderr){});
 
@@ -110,22 +78,7 @@ app.get('/shutdown', function (req, res) {
     res.send()
 });
 
-app.post('/updateconfig', function (req, res) {
-    killElectron()
-    
-    if (req.body.uuid) {
-        if (fs.existsSync('./src/deviceconfig.json')) {
-            fs.unlinkSync('./src/deviceconfig.json') 
-        }
-        if (fs.existsSync('./src/tempconfig.json')) {
-            fs.unlinkSync('./src/tempconfig.json') 
-        }
-        fs.writeFileSync('./src/deviceconfig.json', JSON.stringify(req.body))
-        deviceconfig = JSON.parse(fs.readFileSync('./src/deviceconfig.json', 'utf8'));
-    }
-    startElectron(mainconfig) 
-    res.send()
-})
+
 
 
 

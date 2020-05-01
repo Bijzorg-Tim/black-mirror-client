@@ -7,6 +7,27 @@ export const setDeviceConfig = (state) => {
     }
 }
 
+export const setNewDeviceConfig = (state, payload) => {
+    fs.writeFileSync(window.dirname + '/deviceconfig.json', JSON.stringify(payload))
+    state.deviceConfig = JSON.parse(fs.readFileSync(window.dirname + '/deviceconfig.json','utf8'))
+    state.configMode = false
+    if (fs.existsSync(window.dirname + '/tempconfig.json')) {
+        fs.unlinkSync(window.dirname + '/tempconfig.json') 
+    }
+}
+
+export const resetApplication = (state) => {
+    child_process.exec("pm2 restart all", function(err, stdout,stderr){});
+}
+
+export const shutdownDevice = (state) => {
+    child_process.exec("sudo shutdown now", function(err, stdout,stderr){});
+}
+
+export const rebootDevice = (state) => {
+    child_process.exec("sudo reboot now", function(err, stdout,stderr){});
+}
+
 export const getTempConfig = (state) => {
     state.tempConfig = JSON.parse(fs.readFileSync(window.dirname + '/tempconfig.json','utf8'))
 }

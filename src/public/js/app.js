@@ -12435,21 +12435,27 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       if (_this2.deviceConfig.id === message.device.id || message.device === 'all') {
         _this2[message.channelrequest.action] = message.channelrequest.status;
       }
-    }).listen('.updateIp', function (message) {
-      _this2.$store.dispatch('sendIp', _this2.deviceConfig);
     }).listen('.ping', function (message) {
       var payload = _this2.createStatusPayload();
 
       _this2.$store.dispatch('pong', payload);
-    });
-    this.echo.channel('devicechannel').listen('.updateSoftware', function (message) {
+    }).listen('.updateSoftware', function (message) {
       if (_this2.deviceConfig.id === message.device.id || message.device === 'all') {
         _this2.$store.dispatch('updateSoftware');
       }
-    });
-    this.echo.channel('devicechannel').listen('.deleteConfig', function (message) {
-      console.log(message);
-
+    }).listen('.restartapp', function (message) {
+      if (_this2.deviceConfig.id === message.device.id || message.device === 'all') {
+        _this2.$store.dispatch('resetApplication');
+      }
+    }).listen('.reboot', function (message) {
+      if (_this2.deviceConfig.id === message.device.id || message.device === 'all') {
+        _this2.$store.dispatch('rebootDevice');
+      }
+    }).listen('.shutdown', function (message) {
+      if (_this2.deviceConfig.id === message.device.id || message.device === 'all') {
+        _this2.$store.dispatch('shutdownDevice');
+      }
+    }).listen('.deleteConfig', function (message) {
       if (_this2.deviceConfig.id === message.device || message.device === 'all') {
         _this2.$store.dispatch('deleteConfig');
       }
@@ -12476,6 +12482,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var laravel_echo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! laravel-echo */ "./node_modules/laravel-echo/dist/echo.js");
 //
 //
 //
@@ -12497,9 +12504,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
+
+window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {},
   props: [],
@@ -12517,7 +12523,21 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {},
   mounted: function mounted() {
+    var _this = this;
+
     this.$store.dispatch('getTempConfig');
+    this.echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
+      broadcaster: 'socket.io',
+      host: 'http://192.168.0.30:6001',
+      authEndpoint: '/custom/broadcast/auth/route'
+    });
+    this.echo.channel('deviceconfigchannel').listen('.setConfig', function (message) {
+      if (_this.tempConfig.pin == message.channelrequest.pin) {
+        _this.$store.dispatch('setNewDeviceConfig', message.channelrequest).then(function () {
+          _this.$store.dispatch('resetApplication');
+        });
+      }
+    });
   }
 });
 
@@ -12586,10 +12606,6 @@ __webpack_require__.r(__webpack_exports__);
     documentClicked: function documentClicked(e) {
       e.stopPropagation();
       this.$store.dispatch('documentClicked');
-    },
-    close: function close() {
-      app.relaunch();
-      app.quit();
     }
   },
   mounted: function mounted() {
@@ -43160,12 +43176,6 @@ var render = function() {
       _c("h2", { staticClass: "subtitle" }, [
         _vm._v("Pin: " + _vm._s(_vm.tempConfig.pin))
       ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "centerContent" }, [
-      _c("h2", { staticClass: "subtitle" }, [
-        _vm._v("IP: " + _vm._s(_vm.tempConfig.ip))
-      ])
     ])
   ])
 }
@@ -57137,12 +57147,16 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************!*\
   !*** ./resources/js/store/actions.js ***!
   \***************************************/
-/*! exports provided: setDeviceConfig, getTempConfig, documentClicked, setCards, startCardReadLoop, turnonscreen, resetCard, updateSoftware, deleteConfig, pong, sendButtonChangeToServer, sendIp, buttonaction, sendCardToWeb */
+/*! exports provided: setNewDeviceConfig, setDeviceConfig, rebootDevice, shutdownDevice, resetApplication, getTempConfig, documentClicked, setCards, startCardReadLoop, turnonscreen, resetCard, updateSoftware, deleteConfig, pong, sendButtonChangeToServer, sendIp, buttonaction, sendCardToWeb */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setNewDeviceConfig", function() { return setNewDeviceConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDeviceConfig", function() { return setDeviceConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "rebootDevice", function() { return rebootDevice; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "shutdownDevice", function() { return shutdownDevice; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resetApplication", function() { return resetApplication; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTempConfig", function() { return getTempConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "documentClicked", function() { return documentClicked; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCards", function() { return setCards; });
@@ -57159,76 +57173,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
-var setDeviceConfig = function setDeviceConfig(_ref) {
+var setNewDeviceConfig = function setNewDeviceConfig(_ref, payload) {
   var commit = _ref.commit;
-  commit('setDeviceConfig');
+  commit('setNewDeviceConfig', payload);
 };
-var getTempConfig = function getTempConfig(_ref2) {
+var setDeviceConfig = function setDeviceConfig(_ref2, payload) {
   var commit = _ref2.commit;
-  commit('getTempConfig');
+  commit('setDeviceConfig', payload);
 };
-var documentClicked = function documentClicked(_ref3) {
+var rebootDevice = function rebootDevice(_ref3, payload) {
   var commit = _ref3.commit;
+  commit('rebootDevice', payload);
+};
+var shutdownDevice = function shutdownDevice(_ref4, payload) {
+  var commit = _ref4.commit;
+  commit('shutdownDevice', payload);
+};
+var resetApplication = function resetApplication(_ref5, payload) {
+  var commit = _ref5.commit;
+  commit('resetApplication', payload);
+};
+var getTempConfig = function getTempConfig(_ref6) {
+  var state = _ref6.state,
+      commit = _ref6.commit;
+  commit('getTempConfig');
+  axios__WEBPACK_IMPORTED_MODULE_0___default()({
+    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-needs-setup',
+    method: 'POST',
+    data: state.tempConfig
+  }).then(function () {})["catch"](function () {});
+};
+var documentClicked = function documentClicked(_ref7) {
+  var commit = _ref7.commit;
   commit('documentClicked');
 };
-var setCards = function setCards(_ref4) {
-  var commit = _ref4.commit,
-      state = _ref4.state;
-  commit('setCards');
-};
-var startCardReadLoop = function startCardReadLoop(_ref5) {
-  var commit = _ref5.commit,
-      state = _ref5.state;
-  commit('startCardReadLoop');
-};
-var turnonscreen = function turnonscreen(_ref6) {
-  var commit = _ref6.commit,
-      state = _ref6.state;
-  commit('turnonscreen');
-};
-var resetCard = function resetCard(_ref7) {
-  var commit = _ref7.commit,
-      state = _ref7.state;
-  commit('resetCard');
-};
-var updateSoftware = function updateSoftware(_ref8) {
+var setCards = function setCards(_ref8) {
   var commit = _ref8.commit,
       state = _ref8.state;
-  commit('updateSoftware');
+  commit('setCards');
 };
-var deleteConfig = function deleteConfig(_ref9) {
+var startCardReadLoop = function startCardReadLoop(_ref9) {
   var commit = _ref9.commit,
       state = _ref9.state;
+  commit('startCardReadLoop');
+};
+var turnonscreen = function turnonscreen(_ref10) {
+  var commit = _ref10.commit,
+      state = _ref10.state;
+  commit('turnonscreen');
+};
+var resetCard = function resetCard(_ref11) {
+  var commit = _ref11.commit,
+      state = _ref11.state;
+  commit('resetCard');
+};
+var updateSoftware = function updateSoftware(_ref12) {
+  var commit = _ref12.commit,
+      state = _ref12.state;
+  commit('updateSoftware');
+};
+var deleteConfig = function deleteConfig(_ref13) {
+  var commit = _ref13.commit,
+      state = _ref13.state;
 
-  if (fs.existsSync(window.dirname + 'deviceconfig.json')) {
-    config = JSON.parse(fs.readFileSync(window.dirname + 'deviceconfig.json'));
+  if (fs.existsSync(window.dirname + '/deviceconfig.json')) {
+    var config = JSON.parse(fs.readFileSync(window.dirname + '/deviceconfig.json'));
     axios__WEBPACK_IMPORTED_MODULE_0___default()({
       url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-deleting-config',
       method: 'POST',
       data: config
     }).then(function () {})["catch"](function () {});
-    fs.unlinkSync(window.dirname + 'deviceconfig.json');
+    fs.unlinkSync(window.dirname + '/deviceconfig.json');
   }
 
-  if (fs.existsSync(window.dirname + 'tempconfig.json')) {
-    fs.unlinkSync(window.dirname + 'tempconfig.json');
+  if (fs.existsSync(window.dirname + '/tempconfig.json')) {
+    fs.unlinkSync(window.dirname + '/tempconfig.json');
   }
 
   var pin = Math.floor(Math.random() * 1000000);
   var tempconfig = {
     pin: pin
   };
-  axios__WEBPACK_IMPORTED_MODULE_0___default()({
-    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-needs-setup',
-    method: 'POST',
-    data: tempconfig
-  }).then(function () {})["catch"](function () {});
-  fs.writeFileSync(window.dirname + 'tempconfig.json', JSON.stringify(tempconfig));
-  child_process.exec("pm2 restart");
+  fs.writeFileSync(window.dirname + '/tempconfig.json', JSON.stringify(tempconfig));
+  state.configMode = true;
 };
-var pong = function pong(_ref10, payload) {
-  var commit = _ref10.commit,
-      state = _ref10.state;
+var pong = function pong(_ref14, payload) {
+  var commit = _ref14.commit,
+      state = _ref14.state;
   commit('addDeviceStatusToDeviceConfig', payload);
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/pong',
@@ -57236,17 +57267,17 @@ var pong = function pong(_ref10, payload) {
     data: state.deviceConfig
   }).then(function () {})["catch"](function () {});
 };
-var sendButtonChangeToServer = function sendButtonChangeToServer(_ref11, payload) {
-  var commit = _ref11.commit,
-      state = _ref11.state;
+var sendButtonChangeToServer = function sendButtonChangeToServer(_ref15, payload) {
+  var commit = _ref15.commit,
+      state = _ref15.state;
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/button-change-from-device',
     method: 'POST',
     data: payload
   }).then(function () {})["catch"](function () {});
 };
-var sendIp = function sendIp(_ref12, payload) {
-  var state = _ref12.state;
+var sendIp = function sendIp(_ref16, payload) {
+  var state = _ref16.state;
   var data = state.mainconfig;
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/sendIpFromDevice/' + payload.id,
@@ -57254,8 +57285,8 @@ var sendIp = function sendIp(_ref12, payload) {
     data: data
   }).then(function () {})["catch"](function () {});
 };
-var buttonaction = function buttonaction(_ref13, payload) {
-  var state = _ref13.state;
+var buttonaction = function buttonaction(_ref17, payload) {
+  var state = _ref17.state;
   var devicefunction = state.deviceConfig.functions.find(function (a) {
     return a["function"] === payload.action;
   });
@@ -57269,8 +57300,8 @@ var buttonaction = function buttonaction(_ref13, payload) {
     data: data
   }).then(function () {})["catch"](function () {});
 };
-var sendCardToWeb = function sendCardToWeb(_ref14, payload) {
-  var state = _ref14.state;
+var sendCardToWeb = function sendCardToWeb(_ref18, payload) {
+  var state = _ref18.state;
   var data = {
     sleutel: payload
   };
@@ -57355,12 +57386,16 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*!*****************************************!*\
   !*** ./resources/js/store/mutations.js ***!
   \*****************************************/
-/*! exports provided: setDeviceConfig, getTempConfig, updateSoftware, documentClicked, turnonscreen, setCards, startCardReadLoop, addDeviceStatusToDeviceConfig, resetCard */
+/*! exports provided: setDeviceConfig, setNewDeviceConfig, resetApplication, shutdownDevice, rebootDevice, getTempConfig, updateSoftware, documentClicked, turnonscreen, setCards, startCardReadLoop, addDeviceStatusToDeviceConfig, resetCard */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDeviceConfig", function() { return setDeviceConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setNewDeviceConfig", function() { return setNewDeviceConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resetApplication", function() { return resetApplication; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "shutdownDevice", function() { return shutdownDevice; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "rebootDevice", function() { return rebootDevice; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTempConfig", function() { return getTempConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "updateSoftware", function() { return updateSoftware; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "documentClicked", function() { return documentClicked; });
@@ -57376,6 +57411,24 @@ var setDeviceConfig = function setDeviceConfig(state) {
     state.deviceConfig = JSON.parse(fs.readFileSync(window.dirname + '/deviceconfig.json', 'utf8'));
     state.configMode = false;
   }
+};
+var setNewDeviceConfig = function setNewDeviceConfig(state, payload) {
+  fs.writeFileSync(window.dirname + '/deviceconfig.json', JSON.stringify(payload));
+  state.deviceConfig = JSON.parse(fs.readFileSync(window.dirname + '/deviceconfig.json', 'utf8'));
+  state.configMode = false;
+
+  if (fs.existsSync(window.dirname + '/tempconfig.json')) {
+    fs.unlinkSync(window.dirname + '/tempconfig.json');
+  }
+};
+var resetApplication = function resetApplication(state) {
+  child_process.exec("pm2 restart all", function (err, stdout, stderr) {});
+};
+var shutdownDevice = function shutdownDevice(state) {
+  child_process.exec("sudo shutdown now", function (err, stdout, stderr) {});
+};
+var rebootDevice = function rebootDevice(state) {
+  child_process.exec("sudo reboot now", function (err, stdout, stderr) {});
 };
 var getTempConfig = function getTempConfig(state) {
   state.tempConfig = JSON.parse(fs.readFileSync(window.dirname + '/tempconfig.json', 'utf8'));
