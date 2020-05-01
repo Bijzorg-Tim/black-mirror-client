@@ -6,5 +6,6 @@ export default {
     cardRead: null,
     configMode: true,
     screenTimeout: null,
-    inputDisabled: false
+    inputDisabled: false,
+    pyshell: null
 }

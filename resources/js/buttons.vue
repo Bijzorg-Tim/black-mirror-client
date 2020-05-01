@@ -351,6 +351,13 @@ export default {
         },
         turnOnScreen() {
             return this.$store.dispatch('turnonscreen')
+        },
+        startCardReadLoop() {
+            this.$store.dispatch('startCardReadLoop')
+
+            setInterval(function() {
+                this.$store.dispatch('startCardReadLoop')
+            }.bind(this), 60000)
         }
     },
     watch: {
@@ -411,8 +418,7 @@ export default {
         this.setUpPins()
         this.readTemperature()
         this.tempReadLoop()
-        
-        this.$store.dispatch('startCardReadLoop')
+        this.startCardReadLoop()
     },
     mounted () {
         this.$store.dispatch('setCards')

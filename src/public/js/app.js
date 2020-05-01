@@ -12350,6 +12350,12 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     },
     turnOnScreen: function turnOnScreen() {
       return this.$store.dispatch('turnonscreen');
+    },
+    startCardReadLoop: function startCardReadLoop() {
+      this.$store.dispatch('startCardReadLoop');
+      setInterval(function () {
+        this.$store.dispatch('startCardReadLoop');
+      }.bind(this), 60000);
     }
   },
   watch: {
@@ -12419,7 +12425,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     this.setUpPins();
     this.readTemperature();
     this.tempReadLoop();
-    this.$store.dispatch('startCardReadLoop');
+    this.startCardReadLoop();
   },
   mounted: function mounted() {
     var _this2 = this;
@@ -57475,15 +57481,15 @@ var setCardsFromServer = function setCardsFromServer(state, payload) {
   }
 };
 var startCardReadLoop = function startCardReadLoop(state) {
-  var pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', {
+  state.pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', {
     pythonOptions: ['-u']
   });
-  pyshell.on('message', function (message) {
+  state.pyshell.on('message', function (message) {
     // received a message sent from the Python script (a simple "print" statement)
     state.cardRead = message;
   }); // end the input stream and allow the process to exit
 
-  pyshell.end(function (err, code, signal) {
+  state.pyshell.end(function (err, code, signal) {
     if (err) throw err;
   });
 };
@@ -57513,7 +57519,8 @@ __webpack_require__.r(__webpack_exports__);
   cardRead: null,
   configMode: true,
   screenTimeout: null,
-  inputDisabled: false
+  inputDisabled: false,
+  pyshell: null
 });
 
 /***/ }),
