@@ -16,54 +16,6 @@ export const updateSoftware = (state) => {
     });
 }
 
-export const deleteConfig = (state) => {
-    if (fs.existsSync(window.dirname + 'deviceconfig.json')) {
-
-        config = JSON.parse(fs.readFileSync(window.dirname + 'deviceconfig.json'))
-        
-        axios({
-            url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-deleting-config',
-            method: 'POST',
-            data: config,
-        }).then(() => {})
-        .catch(() => {})
-
-        fs.unlinkSync(window.dirname + 'deviceconfig.json')
-    }
-
-    if (fs.existsSync(window.dirname + 'tempconfig.json')) {
-        fs.unlinkSync(window.dirname + 'tempconfig.json') 
-    }
-    
-
-    const pin = Math.floor(Math.random() * 1000000)
-    const tempconfig = {
-        pin: pin,
-    }
-
-    axios({
-        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-needs-setup',
-        method: 'POST',
-        data: tempconfig,
-        }).then(() => {
-
-        }).catch(() => {
-
-        })
-
-    fs.writeFileSync(window.dirname + 'tempconfig.json', JSON.stringify(tempconfig))
-
-
-    child_process.exec("pm2 restart")
-    
-}
-
-
-
-
-
-
-
 export const documentClicked = (state) =>  {
     clearTimeout(state.screenTimeout);
 

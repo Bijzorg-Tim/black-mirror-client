@@ -57199,7 +57199,32 @@ var updateSoftware = function updateSoftware(_ref8) {
 var deleteConfig = function deleteConfig(_ref9) {
   var commit = _ref9.commit,
       state = _ref9.state;
-  commit('deleteConfig');
+
+  if (fs.existsSync(window.dirname + 'deviceconfig.json')) {
+    config = JSON.parse(fs.readFileSync(window.dirname + 'deviceconfig.json'));
+    axios__WEBPACK_IMPORTED_MODULE_0___default()({
+      url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-deleting-config',
+      method: 'POST',
+      data: config
+    }).then(function () {})["catch"](function () {});
+    fs.unlinkSync(window.dirname + 'deviceconfig.json');
+  }
+
+  if (fs.existsSync(window.dirname + 'tempconfig.json')) {
+    fs.unlinkSync(window.dirname + 'tempconfig.json');
+  }
+
+  var pin = Math.floor(Math.random() * 1000000);
+  var tempconfig = {
+    pin: pin
+  };
+  axios__WEBPACK_IMPORTED_MODULE_0___default()({
+    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-needs-setup',
+    method: 'POST',
+    data: tempconfig
+  }).then(function () {})["catch"](function () {});
+  fs.writeFileSync(window.dirname + 'tempconfig.json', JSON.stringify(tempconfig));
+  child_process.exec("pm2 restart");
 };
 var pong = function pong(_ref10, payload) {
   var commit = _ref10.commit,
@@ -57330,7 +57355,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*!*****************************************!*\
   !*** ./resources/js/store/mutations.js ***!
   \*****************************************/
-/*! exports provided: setDeviceConfig, getTempConfig, updateSoftware, deleteConfig, documentClicked, turnonscreen, setCards, startCardReadLoop, addDeviceStatusToDeviceConfig, resetCard */
+/*! exports provided: setDeviceConfig, getTempConfig, updateSoftware, documentClicked, turnonscreen, setCards, startCardReadLoop, addDeviceStatusToDeviceConfig, resetCard */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57338,7 +57363,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDeviceConfig", function() { return setDeviceConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTempConfig", function() { return getTempConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "updateSoftware", function() { return updateSoftware; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deleteConfig", function() { return deleteConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "documentClicked", function() { return documentClicked; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "turnonscreen", function() { return turnonscreen; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCards", function() { return setCards; });
@@ -57358,33 +57382,6 @@ var getTempConfig = function getTempConfig(state) {
 };
 var updateSoftware = function updateSoftware(state) {
   child_process.exec("bash " + window.dirname + "/update.sh", function (err, stdout, stderr) {});
-};
-var deleteConfig = function deleteConfig(state) {
-  if (fs.existsSync(window.dirname + 'deviceconfig.json')) {
-    config = JSON.parse(fs.readFileSync(window.dirname + 'deviceconfig.json'));
-    axios({
-      url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-deleting-config',
-      method: 'POST',
-      data: config
-    }).then(function () {})["catch"](function () {});
-    fs.unlinkSync(window.dirname + 'deviceconfig.json');
-  }
-
-  if (fs.existsSync(window.dirname + 'tempconfig.json')) {
-    fs.unlinkSync(window.dirname + 'tempconfig.json');
-  }
-
-  var pin = Math.floor(Math.random() * 1000000);
-  var tempconfig = {
-    pin: pin
-  };
-  axios({
-    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-needs-setup',
-    method: 'POST',
-    data: tempconfig
-  }).then(function () {})["catch"](function () {});
-  fs.writeFileSync(window.dirname + 'tempconfig.json', JSON.stringify(tempconfig));
-  child_process.exec("pm2 restart");
 };
 var documentClicked = function documentClicked(state) {
   clearTimeout(state.screenTimeout);
