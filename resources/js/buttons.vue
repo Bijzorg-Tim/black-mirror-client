@@ -402,6 +402,8 @@ export default {
             if (card !== undefined) {
                 this.ExternalDoorToggle()
             }
+            this.$store.dispatch('resetCard')
+            
         }
     },
     created () {

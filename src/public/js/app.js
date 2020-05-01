@@ -12410,6 +12410,8 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       if (card !== undefined) {
         this.ExternalDoorToggle();
       }
+
+      this.$store.dispatch('resetCard');
     }
   },
   created: function created() {
