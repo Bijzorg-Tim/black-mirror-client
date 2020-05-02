@@ -197,6 +197,9 @@ export default {
         inputDisabled(){
             return this.$store.getters['inputDisabled']
         },
+        mainConfig(){
+            return this.$store.getters['mainConfig']
+        },
         verwarmingStatus () {
             if (!this.verwarming) {
                 return false
@@ -323,7 +326,7 @@ export default {
             }.bind(this), this.deviceConfig.room.temp_read_interval_in_seconds * 1000);
         },
         setUpPins(){
-            this.deurPin = new Gpio(this.deviceConfig.room.door_pin, 'out')
+            this.deurPin = new Gpio(this.mainConfig.room.door_pin, 'out')
             this.deurPin.writeSync(0)
         },
         ExternalDoorToggle () {

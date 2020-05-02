@@ -12176,6 +12176,9 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     inputDisabled: function inputDisabled() {
       return this.$store.getters['inputDisabled'];
     },
+    mainConfig: function mainConfig() {
+      return this.$store.getters['mainConfig'];
+    },
     verwarmingStatus: function verwarmingStatus() {
       if (!this.verwarming) {
         return false;
@@ -12321,7 +12324,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       }.bind(this), this.deviceConfig.room.temp_read_interval_in_seconds * 1000);
     },
     setUpPins: function setUpPins() {
-      this.deurPin = new Gpio(this.deviceConfig.room.door_pin, 'out');
+      this.deurPin = new Gpio(this.mainConfig.room.door_pin, 'out');
       this.deurPin.writeSync(0);
     },
     ExternalDoorToggle: function ExternalDoorToggle() {
@@ -57343,13 +57346,14 @@ var sendCardToWeb = function sendCardToWeb(_ref19, payload) {
 /*!***************************************!*\
   !*** ./resources/js/store/getters.js ***!
   \***************************************/
-/*! exports provided: configMode, deviceConfig, tempConfig, inputDisabled, cardRead, cards */
+/*! exports provided: configMode, deviceConfig, mainConfig, tempConfig, inputDisabled, cardRead, cards */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "configMode", function() { return configMode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deviceConfig", function() { return deviceConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mainConfig", function() { return mainConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tempConfig", function() { return tempConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "inputDisabled", function() { return inputDisabled; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cardRead", function() { return cardRead; });
@@ -57359,6 +57363,9 @@ var configMode = function configMode(state) {
 };
 var deviceConfig = function deviceConfig(state) {
   return state.deviceConfig;
+};
+var mainConfig = function mainConfig(state) {
+  return state.mainConfig;
 };
 var tempConfig = function tempConfig(state) {
   return state.tempConfig;
