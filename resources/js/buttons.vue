@@ -387,12 +387,14 @@ export default {
         },
         deur () {
             if (this.deur) {
+    
                 return this.deurPin.writeSync(1)
             }
             this.deurPin.writeSync(0)
         },
         cardRead () {
             if (this.cardRead === null) {return}
+            this.$store.dispatch('documentClicked')
 
             if (this.sendNextCardToWeb) {
                 this.$store.dispatch('sendCardToWeb', this.cardRead)
