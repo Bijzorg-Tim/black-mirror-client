@@ -45,7 +45,10 @@ export default {
       configMode () {
         return this.$store.getters['configMode']
       },
-      deviceConfig () {return this.$store.getters['deviceConfig']}
+      deviceConfig () {return this.$store.getters['deviceConfig']},
+      mainconfig(){
+            return this.$store.getters['mainconfig']
+        },
     },
     methods: {
       documentClicked (e) {
@@ -57,7 +60,7 @@ export default {
       document.addEventListener('click', this.documentClicked)
       document.addEventListener('touchstart', this.documentClicked)
       this.$store.dispatch('documentClicked')
-      window.backlight.setBrightness(this.deviceConfig.screen_brightness);
+      this.$store.dispatch('setBrightness', this.mainconfig.screen_brightness)
     }
 }
 </script>

@@ -58,6 +58,12 @@ export const turnonscreen = (state) =>  {
     child_process.exec("sudo node " + window.dirname + "/turnon.js", function(err, stdout,stderr){});
 }
 
+export const setBrightness = (state, payload) =>  {
+    // child_process.exec("sudo node " + window.dirname + "/turnon.js", function(err, stdout,stderr){});
+}
+
+
+
 export const setCards = (state, payload) => {
     if (fs.existsSync(window.dirname + '/cards.json')) {
         state.cards = JSON.parse(window.fs.readFileSync(window.dirname + '/cards.json','utf8'))

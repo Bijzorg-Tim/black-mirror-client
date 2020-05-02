@@ -61,6 +61,10 @@ export const turnonscreen = ({commit, state}) => {
     commit('turnonscreen')
 }
 
+export const setBrightness = ({commit, state}) => {
+    commit('setBrightness')
+}
+
 export const resetCard = ({commit, state}) => {
     commit('resetCard')
 }
