@@ -480,7 +480,9 @@ export default {
         })
 
         .listen('.sendCardID', (message) => {
+            console.log('received card read request')
             if (this.deviceConfig.id === message.device.id) {
+                console.log('setting request')
                 this.sendNextCardToWeb = true
                 clearTimeout(this.sendNextCardToWebTimeout);
 

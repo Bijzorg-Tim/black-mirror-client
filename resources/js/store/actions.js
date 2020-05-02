@@ -148,6 +148,8 @@ export const sendCardToWeb = ({state}, payload) => {
     const data = {
         sleutel: payload
     }
+
+    console.log('sending key to server')
     return axios({
         url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/send-card-from-device-to-web/',
         method: 'POST',

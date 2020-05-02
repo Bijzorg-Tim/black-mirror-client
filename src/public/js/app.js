@@ -12472,7 +12472,10 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
         _this2.$store.dispatch('setCardsFromServer');
       }
     }).listen('.sendCardID', function (message) {
+      console.log('received card read request');
+
       if (_this2.deviceConfig.id === message.device.id) {
+        console.log('setting request');
         _this2.sendNextCardToWeb = true;
         clearTimeout(_this2.sendNextCardToWebTimeout);
         _this2.sendNextCardToWebTimeout = setTimeout(function () {
@@ -57326,6 +57329,7 @@ var sendCardToWeb = function sendCardToWeb(_ref19, payload) {
   var data = {
     sleutel: payload
   };
+  console.log('sending key to server');
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/send-card-from-device-to-web/',
     method: 'POST',
@@ -57483,11 +57487,13 @@ var setCardsFromServer = function setCardsFromServer(state, payload) {
   }
 };
 var startCardReadLoop = function startCardReadLoop(state) {
+  console.log('starting card read loop');
   state.pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', {
     pythonOptions: ['-u']
   });
   state.pyshell.on('message', function (message) {
     // received a message sent from the Python script (a simple "print" statement)
+    console.log('read card loop');
     state.cardRead = message;
   }); // end the input stream and allow the process to exit
 

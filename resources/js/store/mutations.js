@@ -71,9 +71,11 @@ export const setCardsFromServer = (state, payload) => {
 }
 
 export const startCardReadLoop = (state) => {
+    console.log('starting card read loop')
     state.pyshell = new window.PythonShell(window.dirname + '/cardReadLoop.py', { pythonOptions: ['-u']});
     state.pyshell.on('message', function (message) {
     // received a message sent from the Python script (a simple "print" statement)
+    console.log('read card loop')
         state.cardRead = message
     });
     
