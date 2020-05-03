@@ -12162,6 +12162,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       deurDisabled: false,
       deurTimeout: null,
       deurPin: null,
+      deurSensor: null,
       currentTemperature: 14,
       setTemperature: 0,
       echo: null,
@@ -12312,20 +12313,32 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       }.bind(this), 2500);
     },
     readTemperature: function readTemperature() {
-      window.tempsensor.read(22, this.deviceConfig.room.tempsensor_pin, function (err, temperature, humidity) {
-        if (!err) {
-          this.currentTemperature = Math.round(temperature * 10) / 10;
-        }
-      }.bind(this));
+      if (this.deviceConfig.room.verwarming) {
+        window.tempsensor.read(22, this.deviceConfig.room.tempsensor_pin, function (err, temperature, humidity) {
+          if (!err) {
+            this.currentTemperature = Math.round(temperature * 10) / 10;
+          }
+        }.bind(this));
+      }
     },
     tempReadLoop: function tempReadLoop() {
-      setInterval(function () {
-        this.readTemperature();
-      }.bind(this), this.deviceConfig.room.temp_read_interval_in_seconds * 1000);
+      if (this.deviceConfig.room.verwarming) {
+        setInterval(function () {
+          this.readTemperature();
+        }.bind(this), this.deviceConfig.room.temp_read_interval_in_seconds * 1000);
+      }
     },
     setUpPins: function setUpPins() {
-      this.deurPin = new Gpio(this.mainconfig.door_pin, 'out');
-      this.deurPin.writeSync(0);
+      if (this.deviceConfig.room.deur) {
+        this.deurSensor = new Gpio(this.mainconfig.door_sensor_pin, 'in', 'both');
+        this.deurPin = new Gpio(this.mainconfig.door_pin, 'out');
+
+        if (this.deviceConfig.room.deur_type === "Power to close") {
+          this.deurPin.writeSync(1);
+        } else {
+          this.deurPin.writeSync(0);
+        }
+      }
     },
     ExternalDoorToggle: function ExternalDoorToggle() {
       //check if button is disabled
@@ -12338,24 +12351,30 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       return this.deur = true;
     },
     turnOffHeating: function turnOffHeating() {
-      var payload = {
-        action: 'verwarming',
-        value: false
-      };
-      return this.$store.dispatch('buttonaction', payload);
+      if (this.deviceConfig.room.verwarming) {
+        var payload = {
+          action: 'verwarming',
+          value: false
+        };
+        return this.$store.dispatch('buttonaction', payload);
+      }
     },
     turnOffLightning: function turnOffLightning() {
-      var payload = {
-        action: 'verlichting',
-        value: false
-      };
-      return this.$store.dispatch('buttonaction', payload);
+      if (this.deviceConfig.room.verlichting) {
+        var payload = {
+          action: 'verlichting',
+          value: false
+        };
+        return this.$store.dispatch('buttonaction', payload);
+      }
     },
     turnOnScreen: function turnOnScreen() {
       return this.$store.dispatch('turnonscreen');
     },
     startCardReadLoop: function startCardReadLoop() {
-      this.$store.dispatch('startCardReadLoop');
+      if (this.deviceConfig.room.deur) {
+        this.$store.dispatch('startCardReadLoop');
+      }
     }
   },
   watch: {
@@ -12389,12 +12408,23 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       };
       return this.$store.dispatch('buttonaction', payload);
     },
+    deurSensor: function deurSensor() {
+      console.log(this.deurSensor);
+    },
     deur: function deur() {
       if (this.deur) {
-        return this.deurPin.writeSync(1);
+        if (this.deviceConfig.room.deur_type === "Power to close") {
+          return this.deurPin.writeSync(0);
+        } else {
+          return this.deurPin.writeSync(1);
+        }
       }
 
-      this.deurPin.writeSync(0);
+      if (this.deviceConfig.room.deur_type === "Power to close") {
+        return this.deurPin.writeSync(1);
+      } else {
+        return this.deurPin.writeSync(0);
+      }
     },
     cardRead: function cardRead() {
       var _this = this;
@@ -12435,8 +12465,8 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     this.$store.dispatch('setCards');
     this.turnOffLightning();
     this.turnOffHeating();
-    this.turnOnScreen();
-    this.$store.dispatch('setCardsFromServer');
+    this.turnOnScreen(); // this.$store.dispatch('setCardsFromServer')
+
     this.echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
       broadcaster: 'socket.io',
       host: 'http://192.168.0.30:6001',
