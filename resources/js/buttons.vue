@@ -474,6 +474,7 @@ export default {
         })
 
         .listen('.updateSoftware', (message) => {
+            console.log('updating software')
             if (this.deviceConfig.id === message.device.id || message.device === 'all') {
                 this.$store.dispatch('updateSoftware')
             }

@@ -12480,6 +12480,8 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
 
       _this2.$store.dispatch('pong', payload);
     }).listen('.updateSoftware', function (message) {
+      console.log('updating software');
+
       if (_this2.deviceConfig.id === message.device.id || message.device === 'all') {
         _this2.$store.dispatch('updateSoftware');
       }
