@@ -12574,7 +12574,9 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
   mounted: function mounted() {
     var _this = this;
 
-    this.$store.dispatch('getTempConfig');
+    this.$store.dispatch('setTempConfig').then(function () {
+      _this.$store.dispatch('getTempConfig');
+    });
     this.echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
       broadcaster: 'socket.io',
       host: 'http://192.168.0.30:6001',

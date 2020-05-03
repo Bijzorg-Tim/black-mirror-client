@@ -42,7 +42,9 @@ export default {
     methods: {
     },
     mounted () {
-        this.$store.dispatch('getTempConfig')
+        this.$store.dispatch('setTempConfig').then(() => {
+            this.$store.dispatch('getTempConfig')
+        })
         this.echo = new Echo({
             broadcaster: 'socket.io',
             host: 'http://192.168.0.30:6001',
