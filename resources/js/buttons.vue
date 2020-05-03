@@ -445,17 +445,17 @@ export default {
         }
     },
     created () {
-        this.setTemperature = parseInt(this.deviceConfig.room.standaard_temperatuur)
+        // this.setTemperature = parseInt(this.deviceConfig.room.standaard_temperatuur)
         // this.setUpPins()
-        this.readTemperature()
-        this.tempReadLoop()
-        this.startCardReadLoop()
+        // this.readTemperature()
+        // this.tempReadLoop()
+        // this.startCardReadLoop()
     },
     mounted () {
-        this.$store.dispatch('setCards')
-        this.turnOffLightning()
-        this.turnOffHeating()
-        this.turnOnScreen()
+        // this.$store.dispatch('setCards')
+        // this.turnOffLightning()
+        // this.turnOffHeating()
+        // this.turnOnScreen()
         // this.$store.dispatch('setCardsFromServer')
 
         this.echo = new Echo({
