@@ -201,7 +201,7 @@ export default {
             return this.$store.getters['mainconfig']
         },
         doorSensor(){
-            return this.$store.getters['mainconfig']
+            return this.$store.getters['doorSensor']
         },
         verwarmingStatus () {
             if (!this.verwarming) {

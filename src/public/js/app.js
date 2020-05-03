@@ -12180,7 +12180,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       return this.$store.getters['mainconfig'];
     },
     doorSensor: function doorSensor() {
-      return this.$store.getters['mainconfig'];
+      return this.$store.getters['doorSensor'];
     },
     verwarmingStatus: function verwarmingStatus() {
       if (!this.verwarming) {
