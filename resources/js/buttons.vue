@@ -411,20 +411,20 @@ export default {
         deurSensor() {
             console.log(this.deurSensor)
         },
-        deur () {
-            if (this.deur) {
-                if (this.deviceConfig.room.deur_type === "Power to close") {
-                    return this.deurPin.writeSync(0)
-                } else {
-                    return this.deurPin.writeSync(1)
-                }
-            }
-            if (this.deviceConfig.room.deur_type === "Power to close") {
-                    return this.deurPin.writeSync(1)
-                } else {
-                    return this.deurPin.writeSync(0)
-                }
-        },
+        // deur () {
+        //     if (this.deur) {
+        //         if (this.deviceConfig.room.deur_type === "Power to close") {
+        //             return this.deurPin.writeSync(0)
+        //         } else {
+        //             return this.deurPin.writeSync(1)
+        //         }
+        //     }
+        //     if (this.deviceConfig.room.deur_type === "Power to close") {
+        //             return this.deurPin.writeSync(1)
+        //         } else {
+        //             return this.deurPin.writeSync(0)
+        //         }
+        // },
         cardRead () {
             if (this.cardRead === null) {return}
             this.$store.dispatch('documentClicked')
@@ -446,7 +446,7 @@ export default {
     },
     created () {
         this.setTemperature = parseInt(this.deviceConfig.room.standaard_temperatuur)
-        this.setUpPins()
+        // this.setUpPins()
         this.readTemperature()
         this.tempReadLoop()
         this.startCardReadLoop()
