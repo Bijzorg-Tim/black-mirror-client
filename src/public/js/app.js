@@ -57522,6 +57522,7 @@ var getTempConfig = function getTempConfig(state) {
   state.tempConfig = JSON.parse(fs.readFileSync(window.dirname + '/tempconfig.json', 'utf8'));
 };
 var updateSoftware = function updateSoftware(state) {
+  console.log('updating software mutation');
   child_process.exec("bash " + window.dirname + "/update.sh", function (err, stdout, stderr) {});
 };
 var documentClicked = function documentClicked(state) {
