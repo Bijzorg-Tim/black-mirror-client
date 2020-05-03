@@ -10,7 +10,7 @@ status = 2
 GPIO.setup(buttonPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 while True:
-    if (status not GPIO.input(buttonPin)):  
+    if (status != GPIO.input(buttonPin)):  
         print(GPIO.input(buttonPin))
         status = GPIO.input(buttonPin)
         
