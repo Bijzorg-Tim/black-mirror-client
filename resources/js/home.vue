@@ -5,7 +5,7 @@
    <span v-if="!configMode">
    <secondBar />
    <div class="container">
-    <buttons />
+    <!-- <buttons /> -->
    </div>
    </span>
 
@@ -57,9 +57,9 @@ export default {
       }
     },
     mounted () {
-      document.addEventListener('click', this.documentClicked)
-      document.addEventListener('touchstart', this.documentClicked)
-      this.$store.dispatch('documentClicked')
+      // document.addEventListener('click', this.documentClicked)
+      // document.addEventListener('touchstart', this.documentClicked)
+      // this.$store.dispatch('documentClicked')
       // this.$store.dispatch('setBrightness', this.mainconfig.screen_brightness)
     }
 }

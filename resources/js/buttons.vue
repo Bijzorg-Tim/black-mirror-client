@@ -451,80 +451,80 @@ export default {
         // this.tempReadLoop()
         // this.startCardReadLoop()
     },
-    mounted () {
-        // this.$store.dispatch('setCards')
-        // this.turnOffLightning()
-        // this.turnOffHeating()
-        // this.turnOnScreen()
-        // this.$store.dispatch('setCardsFromServer')
+    // mounted () {
+    //     // this.$store.dispatch('setCards')
+    //     // this.turnOffLightning()
+    //     // this.turnOffHeating()
+    //     // this.turnOnScreen()
+    //     // this.$store.dispatch('setCardsFromServer')
 
-        this.echo = new Echo({
-            broadcaster: 'socket.io',
-            host: 'http://192.168.0.30:6001',
-            authEndpoint: '/custom/broadcast/auth/route'
-        })
+    //     this.echo = new Echo({
+    //         broadcaster: 'socket.io',
+    //         host: 'http://192.168.0.30:6001',
+    //         authEndpoint: '/custom/broadcast/auth/route'
+    //     })
 
-        this.echo.channel('devicechannel')
-        .listen('.updateDevice', (message) => {
-            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
-                this[message.channelrequest.action] = message.channelrequest.status
-            }
-        })
+    //     this.echo.channel('devicechannel')
+    //     .listen('.updateDevice', (message) => {
+    //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+    //             this[message.channelrequest.action] = message.channelrequest.status
+    //         }
+    //     })
 
-        .listen('.ping', (message) => {
-            var payload = this.createStatusPayload()
-            this.$store.dispatch('pong', payload)
-        })
+    //     .listen('.ping', (message) => {
+    //         var payload = this.createStatusPayload()
+    //         this.$store.dispatch('pong', payload)
+    //     })
 
-        .listen('.updateSoftware', (message) => {
-            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
-                this.$store.dispatch('updateSoftware')
-            }
-        })
+    //     .listen('.updateSoftware', (message) => {
+    //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+    //             this.$store.dispatch('updateSoftware')
+    //         }
+    //     })
 
-        .listen('.restartapp', (message) => {
-            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
-                this.$store.dispatch('resetApplication')
-            }
-        })
+    //     .listen('.restartapp', (message) => {
+    //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+    //             this.$store.dispatch('resetApplication')
+    //         }
+    //     })
 
-        .listen('.reboot', (message) => {
-            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
-                this.$store.dispatch('rebootDevice')
-            }
-        })
+    //     .listen('.reboot', (message) => {
+    //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+    //             this.$store.dispatch('rebootDevice')
+    //         }
+    //     })
 
-        .listen('.shutdown', (message) => {
-            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
-                this.$store.dispatch('shutdownDevice')
-            }
-        })
+    //     .listen('.shutdown', (message) => {
+    //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+    //             this.$store.dispatch('shutdownDevice')
+    //         }
+    //     })
 
-        .listen('.deleteConfig', (message) => {
-            if (this.deviceConfig.id === message.device || message.device === 'all') {
-                this.$store.dispatch('deleteConfig')
-            }
-        })
+    //     .listen('.deleteConfig', (message) => {
+    //         if (this.deviceConfig.id === message.device || message.device === 'all') {
+    //             this.$store.dispatch('deleteConfig')
+    //         }
+    //     })
 
-        .listen('.updateCards', (message) => {
-            if (this.deviceConfig.id === message.device || message.device === 'all') {
-                this.$store.dispatch('setCardsFromServer')
-            }
-        })
+    //     .listen('.updateCards', (message) => {
+    //         if (this.deviceConfig.id === message.device || message.device === 'all') {
+    //             this.$store.dispatch('setCardsFromServer')
+    //         }
+    //     })
 
-        .listen('.sendCardID', (message) => {
-            console.log('received card read request')
-            if (this.deviceConfig.id === message.device.id) {
-                console.log('setting request')
-                this.sendNextCardToWeb = true
-                clearTimeout(this.sendNextCardToWebTimeout);
+    //     .listen('.sendCardID', (message) => {
+    //         console.log('received card read request')
+    //         if (this.deviceConfig.id === message.device.id) {
+    //             console.log('setting request')
+    //             this.sendNextCardToWeb = true
+    //             clearTimeout(this.sendNextCardToWebTimeout);
 
-                this.sendNextCardToWebTimeout = setTimeout(function() { 
-                    this.sendNextCardToWeb = false
-                }.bind(this), 300 * 1000);
-            }
-        })
+    //             this.sendNextCardToWebTimeout = setTimeout(function() { 
+    //                 this.sendNextCardToWeb = false
+    //             }.bind(this), 300 * 1000);
+    //         }
+    //     })
         
-    }
+    // }
 }
 </script>
