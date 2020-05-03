@@ -97,9 +97,6 @@ export const deleteConfig = ({commit, state}) => {
     }
     
     fs.writeFileSync(window.dirname + '/tempconfig.json', JSON.stringify(tempconfig))
-    commit('resetApplication')
-
-
 }
 
 export const setTempConfig = ({commit, state}) => {

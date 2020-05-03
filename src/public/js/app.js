@@ -57324,7 +57324,6 @@ var deleteConfig = function deleteConfig(_ref15) {
     pin: pin
   };
   fs.writeFileSync(window.dirname + '/tempconfig.json', JSON.stringify(tempconfig));
-  commit('resetApplication');
 };
 var setTempConfig = function setTempConfig(_ref16) {
   var commit = _ref16.commit,
