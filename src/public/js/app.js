@@ -12375,6 +12375,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     startCardReadLoop: function startCardReadLoop() {
       if (this.deviceConfig.room.deur) {
         this.$store.dispatch('startCardReadLoop');
+        this.$store.dispatch('startDoorSensorLoop');
       }
     }
   },
@@ -12458,7 +12459,6 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     this.readTemperature();
     this.tempReadLoop();
     this.startCardReadLoop();
-    this.startDoorSensorLoop();
   },
   mounted: function mounted() {
     var _this2 = this;

@@ -375,6 +375,7 @@ export default {
         startCardReadLoop() {
             if (this.deviceConfig.room.deur) {
                 this.$store.dispatch('startCardReadLoop')
+                this.$store.dispatch('startDoorSensorLoop')
             }
         }
     },
@@ -448,7 +449,6 @@ export default {
         this.readTemperature()
         this.tempReadLoop()
         this.startCardReadLoop()
-        this.startDoorSensorLoop()
     },
     mounted () {
         this.$store.dispatch('setCards')
