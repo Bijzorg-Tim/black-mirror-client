@@ -12437,7 +12437,6 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
 
       if (this.sendNextCardToWeb) {
         this.$store.dispatch('sendCardToWeb', this.cardRead);
-        this.$store.dispatch('resetCard', this.cardRead);
         this.sendNextCardToWeb = false;
       }
 

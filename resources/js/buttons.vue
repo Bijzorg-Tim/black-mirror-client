@@ -429,7 +429,6 @@ export default {
 
             if (this.sendNextCardToWeb) {
                 this.$store.dispatch('sendCardToWeb', this.cardRead)
-                this.$store.dispatch('resetCard', this.cardRead)
                 this.sendNextCardToWeb = false
             }
 
