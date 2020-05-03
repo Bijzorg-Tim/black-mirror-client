@@ -332,7 +332,7 @@ export default {
         },
         setUpPins(){
             if (this.deviceConfig.room.deur) {
-                this.deurSensor = new Gpio(this.mainconfig.door_sensor_pin, 'in', 'both')
+                // this.deurSensor = new Gpio(this.mainconfig.door_sensor_pin, 'in', 'both')
                 this.deurPin = new Gpio(this.mainconfig.door_pin, 'out')
                 if (this.deviceConfig.room.deur_type === "Power to close") {
                     this.deurPin.writeSync(1)
