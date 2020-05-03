@@ -12330,8 +12330,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     },
     setUpPins: function setUpPins() {
       if (this.deviceConfig.room.deur) {
-        console.log(this.mainconfig.door_pin);
-        console.log(this.mainconfig.door_sensor_pin);
+        door_sensor_pin;
         this.deurSensor = new Gpio(this.mainconfig.door_sensor_pin, 'in', 'both');
         this.deurPin = new Gpio(this.mainconfig.door_pin, 'out');
 
@@ -57197,7 +57196,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************!*\
   !*** ./resources/js/store/actions.js ***!
   \***************************************/
-/*! exports provided: setNewDeviceConfig, setDeviceConfig, rebootDevice, shutdownDevice, resetApplication, getTempConfig, documentClicked, setCards, setCardsFromServer, startCardReadLoop, turnonscreen, setBrightness, resetCard, updateSoftware, deleteConfig, pong, sendButtonChangeToServer, sendIp, buttonaction, sendCardToWeb */
+/*! exports provided: setNewDeviceConfig, setDeviceConfig, rebootDevice, shutdownDevice, resetApplication, getTempConfig, documentClicked, setCards, setCardsFromServer, startCardReadLoop, turnonscreen, setBrightness, resetCard, updateSoftware, deleteConfig, setTempConfig, pong, sendButtonChangeToServer, sendIp, buttonaction, sendCardToWeb */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57217,6 +57216,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resetCard", function() { return resetCard; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "updateSoftware", function() { return updateSoftware; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deleteConfig", function() { return deleteConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setTempConfig", function() { return setTempConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pong", function() { return pong; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendButtonChangeToServer", function() { return sendButtonChangeToServer; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sendIp", function() { return sendIp; });
@@ -57324,9 +57324,23 @@ var deleteConfig = function deleteConfig(_ref15) {
   fs.writeFileSync(window.dirname + '/tempconfig.json', JSON.stringify(tempconfig));
   commit('resetApplication');
 };
-var pong = function pong(_ref16, payload) {
+var setTempConfig = function setTempConfig(_ref16) {
   var commit = _ref16.commit,
       state = _ref16.state;
+
+  if (!fs.existsSync(window.dirname + '/tempconfig.json')) {
+    var pin = Math.floor(Math.random() * 1000000);
+    var tempconfig = {
+      pin: pin
+    };
+    fs.writeFileSync(window.dirname + '/tempconfig.json', JSON.stringify(tempconfig));
+  }
+
+  commit('resetApplication');
+};
+var pong = function pong(_ref17, payload) {
+  var commit = _ref17.commit,
+      state = _ref17.state;
   commit('addDeviceStatusToDeviceConfig', payload);
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/pong',
@@ -57334,17 +57348,17 @@ var pong = function pong(_ref16, payload) {
     data: state.deviceConfig
   }).then(function () {})["catch"](function () {});
 };
-var sendButtonChangeToServer = function sendButtonChangeToServer(_ref17, payload) {
-  var commit = _ref17.commit,
-      state = _ref17.state;
+var sendButtonChangeToServer = function sendButtonChangeToServer(_ref18, payload) {
+  var commit = _ref18.commit,
+      state = _ref18.state;
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/button-change-from-device',
     method: 'POST',
     data: payload
   }).then(function () {})["catch"](function () {});
 };
-var sendIp = function sendIp(_ref18, payload) {
-  var state = _ref18.state;
+var sendIp = function sendIp(_ref19, payload) {
+  var state = _ref19.state;
   var data = state.mainconfig;
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/sendIpFromDevice/' + payload.id,
@@ -57352,8 +57366,8 @@ var sendIp = function sendIp(_ref18, payload) {
     data: data
   }).then(function () {})["catch"](function () {});
 };
-var buttonaction = function buttonaction(_ref19, payload) {
-  var state = _ref19.state;
+var buttonaction = function buttonaction(_ref20, payload) {
+  var state = _ref20.state;
   var devicefunction = state.deviceConfig.functions.find(function (a) {
     return a["function"] === payload.action;
   });
@@ -57367,8 +57381,8 @@ var buttonaction = function buttonaction(_ref19, payload) {
     data: data
   }).then(function () {})["catch"](function () {});
 };
-var sendCardToWeb = function sendCardToWeb(_ref20, payload) {
-  var state = _ref20.state;
+var sendCardToWeb = function sendCardToWeb(_ref21, payload) {
+  var state = _ref21.state;
   var data = {
     sleutel: payload
   };

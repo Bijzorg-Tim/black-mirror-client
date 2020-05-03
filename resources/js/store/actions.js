@@ -102,6 +102,20 @@ export const deleteConfig = ({commit, state}) => {
 
 }
 
+export const setTempConfig = ({commit, state}) => {
+    if (!fs.existsSync(window.dirname + '/tempconfig.json')) {
+      
+        
+        const pin = Math.floor(Math.random() * 1000000)
+        const tempconfig = {
+            pin: pin,
+        }
+        
+        fs.writeFileSync(window.dirname + '/tempconfig.json', JSON.stringify(tempconfig))
+    }
+        commit('resetApplication')
+}
+
 
 
 export const pong = ({commit, state}, payload) => {
