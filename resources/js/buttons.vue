@@ -334,13 +334,13 @@ export default {
             if (this.deviceConfig.room.deur) {
                 console.log(this.mainconfig.door_pin)
                 console.log(this.mainconfig.door_sensor_pin)
-                // this.deurSensor = new Gpio(this.mainconfig.door_sensor_pin, 'in', 'both')
-                // this.deurPin = new Gpio(this.mainconfig.door_pin, 'out')
-                // if (this.deviceConfig.room.deur_type === "Power to close") {
-                //     this.deurPin.writeSync(1)
-                // } else {
-                //     this.deurPin.writeSync(0)
-                // }
+                this.deurSensor = new Gpio(this.mainconfig.door_sensor_pin, 'in', 'both')
+                this.deurPin = new Gpio(this.mainconfig.door_pin, 'out')
+                if (this.deviceConfig.room.deur_type === "Power to close") {
+                    this.deurPin.writeSync(1)
+                } else {
+                    this.deurPin.writeSync(0)
+                }
             }
         },
         ExternalDoorToggle () {
@@ -411,20 +411,20 @@ export default {
         deurSensor() {
             console.log(this.deurSensor)
         },
-        // deur () {
-        //     if (this.deur) {
-        //         if (this.deviceConfig.room.deur_type === "Power to close") {
-        //             return this.deurPin.writeSync(0)
-        //         } else {
-        //             return this.deurPin.writeSync(1)
-        //         }
-        //     }
-        //     if (this.deviceConfig.room.deur_type === "Power to close") {
-        //             return this.deurPin.writeSync(1)
-        //         } else {
-        //             return this.deurPin.writeSync(0)
-        //         }
-        // },
+        deur () {
+            if (this.deur) {
+                if (this.deviceConfig.room.deur_type === "Power to close") {
+                    return this.deurPin.writeSync(0)
+                } else {
+                    return this.deurPin.writeSync(1)
+                }
+            }
+            if (this.deviceConfig.room.deur_type === "Power to close") {
+                    return this.deurPin.writeSync(1)
+                } else {
+                    return this.deurPin.writeSync(0)
+                }
+        },
         cardRead () {
             if (this.cardRead === null) {return}
             this.$store.dispatch('documentClicked')
@@ -445,86 +445,86 @@ export default {
         }
     },
     created () {
-        // this.setTemperature = parseInt(this.deviceConfig.room.standaard_temperatuur)
-        // this.setUpPins()
-        // this.readTemperature()
-        // this.tempReadLoop()
-        // this.startCardReadLoop()
+        this.setTemperature = parseInt(this.deviceConfig.room.standaard_temperatuur)
+        this.setUpPins()
+        this.readTemperature()
+        this.tempReadLoop()
+        this.startCardReadLoop()
     },
-    // mounted () {
-    //     // this.$store.dispatch('setCards')
-    //     // this.turnOffLightning()
-    //     // this.turnOffHeating()
-    //     // this.turnOnScreen()
-    //     // this.$store.dispatch('setCardsFromServer')
+    mounted () {
+        this.$store.dispatch('setCards')
+        this.turnOffLightning()
+        this.turnOffHeating()
+        this.turnOnScreen()
+        // this.$store.dispatch('setCardsFromServer')
 
-    //     this.echo = new Echo({
-    //         broadcaster: 'socket.io',
-    //         host: 'http://192.168.0.30:6001',
-    //         authEndpoint: '/custom/broadcast/auth/route'
-    //     })
+        this.echo = new Echo({
+            broadcaster: 'socket.io',
+            host: 'http://192.168.0.30:6001',
+            authEndpoint: '/custom/broadcast/auth/route'
+        })
 
-    //     this.echo.channel('devicechannel')
-    //     .listen('.updateDevice', (message) => {
-    //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
-    //             this[message.channelrequest.action] = message.channelrequest.status
-    //         }
-    //     })
+        this.echo.channel('devicechannel')
+        .listen('.updateDevice', (message) => {
+            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+                this[message.channelrequest.action] = message.channelrequest.status
+            }
+        })
 
-    //     .listen('.ping', (message) => {
-    //         var payload = this.createStatusPayload()
-    //         this.$store.dispatch('pong', payload)
-    //     })
+        .listen('.ping', (message) => {
+            var payload = this.createStatusPayload()
+            this.$store.dispatch('pong', payload)
+        })
 
-    //     .listen('.updateSoftware', (message) => {
-    //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
-    //             this.$store.dispatch('updateSoftware')
-    //         }
-    //     })
+        .listen('.updateSoftware', (message) => {
+            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+                this.$store.dispatch('updateSoftware')
+            }
+        })
 
-    //     .listen('.restartapp', (message) => {
-    //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
-    //             this.$store.dispatch('resetApplication')
-    //         }
-    //     })
+        .listen('.restartapp', (message) => {
+            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+                this.$store.dispatch('resetApplication')
+            }
+        })
 
-    //     .listen('.reboot', (message) => {
-    //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
-    //             this.$store.dispatch('rebootDevice')
-    //         }
-    //     })
+        .listen('.reboot', (message) => {
+            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+                this.$store.dispatch('rebootDevice')
+            }
+        })
 
-    //     .listen('.shutdown', (message) => {
-    //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
-    //             this.$store.dispatch('shutdownDevice')
-    //         }
-    //     })
+        .listen('.shutdown', (message) => {
+            if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+                this.$store.dispatch('shutdownDevice')
+            }
+        })
 
-    //     .listen('.deleteConfig', (message) => {
-    //         if (this.deviceConfig.id === message.device || message.device === 'all') {
-    //             this.$store.dispatch('deleteConfig')
-    //         }
-    //     })
+        .listen('.deleteConfig', (message) => {
+            if (this.deviceConfig.id === message.device || message.device === 'all') {
+                this.$store.dispatch('deleteConfig')
+            }
+        })
 
-    //     .listen('.updateCards', (message) => {
-    //         if (this.deviceConfig.id === message.device || message.device === 'all') {
-    //             this.$store.dispatch('setCardsFromServer')
-    //         }
-    //     })
+        .listen('.updateCards', (message) => {
+            if (this.deviceConfig.id === message.device || message.device === 'all') {
+                this.$store.dispatch('setCardsFromServer')
+            }
+        })
 
-    //     .listen('.sendCardID', (message) => {
-    //         console.log('received card read request')
-    //         if (this.deviceConfig.id === message.device.id) {
-    //             console.log('setting request')
-    //             this.sendNextCardToWeb = true
-    //             clearTimeout(this.sendNextCardToWebTimeout);
+        .listen('.sendCardID', (message) => {
+            console.log('received card read request')
+            if (this.deviceConfig.id === message.device.id) {
+                console.log('setting request')
+                this.sendNextCardToWeb = true
+                clearTimeout(this.sendNextCardToWebTimeout);
 
-    //             this.sendNextCardToWebTimeout = setTimeout(function() { 
-    //                 this.sendNextCardToWeb = false
-    //             }.bind(this), 300 * 1000);
-    //         }
-    //     })
+                this.sendNextCardToWebTimeout = setTimeout(function() { 
+                    this.sendNextCardToWeb = false
+                }.bind(this), 300 * 1000);
+            }
+        })
         
-    // }
+    }
 }
 </script>

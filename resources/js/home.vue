@@ -5,11 +5,10 @@
    <span v-if="!configMode">
    <secondBar />
    <div class="container">
-    <!-- <buttons /> -->
+    <buttons />
    </div>
    </span>
 
-  <!-- <button @click="close"><i class="fa fa-cube" aria-hidden="true"></i>&nbsp; Close application</button> -->
 
    <span v-if="configMode">
      <div class="container">
@@ -60,7 +59,7 @@ export default {
       // document.addEventListener('click', this.documentClicked)
       // document.addEventListener('touchstart', this.documentClicked)
       // this.$store.dispatch('documentClicked')
-      // this.$store.dispatch('setBrightness', this.mainconfig.screen_brightness)
+      this.$store.dispatch('setBrightness', this.mainconfig.screen_brightness)
     }
 }
 </script>
