@@ -12658,9 +12658,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    // document.addEventListener('click', this.documentClicked)
-    // document.addEventListener('touchstart', this.documentClicked)
-    // this.$store.dispatch('documentClicked')
+    document.addEventListener('click', this.documentClicked);
+    document.addEventListener('touchstart', this.documentClicked);
+    this.$store.dispatch('documentClicked');
     this.$store.dispatch('setBrightness', this.mainconfig.screen_brightness);
   }
 });
