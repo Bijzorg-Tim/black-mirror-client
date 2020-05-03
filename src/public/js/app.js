@@ -12501,6 +12501,8 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       }
     }).listen('.updateCards', function (message) {
       if (_this2.deviceConfig.id === message.device || message.device === 'all') {
+        console.log('setting cards from server');
+
         _this2.$store.dispatch('setCardsFromServer');
       }
     }).listen('.sendCardID', function (message) {
