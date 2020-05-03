@@ -12330,14 +12330,14 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     },
     setUpPins: function setUpPins() {
       if (this.deviceConfig.room.deur) {
-        this.deurSensor = new Gpio(this.mainconfig.door_sensor_pin, 'in', 'both');
-        this.deurPin = new Gpio(this.mainconfig.door_pin, 'out');
-
-        if (this.deviceConfig.room.deur_type === "Power to close") {
-          this.deurPin.writeSync(1);
-        } else {
-          this.deurPin.writeSync(0);
-        }
+        console.log(this.mainconfig.door_pin);
+        console.log(this.mainconfig.door_sensor_pin); // this.deurSensor = new Gpio(this.mainconfig.door_sensor_pin, 'in', 'both')
+        // this.deurPin = new Gpio(this.mainconfig.door_pin, 'out')
+        // if (this.deviceConfig.room.deur_type === "Power to close") {
+        //     this.deurPin.writeSync(1)
+        // } else {
+        //     this.deurPin.writeSync(0)
+        // }
       }
     },
     ExternalDoorToggle: function ExternalDoorToggle() {
@@ -12411,21 +12411,20 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     deurSensor: function deurSensor() {
       console.log(this.deurSensor);
     },
-    deur: function deur() {
-      if (this.deur) {
-        if (this.deviceConfig.room.deur_type === "Power to close") {
-          return this.deurPin.writeSync(0);
-        } else {
-          return this.deurPin.writeSync(1);
-        }
-      }
-
-      if (this.deviceConfig.room.deur_type === "Power to close") {
-        return this.deurPin.writeSync(1);
-      } else {
-        return this.deurPin.writeSync(0);
-      }
-    },
+    // deur () {
+    //     if (this.deur) {
+    //         if (this.deviceConfig.room.deur_type === "Power to close") {
+    //             return this.deurPin.writeSync(0)
+    //         } else {
+    //             return this.deurPin.writeSync(1)
+    //         }
+    //     }
+    //     if (this.deviceConfig.room.deur_type === "Power to close") {
+    //             return this.deurPin.writeSync(1)
+    //         } else {
+    //             return this.deurPin.writeSync(0)
+    //         }
+    // },
     cardRead: function cardRead() {
       var _this = this;
 
@@ -12452,71 +12451,75 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       this.$store.dispatch('resetCard');
     }
   },
-  created: function created() {
-    this.setTemperature = parseInt(this.deviceConfig.room.standaard_temperatuur);
-    this.setUpPins();
-    this.readTemperature();
-    this.tempReadLoop();
-    this.startCardReadLoop();
-  },
-  mounted: function mounted() {
-    var _this2 = this;
+  created: function created() {// this.setTemperature = parseInt(this.deviceConfig.room.standaard_temperatuur)
+    // this.setUpPins()
+    // this.readTemperature()
+    // this.tempReadLoop()
+    // this.startCardReadLoop()
+  } // mounted () {
+  //     // this.$store.dispatch('setCards')
+  //     // this.turnOffLightning()
+  //     // this.turnOffHeating()
+  //     // this.turnOnScreen()
+  //     // this.$store.dispatch('setCardsFromServer')
+  //     this.echo = new Echo({
+  //         broadcaster: 'socket.io',
+  //         host: 'http://192.168.0.30:6001',
+  //         authEndpoint: '/custom/broadcast/auth/route'
+  //     })
+  //     this.echo.channel('devicechannel')
+  //     .listen('.updateDevice', (message) => {
+  //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+  //             this[message.channelrequest.action] = message.channelrequest.status
+  //         }
+  //     })
+  //     .listen('.ping', (message) => {
+  //         var payload = this.createStatusPayload()
+  //         this.$store.dispatch('pong', payload)
+  //     })
+  //     .listen('.updateSoftware', (message) => {
+  //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+  //             this.$store.dispatch('updateSoftware')
+  //         }
+  //     })
+  //     .listen('.restartapp', (message) => {
+  //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+  //             this.$store.dispatch('resetApplication')
+  //         }
+  //     })
+  //     .listen('.reboot', (message) => {
+  //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+  //             this.$store.dispatch('rebootDevice')
+  //         }
+  //     })
+  //     .listen('.shutdown', (message) => {
+  //         if (this.deviceConfig.id === message.device.id || message.device === 'all') {
+  //             this.$store.dispatch('shutdownDevice')
+  //         }
+  //     })
+  //     .listen('.deleteConfig', (message) => {
+  //         if (this.deviceConfig.id === message.device || message.device === 'all') {
+  //             this.$store.dispatch('deleteConfig')
+  //         }
+  //     })
+  //     .listen('.updateCards', (message) => {
+  //         if (this.deviceConfig.id === message.device || message.device === 'all') {
+  //             this.$store.dispatch('setCardsFromServer')
+  //         }
+  //     })
+  //     .listen('.sendCardID', (message) => {
+  //         console.log('received card read request')
+  //         if (this.deviceConfig.id === message.device.id) {
+  //             console.log('setting request')
+  //             this.sendNextCardToWeb = true
+  //             clearTimeout(this.sendNextCardToWebTimeout);
+  //             this.sendNextCardToWebTimeout = setTimeout(function() { 
+  //                 this.sendNextCardToWeb = false
+  //             }.bind(this), 300 * 1000);
+  //         }
+  //     })
+  // }
 
-    this.$store.dispatch('setCards');
-    this.turnOffLightning();
-    this.turnOffHeating();
-    this.turnOnScreen(); // this.$store.dispatch('setCardsFromServer')
-
-    this.echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
-      broadcaster: 'socket.io',
-      host: 'http://192.168.0.30:6001',
-      authEndpoint: '/custom/broadcast/auth/route'
-    });
-    this.echo.channel('devicechannel').listen('.updateDevice', function (message) {
-      if (_this2.deviceConfig.id === message.device.id || message.device === 'all') {
-        _this2[message.channelrequest.action] = message.channelrequest.status;
-      }
-    }).listen('.ping', function (message) {
-      var payload = _this2.createStatusPayload();
-
-      _this2.$store.dispatch('pong', payload);
-    }).listen('.updateSoftware', function (message) {
-      if (_this2.deviceConfig.id === message.device.id || message.device === 'all') {
-        _this2.$store.dispatch('updateSoftware');
-      }
-    }).listen('.restartapp', function (message) {
-      if (_this2.deviceConfig.id === message.device.id || message.device === 'all') {
-        _this2.$store.dispatch('resetApplication');
-      }
-    }).listen('.reboot', function (message) {
-      if (_this2.deviceConfig.id === message.device.id || message.device === 'all') {
-        _this2.$store.dispatch('rebootDevice');
-      }
-    }).listen('.shutdown', function (message) {
-      if (_this2.deviceConfig.id === message.device.id || message.device === 'all') {
-        _this2.$store.dispatch('shutdownDevice');
-      }
-    }).listen('.deleteConfig', function (message) {
-      if (_this2.deviceConfig.id === message.device || message.device === 'all') {
-        _this2.$store.dispatch('deleteConfig');
-      }
-    }).listen('.updateCards', function (message) {
-      if (_this2.deviceConfig.id === message.device || message.device === 'all') {
-        _this2.$store.dispatch('setCardsFromServer');
-      }
-    }).listen('.sendCardID', function (message) {
-      console.log('received card read request');
-
-      if (_this2.deviceConfig.id === message.device.id) {
-        console.log('setting request');
-        _this2.sendNextCardToWeb = true;
-        clearTimeout(_this2.sendNextCardToWebTimeout);
-        _this2.sendNextCardToWebTimeout = setTimeout(function () {
-          this.sendNextCardToWeb = false;
-        }.bind(_this2), 300 * 1000);
-      }
-    });
-  }
 });
 
 /***/ }),
@@ -12657,11 +12660,10 @@ __webpack_require__.r(__webpack_exports__);
       this.$store.dispatch('documentClicked');
     }
   },
-  mounted: function mounted() {
-    document.addEventListener('click', this.documentClicked);
-    document.addEventListener('touchstart', this.documentClicked);
-    this.$store.dispatch('documentClicked');
-    this.$store.dispatch('setBrightness', this.mainconfig.screen_brightness);
+  mounted: function mounted() {// document.addEventListener('click', this.documentClicked)
+    // document.addEventListener('touchstart', this.documentClicked)
+    // this.$store.dispatch('documentClicked')
+    // this.$store.dispatch('setBrightness', this.mainconfig.screen_brightness)
   }
 });
 
@@ -43270,7 +43272,7 @@ var render = function() {
             [
               _c("secondBar"),
               _vm._v(" "),
-              _c("div", { staticClass: "container" }, [_c("buttons")], 1)
+              _c("div", { staticClass: "container" })
             ],
             1
           )
