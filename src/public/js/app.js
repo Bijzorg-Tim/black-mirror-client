@@ -12464,8 +12464,8 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     this.$store.dispatch('setCards');
     this.turnOffLightning();
     this.turnOffHeating();
-    this.turnOnScreen(); // this.$store.dispatch('setCardsFromServer')
-
+    this.turnOnScreen();
+    this.$store.dispatch('setCardsFromServer');
     this.echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
       broadcaster: 'socket.io',
       host: 'http://192.168.0.30:6001',

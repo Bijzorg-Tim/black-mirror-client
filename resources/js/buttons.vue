@@ -453,7 +453,7 @@ export default {
         this.turnOffLightning()
         this.turnOffHeating()
         this.turnOnScreen()
-        // this.$store.dispatch('setCardsFromServer')
+        this.$store.dispatch('setCardsFromServer')
 
         this.echo = new Echo({
             broadcaster: 'socket.io',
