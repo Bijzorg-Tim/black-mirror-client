@@ -183,7 +183,6 @@ export default {
             deurDisabled: false,
             deurTimeout: null,
             deurPin: null,
-            deurSensor: null,
             currentTemperature: 14,
             setTemperature: 0,
             echo: null,
@@ -199,6 +198,9 @@ export default {
             return this.$store.getters['inputDisabled']
         },
         mainconfig(){
+            return this.$store.getters['mainconfig']
+        },
+        doorSensor(){
             return this.$store.getters['mainconfig']
         },
         verwarmingStatus () {
@@ -332,7 +334,6 @@ export default {
         },
         setUpPins(){
             if (this.deviceConfig.room.deur) {
-                this.deurSensor = new Gpio(this.mainconfig.door_sensor_pin, 'in', 'both')
                 this.deurPin = new Gpio(this.mainconfig.door_pin, 'out')
                 if (this.deviceConfig.room.deur_type === "Power to close") {
                     this.deurPin.writeSync(1)
@@ -406,8 +407,8 @@ export default {
                 }
             return this.$store.dispatch('buttonaction', payload)
         },
-        deurSensor() {
-            console.log(this.deurSensor)
+        doorSensor() {
+            console.log(this.doorSensor)
         },
         deur () {
             if (this.deur) {
@@ -447,6 +448,7 @@ export default {
         this.readTemperature()
         this.tempReadLoop()
         this.startCardReadLoop()
+        this.startDoorSensorLoop()
     },
     mounted () {
         this.$store.dispatch('setCards')

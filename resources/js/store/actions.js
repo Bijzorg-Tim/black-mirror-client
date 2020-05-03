@@ -57,6 +57,10 @@ export const startCardReadLoop = ({commit, state}) => {
     commit('startCardReadLoop')
 }
 
+export const startDoorSensorLoop = ({commit, state}) => {
+    commit('startDoorSensorLoop')
+}
+
 export const turnonscreen = ({commit, state}) => {
     commit('turnonscreen')
 }

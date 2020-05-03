@@ -12162,7 +12162,6 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       deurDisabled: false,
       deurTimeout: null,
       deurPin: null,
-      deurSensor: null,
       currentTemperature: 14,
       setTemperature: 0,
       echo: null,
@@ -12178,6 +12177,9 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       return this.$store.getters['inputDisabled'];
     },
     mainconfig: function mainconfig() {
+      return this.$store.getters['mainconfig'];
+    },
+    doorSensor: function doorSensor() {
       return this.$store.getters['mainconfig'];
     },
     verwarmingStatus: function verwarmingStatus() {
@@ -12330,7 +12332,6 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     },
     setUpPins: function setUpPins() {
       if (this.deviceConfig.room.deur) {
-        this.deurSensor = new Gpio(this.mainconfig.door_sensor_pin, 'in', 'both');
         this.deurPin = new Gpio(this.mainconfig.door_pin, 'out');
 
         if (this.deviceConfig.room.deur_type === "Power to close") {
@@ -12408,8 +12409,8 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       };
       return this.$store.dispatch('buttonaction', payload);
     },
-    deurSensor: function deurSensor() {
-      console.log(this.deurSensor);
+    doorSensor: function doorSensor() {
+      console.log(this.doorSensor);
     },
     deur: function deur() {
       if (this.deur) {
@@ -12457,6 +12458,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     this.readTemperature();
     this.tempReadLoop();
     this.startCardReadLoop();
+    this.startDoorSensorLoop();
   },
   mounted: function mounted() {
     var _this2 = this;
@@ -57200,7 +57202,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************!*\
   !*** ./resources/js/store/actions.js ***!
   \***************************************/
-/*! exports provided: setNewDeviceConfig, setDeviceConfig, rebootDevice, shutdownDevice, resetApplication, getTempConfig, documentClicked, setCards, setCardsFromServer, startCardReadLoop, turnonscreen, setBrightness, resetCard, updateSoftware, deleteConfig, setTempConfig, pong, sendButtonChangeToServer, sendIp, buttonaction, sendCardToWeb */
+/*! exports provided: setNewDeviceConfig, setDeviceConfig, rebootDevice, shutdownDevice, resetApplication, getTempConfig, documentClicked, setCards, setCardsFromServer, startCardReadLoop, startDoorSensorLoop, turnonscreen, setBrightness, resetCard, updateSoftware, deleteConfig, setTempConfig, pong, sendButtonChangeToServer, sendIp, buttonaction, sendCardToWeb */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57215,6 +57217,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCards", function() { return setCards; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCardsFromServer", function() { return setCardsFromServer; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startCardReadLoop", function() { return startCardReadLoop; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startDoorSensorLoop", function() { return startDoorSensorLoop; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "turnonscreen", function() { return turnonscreen; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setBrightness", function() { return setBrightness; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resetCard", function() { return resetCard; });
@@ -57283,29 +57286,34 @@ var startCardReadLoop = function startCardReadLoop(_ref10) {
       state = _ref10.state;
   commit('startCardReadLoop');
 };
-var turnonscreen = function turnonscreen(_ref11) {
+var startDoorSensorLoop = function startDoorSensorLoop(_ref11) {
   var commit = _ref11.commit,
       state = _ref11.state;
-  commit('turnonscreen');
+  commit('startDoorSensorLoop');
 };
-var setBrightness = function setBrightness(_ref12) {
+var turnonscreen = function turnonscreen(_ref12) {
   var commit = _ref12.commit,
       state = _ref12.state;
-  commit('setBrightness');
+  commit('turnonscreen');
 };
-var resetCard = function resetCard(_ref13) {
+var setBrightness = function setBrightness(_ref13) {
   var commit = _ref13.commit,
       state = _ref13.state;
-  commit('resetCard');
+  commit('setBrightness');
 };
-var updateSoftware = function updateSoftware(_ref14) {
+var resetCard = function resetCard(_ref14) {
   var commit = _ref14.commit,
       state = _ref14.state;
-  commit('updateSoftware');
+  commit('resetCard');
 };
-var deleteConfig = function deleteConfig(_ref15) {
+var updateSoftware = function updateSoftware(_ref15) {
   var commit = _ref15.commit,
       state = _ref15.state;
+  commit('updateSoftware');
+};
+var deleteConfig = function deleteConfig(_ref16) {
+  var commit = _ref16.commit,
+      state = _ref16.state;
 
   if (fs.existsSync(window.dirname + '/deviceconfig.json')) {
     var config = JSON.parse(fs.readFileSync(window.dirname + '/deviceconfig.json'));
@@ -57328,9 +57336,9 @@ var deleteConfig = function deleteConfig(_ref15) {
   fs.writeFileSync(window.dirname + '/tempconfig.json', JSON.stringify(tempconfig));
   commit('resetApplication');
 };
-var setTempConfig = function setTempConfig(_ref16) {
-  var commit = _ref16.commit,
-      state = _ref16.state;
+var setTempConfig = function setTempConfig(_ref17) {
+  var commit = _ref17.commit,
+      state = _ref17.state;
 
   if (!fs.existsSync(window.dirname + '/tempconfig.json')) {
     var pin = Math.floor(Math.random() * 1000000);
@@ -57340,9 +57348,9 @@ var setTempConfig = function setTempConfig(_ref16) {
     fs.writeFileSync(window.dirname + '/tempconfig.json', JSON.stringify(tempconfig));
   }
 };
-var pong = function pong(_ref17, payload) {
-  var commit = _ref17.commit,
-      state = _ref17.state;
+var pong = function pong(_ref18, payload) {
+  var commit = _ref18.commit,
+      state = _ref18.state;
   commit('addDeviceStatusToDeviceConfig', payload);
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/pong',
@@ -57350,17 +57358,17 @@ var pong = function pong(_ref17, payload) {
     data: state.deviceConfig
   }).then(function () {})["catch"](function () {});
 };
-var sendButtonChangeToServer = function sendButtonChangeToServer(_ref18, payload) {
-  var commit = _ref18.commit,
-      state = _ref18.state;
+var sendButtonChangeToServer = function sendButtonChangeToServer(_ref19, payload) {
+  var commit = _ref19.commit,
+      state = _ref19.state;
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/button-change-from-device',
     method: 'POST',
     data: payload
   }).then(function () {})["catch"](function () {});
 };
-var sendIp = function sendIp(_ref19, payload) {
-  var state = _ref19.state;
+var sendIp = function sendIp(_ref20, payload) {
+  var state = _ref20.state;
   var data = state.mainconfig;
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
     url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/sendIpFromDevice/' + payload.id,
@@ -57368,8 +57376,8 @@ var sendIp = function sendIp(_ref19, payload) {
     data: data
   }).then(function () {})["catch"](function () {});
 };
-var buttonaction = function buttonaction(_ref20, payload) {
-  var state = _ref20.state;
+var buttonaction = function buttonaction(_ref21, payload) {
+  var state = _ref21.state;
   var devicefunction = state.deviceConfig.functions.find(function (a) {
     return a["function"] === payload.action;
   });
@@ -57383,8 +57391,8 @@ var buttonaction = function buttonaction(_ref20, payload) {
     data: data
   }).then(function () {})["catch"](function () {});
 };
-var sendCardToWeb = function sendCardToWeb(_ref21, payload) {
-  var state = _ref21.state;
+var sendCardToWeb = function sendCardToWeb(_ref22, payload) {
+  var state = _ref22.state;
   var data = {
     sleutel: payload
   };
@@ -57402,7 +57410,7 @@ var sendCardToWeb = function sendCardToWeb(_ref21, payload) {
 /*!***************************************!*\
   !*** ./resources/js/store/getters.js ***!
   \***************************************/
-/*! exports provided: configMode, deviceConfig, mainconfig, tempConfig, inputDisabled, cardRead, cards */
+/*! exports provided: configMode, deviceConfig, mainconfig, tempConfig, inputDisabled, cardRead, cards, doorSensor */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57414,6 +57422,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "inputDisabled", function() { return inputDisabled; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cardRead", function() { return cardRead; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cards", function() { return cards; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "doorSensor", function() { return doorSensor; });
 var configMode = function configMode(state) {
   return state.configMode;
 };
@@ -57434,6 +57443,9 @@ var cardRead = function cardRead(state) {
 };
 var cards = function cards(state) {
   return state.cards;
+};
+var doorSensor = function doorSensor(state) {
+  return state.doorSensor;
 };
 
 /***/ }),
@@ -57474,7 +57486,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*!*****************************************!*\
   !*** ./resources/js/store/mutations.js ***!
   \*****************************************/
-/*! exports provided: setDeviceConfig, setNewDeviceConfig, resetApplication, shutdownDevice, rebootDevice, getTempConfig, updateSoftware, documentClicked, turnonscreen, setBrightness, setCards, setCardsFromServer, startCardReadLoop, addDeviceStatusToDeviceConfig, resetCard */
+/*! exports provided: setDeviceConfig, setNewDeviceConfig, resetApplication, shutdownDevice, rebootDevice, getTempConfig, updateSoftware, documentClicked, turnonscreen, setBrightness, setCards, setCardsFromServer, startCardReadLoop, startDoorSensorLoop, addDeviceStatusToDeviceConfig, resetCard */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -57492,6 +57504,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCards", function() { return setCards; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setCardsFromServer", function() { return setCardsFromServer; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startCardReadLoop", function() { return startCardReadLoop; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "startDoorSensorLoop", function() { return startDoorSensorLoop; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addDeviceStatusToDeviceConfig", function() { return addDeviceStatusToDeviceConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resetCard", function() { return resetCard; });
 var setDeviceConfig = function setDeviceConfig(state) {
@@ -57568,6 +57581,21 @@ var startCardReadLoop = function startCardReadLoop(state) {
     if (err) throw err;
   });
 };
+var startDoorSensorLoop = function startDoorSensorLoop(state) {
+  console.log('starting door read loop');
+  state.pyshell = new window.PythonShell(window.dirname + '/doorSensor.py', {
+    pythonOptions: ['-u']
+  });
+  state.pyshell.on('message', function (message) {
+    // received a message sent from the Python script (a simple "print" statement)
+    console.log('changing sensor status');
+    state.doorSensor = message;
+  }); // end the input stream and allow the process to exit
+
+  state.pyshell.end(function (err, code, signal) {
+    if (err) throw err;
+  });
+};
 var addDeviceStatusToDeviceConfig = function addDeviceStatusToDeviceConfig(state, payload) {
   state.deviceConfig.devicestatus = payload;
 };
@@ -57595,7 +57623,8 @@ __webpack_require__.r(__webpack_exports__);
   configMode: true,
   screenTimeout: null,
   inputDisabled: false,
-  pyshell: null
+  pyshell: null,
+  doorSensor: 2
 });
 
 /***/ }),

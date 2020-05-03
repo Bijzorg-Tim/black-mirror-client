@@ -92,6 +92,21 @@ export const startCardReadLoop = (state) => {
     });
 }
 
+export const startDoorSensorLoop = (state) => {
+    console.log('starting door read loop')
+    state.pyshell = new window.PythonShell(window.dirname + '/doorSensor.py', { pythonOptions: ['-u']});
+    state.pyshell.on('message', function (message) {
+    // received a message sent from the Python script (a simple "print" statement)
+    console.log('changing sensor status')
+        state.doorSensor = message
+    });
+    
+    // end the input stream and allow the process to exit
+    state.pyshell.end(function (err,code,signal) {
+    if (err) throw err;
+    });
+}
+
 export const addDeviceStatusToDeviceConfig = (state, payload) => {
     state.deviceConfig.devicestatus = payload
 }

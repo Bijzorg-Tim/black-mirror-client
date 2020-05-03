@@ -7,5 +7,6 @@ export default {
     configMode: true,
     screenTimeout: null,
     inputDisabled: false,
-    pyshell: null
+    pyshell: null,
+    doorSensor: 2
 }
