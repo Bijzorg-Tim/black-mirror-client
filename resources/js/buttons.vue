@@ -469,10 +469,10 @@ export default {
     },
     mounted () {
         this.$store.dispatch('setCards')
+        this.closeDoor()
         this.turnOffLightning()
         this.turnOffHeating()
         this.turnOnScreen()
-        this.closeDoor()
         this.$store.dispatch('setCardsFromServer')
 
         this.echo = new Echo({

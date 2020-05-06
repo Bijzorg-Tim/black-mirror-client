@@ -12482,10 +12482,10 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     var _this2 = this;
 
     this.$store.dispatch('setCards');
+    this.closeDoor();
     this.turnOffLightning();
     this.turnOffHeating();
     this.turnOnScreen();
-    this.closeDoor();
     this.$store.dispatch('setCardsFromServer');
     this.echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
       broadcaster: 'socket.io',
