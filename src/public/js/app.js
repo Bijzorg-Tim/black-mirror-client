@@ -12380,9 +12380,9 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     },
     closeDoor: function closeDoor() {
       if (this.deviceConfig.room.deur_type === "Power to close") {
-        return this.deurPin.writeSync(1);
-      } else {
         return this.deurPin.writeSync(0);
+      } else {
+        return this.deurPin.writeSync(1);
       }
     }
   },
