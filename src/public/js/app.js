@@ -12411,7 +12411,13 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       return this.$store.dispatch('buttonaction', payload);
     },
     doorSensor: function doorSensor() {
-      console.log(this.doorSensor);
+      if (!this.deur) {
+        if (this.deviceConfig.room.deur_type === "Power to close") {
+          return this.deurPin.writeSync(1);
+        } else {
+          return this.deurPin.writeSync(0);
+        }
+      }
     },
     deur: function deur() {
       if (this.deur) {

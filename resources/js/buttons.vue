@@ -409,7 +409,13 @@ export default {
             return this.$store.dispatch('buttonaction', payload)
         },
         doorSensor() {
-            console.log(this.doorSensor)
+            if (!this.deur) {
+                if (this.deviceConfig.room.deur_type === "Power to close") {
+                    return this.deurPin.writeSync(1)
+                } else {
+                    return this.deurPin.writeSync(0)
+                }
+            }
         },
         deur () {
             if (this.deur) {

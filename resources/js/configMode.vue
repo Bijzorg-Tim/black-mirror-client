@@ -47,7 +47,7 @@ export default {
         })
         this.echo = new Echo({
             broadcaster: 'socket.io',
-            host: 'http://192.168.0.30:6001',
+            host: 'http://10.1.2.5:6001',
             authEndpoint: '/custom/broadcast/auth/route'
         })
 
