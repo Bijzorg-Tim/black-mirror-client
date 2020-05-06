@@ -183,6 +183,7 @@ export default {
             deurDisabled: false,
             deurTimeout: null,
             deurPin: null,
+            deurStatus: false,
             currentTemperature: 14,
             setTemperature: 0,
             echo: null,
@@ -415,6 +416,7 @@ export default {
             return this.$store.dispatch('buttonaction', payload)
         },
         doorSensor() {
+            console.log(this.doorsensor)
             if (!this.deur) {
                 if (this.deviceConfig.room.deur_type === "Power to close") {
                     return this.deurPin.writeSync(1)
@@ -423,7 +425,7 @@ export default {
                 }
             }
         },
-        deur: {
+        deurStatus: {
             immediate: true,
             handler() {
                 console.log('doorchanges')
@@ -440,6 +442,19 @@ export default {
                         return this.deurPin.writeSync(0)
                     } else {
                         return this.deurPin.writeSync(1)
+                }
+            }
+        },
+        deur: {
+            immediate: true,
+            handler() {
+                console.log('doorchanges')
+                if (this.deur) {
+                    return this.deurStatus = true
+                }
+                
+                if (this.doorSensor === 1) {
+                    return this.deurStatus = false
                 }
             }
         },

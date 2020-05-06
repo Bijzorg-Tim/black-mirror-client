@@ -12162,6 +12162,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       deurDisabled: false,
       deurTimeout: null,
       deurPin: null,
+      deurStatus: false,
       currentTemperature: 14,
       setTemperature: 0,
       echo: null,
@@ -12417,6 +12418,8 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       return this.$store.dispatch('buttonaction', payload);
     },
     doorSensor: function doorSensor() {
+      console.log(this.doorsensor);
+
       if (!this.deur) {
         if (this.deviceConfig.room.deur_type === "Power to close") {
           return this.deurPin.writeSync(1);
@@ -12425,7 +12428,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
         }
       }
     },
-    deur: {
+    deurStatus: {
       immediate: true,
       handler: function handler() {
         console.log('doorchanges');
@@ -12445,6 +12448,20 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
           return this.deurPin.writeSync(0);
         } else {
           return this.deurPin.writeSync(1);
+        }
+      }
+    },
+    deur: {
+      immediate: true,
+      handler: function handler() {
+        console.log('doorchanges');
+
+        if (this.deur) {
+          return this.deurStatus = true;
+        }
+
+        if (this.doorSensor === 1) {
+          return this.deurStatus = false;
         }
       }
     },
