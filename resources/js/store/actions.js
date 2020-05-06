@@ -23,7 +23,7 @@ export const resetApplication = ({commit}, payload) => {
 export const getTempConfig = ({state, commit}) => {
     commit('getTempConfig')
     axios({
-        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-needs-setup',
+        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/web/device-needs-setup',
         method: 'POST',
         data: state.tempConfig,
         }).then(() => {
@@ -44,7 +44,7 @@ export const setCards = ({commit}) => {
 
 export const setCardsFromServer = ({commit, state}) => {
     axios({
-        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/get-cards-for-device/' + state.deviceConfig.id,
+        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/web/get-cards-for-device/' + state.deviceConfig.id,
         method: 'POST',
     }).then((response) => {
         fs.writeFileSync(window.dirname + '/cards.json', JSON.stringify(response.data), 'utf-8')
@@ -82,7 +82,7 @@ export const deleteConfig = ({commit, state}) => {
         const config = JSON.parse(fs.readFileSync(window.dirname + '/deviceconfig.json'))
         
         axios({
-            url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-deleting-config',
+            url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/web/device-deleting-config',
             method: 'POST',
             data: config,
         }).then(() => {})
@@ -125,7 +125,7 @@ export const pong = ({commit, state}, payload) => {
     commit('addDeviceStatusToDeviceConfig', payload)
 
     return axios({
-        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/pong',
+        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/web/pong',
         method: 'POST',
         data: state.deviceConfig,
     }).then(() => {})
@@ -134,7 +134,7 @@ export const pong = ({commit, state}, payload) => {
 
 export const sendButtonChangeToServer = ({commit, state}, payload) => {
     return axios({
-        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/button-change-from-device',
+        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/web/button-change-from-device',
         method: 'POST',
         data: payload,
     }).then(() => {})
@@ -144,7 +144,7 @@ export const sendButtonChangeToServer = ({commit, state}, payload) => {
 export const sendIp = ({state}, payload) => {
     const data = state.mainconfig
     return axios({
-        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/sendIpFromDevice/' + payload.id,
+        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/web/sendIpFromDevice/' + payload.id,
         method: 'POST',
         data: data,
     }).then(() => {})
@@ -158,7 +158,7 @@ export const buttonaction = ({state}, payload) => {
         action: payload.value
     }
     return axios({
-        url: 'http://' + devicefunction.ip + '/action',
+        url: 'http://' + devicefunction.ip + '/web/action',
         method: 'POST',
         data: data,
     }).then(() => {})
@@ -172,7 +172,7 @@ export const sendCardToWeb = ({state}, payload) => {
 
     console.log('sending key to server')
     return axios({
-        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/send-card-from-device-to-web/',
+        url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/web/send-card-from-device-to-web/',
         method: 'POST',
         data: data,
     }).then(() => {})

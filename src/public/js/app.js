@@ -57263,7 +57263,7 @@ var getTempConfig = function getTempConfig(_ref6) {
       commit = _ref6.commit;
   commit('getTempConfig');
   axios__WEBPACK_IMPORTED_MODULE_0___default()({
-    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-needs-setup',
+    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/web/device-needs-setup',
     method: 'POST',
     data: state.tempConfig
   }).then(function () {})["catch"](function () {});
@@ -57280,7 +57280,7 @@ var setCardsFromServer = function setCardsFromServer(_ref9) {
   var commit = _ref9.commit,
       state = _ref9.state;
   axios__WEBPACK_IMPORTED_MODULE_0___default()({
-    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/get-cards-for-device/' + state.deviceConfig.id,
+    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/web/get-cards-for-device/' + state.deviceConfig.id,
     method: 'POST'
   }).then(function (response) {
     fs.writeFileSync(window.dirname + '/cards.json', JSON.stringify(response.data), 'utf-8');
@@ -57324,7 +57324,7 @@ var deleteConfig = function deleteConfig(_ref16) {
   if (fs.existsSync(window.dirname + '/deviceconfig.json')) {
     var config = JSON.parse(fs.readFileSync(window.dirname + '/deviceconfig.json'));
     axios__WEBPACK_IMPORTED_MODULE_0___default()({
-      url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/device-deleting-config',
+      url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/web/device-deleting-config',
       method: 'POST',
       data: config
     }).then(function () {})["catch"](function () {});
@@ -57359,7 +57359,7 @@ var pong = function pong(_ref18, payload) {
       state = _ref18.state;
   commit('addDeviceStatusToDeviceConfig', payload);
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
-    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/pong',
+    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/web/pong',
     method: 'POST',
     data: state.deviceConfig
   }).then(function () {})["catch"](function () {});
@@ -57368,7 +57368,7 @@ var sendButtonChangeToServer = function sendButtonChangeToServer(_ref19, payload
   var commit = _ref19.commit,
       state = _ref19.state;
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
-    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/button-change-from-device',
+    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/web/button-change-from-device',
     method: 'POST',
     data: payload
   }).then(function () {})["catch"](function () {});
@@ -57377,7 +57377,7 @@ var sendIp = function sendIp(_ref20, payload) {
   var state = _ref20.state;
   var data = state.mainconfig;
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
-    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/sendIpFromDevice/' + payload.id,
+    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/web/sendIpFromDevice/' + payload.id,
     method: 'POST',
     data: data
   }).then(function () {})["catch"](function () {});
@@ -57392,7 +57392,7 @@ var buttonaction = function buttonaction(_ref21, payload) {
     action: payload.value
   };
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
-    url: 'http://' + devicefunction.ip + '/action',
+    url: 'http://' + devicefunction.ip + '/web/action',
     method: 'POST',
     data: data
   }).then(function () {})["catch"](function () {});
@@ -57404,7 +57404,7 @@ var sendCardToWeb = function sendCardToWeb(_ref22, payload) {
   };
   console.log('sending key to server');
   return axios__WEBPACK_IMPORTED_MODULE_0___default()({
-    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/send-card-from-device-to-web/',
+    url: 'http://' + state.mainconfig.api_url + ':' + state.mainconfig.api_port + '/web/send-card-from-device-to-web/',
     method: 'POST',
     data: data
   }).then(function () {})["catch"](function () {});
