@@ -12379,11 +12379,10 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       }
     },
     closeDoor: function closeDoor() {
-      if (this.deviceConfig.room.deur_type === "Power to close") {
-        return this.deurPin.writeSync(0);
-      } else {
-        return this.deurPin.writeSync(1);
-      }
+      this.deur = true;
+      setTimeout(function () {
+        this.deur = false;
+      }.bind(this), 4000);
     }
   },
   watch: {
@@ -12485,6 +12484,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     var _this2 = this;
 
     this.$store.dispatch('setCards');
+    this.closeDoor();
     this.turnOffLightning();
     this.turnOffHeating();
     this.turnOnScreen();
