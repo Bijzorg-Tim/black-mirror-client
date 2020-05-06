@@ -425,21 +425,24 @@ export default {
                 }
             }
         },
-        deur () {
-            console.log('doorchanges')
-            if (this.deur) {
-                console.log('turn on door')
-                if (this.deviceConfig.room.deur_type === "Power to close") {
-                    return this.deurPin.writeSync(1)
-                } else {
-                    return this.deurPin.writeSync(0)
+        deur: {
+            immediate: true,
+            handler() {
+                console.log('doorchanges')
+                if (this.deur) {
+                    console.log('turn on door')
+                    if (this.deviceConfig.room.deur_type === "Power to close") {
+                        return this.deurPin.writeSync(1)
+                    } else {
+                        return this.deurPin.writeSync(0)
+                    }
                 }
-            }
-            if (this.deviceConfig.room.deur_type === "Power to close") {
-                    console.log('close door')
-                    return this.deurPin.writeSync(0)
-                } else {
-                    return this.deurPin.writeSync(1)
+                if (this.deviceConfig.room.deur_type === "Power to close") {
+                        console.log('close door')
+                        return this.deurPin.writeSync(0)
+                    } else {
+                        return this.deurPin.writeSync(1)
+                }
             }
         },
         cardRead () {
@@ -469,7 +472,6 @@ export default {
     },
     mounted () {
         this.$store.dispatch('setCards')
-        this.closeDoor()
         this.turnOffLightning()
         this.turnOffHeating()
         this.turnOnScreen()

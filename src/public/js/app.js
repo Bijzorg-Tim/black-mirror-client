@@ -12426,24 +12426,27 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
         }
       }
     },
-    deur: function deur() {
-      console.log('doorchanges');
+    deur: {
+      immediate: true,
+      handler: function handler() {
+        console.log('doorchanges');
 
-      if (this.deur) {
-        console.log('turn on door');
+        if (this.deur) {
+          console.log('turn on door');
+
+          if (this.deviceConfig.room.deur_type === "Power to close") {
+            return this.deurPin.writeSync(1);
+          } else {
+            return this.deurPin.writeSync(0);
+          }
+        }
 
         if (this.deviceConfig.room.deur_type === "Power to close") {
-          return this.deurPin.writeSync(1);
-        } else {
+          console.log('close door');
           return this.deurPin.writeSync(0);
+        } else {
+          return this.deurPin.writeSync(1);
         }
-      }
-
-      if (this.deviceConfig.room.deur_type === "Power to close") {
-        console.log('close door');
-        return this.deurPin.writeSync(0);
-      } else {
-        return this.deurPin.writeSync(1);
       }
     },
     cardRead: function cardRead() {
@@ -12482,7 +12485,6 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     var _this2 = this;
 
     this.$store.dispatch('setCards');
-    this.closeDoor();
     this.turnOffLightning();
     this.turnOffHeating();
     this.turnOnScreen();
