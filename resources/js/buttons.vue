@@ -424,11 +424,11 @@ export default {
                 if (this.deviceConfig.room.deur_type === "Power to close") {
                     return this.deurPin.writeSync(0)
                 } else {
-                    console.log('close door')
                     return this.deurPin.writeSync(1)
                 }
             }
             if (this.deviceConfig.room.deur_type === "Power to close") {
+                    console.log('close door')
                     return this.deurPin.writeSync(1)
                 } else {
                     return this.deurPin.writeSync(0)
