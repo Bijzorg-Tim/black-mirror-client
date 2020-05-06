@@ -12589,7 +12589,7 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     });
     this.echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
       broadcaster: 'socket.io',
-      host: 'http://192.168.0.30:6001',
+      host: 'http://10.1.2.5:6001',
       authEndpoint: '/custom/broadcast/auth/route'
     });
     this.echo.channel('deviceconfigchannel').listen('.setConfig', function (message) {
