@@ -377,6 +377,14 @@ export default {
                 this.$store.dispatch('startCardReadLoop')
                 this.$store.dispatch('startDoorSensorLoop')
             }
+        },
+        closeDoor() {
+            if (this.deviceConfig.room.deur_type === "Power to close") {
+                return this.deurPin.writeSync(1)
+            } else {
+                return this.deurPin.writeSync(0)
+            }
+    
         }
     },
     watch: {
@@ -432,7 +440,7 @@ export default {
                     return this.deurPin.writeSync(0)
                 } else {
                     return this.deurPin.writeSync(1)
-                }
+            }
         },
         cardRead () {
             if (this.cardRead === null) {return}
@@ -464,6 +472,7 @@ export default {
         this.turnOffLightning()
         this.turnOffHeating()
         this.turnOnScreen()
+        this.closeDoor()
         this.$store.dispatch('setCardsFromServer')
 
         this.echo = new Echo({
