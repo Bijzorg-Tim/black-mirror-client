@@ -184,7 +184,7 @@ export default {
             deurTimeout: null,
             deurPin: null,
             currentTemperature: 14,
-            setTemperature: 0,
+            setTemperature: 1,
             echo: null,
             sendNextCardToWeb: false,
             sendNextCardToWebTimeout: null
@@ -208,7 +208,9 @@ export default {
                 return false
             } 
 
-            if (this.setTemperature + this.deviceConfig.room.verwarming_uit_na_graden_extra < this.currentTemperature) {
+            const settemp = this.setTemperature + parseInt(this.deviceConfig.room.verwarming_uit_na_graden_extra)
+
+            if (settemp <= this.currentTemperature) {
                 return false
             }
             return true
@@ -218,7 +220,7 @@ export default {
                 return false
             } 
 
-            if (this.setTemperature <= this.currentTemperature) {
+            if (this.setTemperature < this.currentTemperature) {
                 return false
             }
             return true
@@ -475,7 +477,7 @@ export default {
 
         this.echo = new Echo({
             broadcaster: 'socket.io',
-            host: 'http://10.1.2.5:6001',
+            host: 'http://' + this.mainconfig.api_url + ':6001',
             authEndpoint: '/custom/broadcast/auth/route'
         })
 

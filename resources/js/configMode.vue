@@ -37,7 +37,10 @@ export default {
         }
     },
     computed: {
-        tempConfig () {return this.$store.getters['tempConfig']}
+        tempConfig () {return this.$store.getters['tempConfig']},
+        mainconfig(){
+            return this.$store.getters['mainconfig']
+        },
     },
     methods: {
     },
@@ -47,7 +50,7 @@ export default {
         })
         this.echo = new Echo({
             broadcaster: 'socket.io',
-            host: 'http://10.1.2.5:6001',
+            host: 'http://' + this.mainconfig.api_url + ':6001',
             authEndpoint: '/custom/broadcast/auth/route'
         })
 

@@ -152,13 +152,12 @@ export const sendIp = ({state}, payload) => {
 }
 
 export const buttonaction = ({state}, payload) => {
-    const devicefunction = state.deviceConfig.functions.find(a => a.function === payload.action)
     const data = {
-        pin: devicefunction.pin,
+        pin: state.deviceConfig.room[payload.action + 'functie'],
         action: payload.value
     }
     return axios({
-        url: 'http://' + devicefunction.ip + '/web/action',
+        url: 'http://' + state.deviceConfig.room[payload.action + 'functie']['ip'] + '/action',
         method: 'POST',
         data: data,
     }).then(() => {})
