@@ -12317,11 +12317,16 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       }.bind(this), 2500);
     },
     readTemperature: function readTemperature() {
+      console.log('reading temp');
+
       if (this.deviceConfig.room.verwarming) {
+        console.log('card read loop');
         window.tempsensor.read(22, this.deviceConfig.room.tempsensor_pin, function (err, temperature, humidity) {
           if (!err) {
             this.currentTemperature = Math.round(temperature * 10) / 10;
           }
+
+          console.log(err);
         }.bind(this));
       }
     },
@@ -12381,10 +12386,12 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       }
     },
     closeDoor: function closeDoor() {
-      this.deur = true;
-      setTimeout(function () {
-        this.deur = false;
-      }.bind(this), 4000);
+      if (this.deviceConfig.room.deur) {
+        this.deur = true;
+        setTimeout(function () {
+          this.deur = false;
+        }.bind(this), 4000);
+      }
     }
   },
   watch: {
@@ -12473,20 +12480,19 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     }
   },
   created: function created() {
-    this.setTemperature = parseInt(this.deviceConfig.room.standaard_temperatuur);
-    this.setUpPins();
+    this.setTemperature = parseInt(this.deviceConfig.room.standaard_temperatuur); // this.setUpPins()
+
     this.readTemperature();
-    this.tempReadLoop();
-    this.startCardReadLoop();
+    this.tempReadLoop(); // this.startCardReadLoop()
   },
   mounted: function mounted() {
     var _this2 = this;
 
-    this.$store.dispatch('setCards');
-    this.closeDoor();
-    this.turnOffLightning();
-    this.turnOffHeating();
-    this.turnOnScreen();
+    this.$store.dispatch('setCards'); // this.closeDoor()
+    // this.turnOffLightning()
+    // this.turnOffHeating()
+    // this.turnOnScreen()
+
     this.$store.dispatch('setCardsFromServer');
     this.echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
       broadcaster: 'socket.io',
@@ -56826,15 +56832,14 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
 /*!**********************************!*\
   !*** ./resources/js/buttons.vue ***!
   \**********************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _buttons_vue_vue_type_template_id_17072cf3___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./buttons.vue?vue&type=template&id=17072cf3& */ "./resources/js/buttons.vue?vue&type=template&id=17072cf3&");
 /* harmony import */ var _buttons_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./buttons.vue?vue&type=script&lang=js& */ "./resources/js/buttons.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _buttons_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _buttons_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _buttons_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./buttons.vue?vue&type=style&index=0&lang=css& */ "./resources/js/buttons.vue?vue&type=style&index=0&lang=css&");
+/* empty/unused harmony star reexport *//* harmony import */ var _buttons_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./buttons.vue?vue&type=style&index=0&lang=css& */ "./resources/js/buttons.vue?vue&type=style&index=0&lang=css&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -56866,7 +56871,7 @@ component.options.__file = "resources/js/buttons.vue"
 /*!***********************************************************!*\
   !*** ./resources/js/buttons.vue?vue&type=script&lang=js& ***!
   \***********************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
