@@ -211,8 +211,19 @@ export default {
             const settemp = this.setTemperature + parseInt(this.deviceConfig.room.verwarming_uit_na_graden_extra)
 
             if (settemp <= this.currentTemperature) {
+                const payload = {
+                    action: 'verwarming',
+                    value: false
+                }
+                this.$store.dispatch('buttonaction', payload)
                 return false
             }
+            const payload = {
+                    action: 'verwarming',
+                    value: true
+                }
+                this.$store.dispatch('buttonaction', payload)
+                false
             return true
         },
         verwarmingKnopStatus () {

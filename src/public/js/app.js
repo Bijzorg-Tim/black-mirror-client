@@ -12190,9 +12190,20 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       var settemp = this.setTemperature + parseInt(this.deviceConfig.room.verwarming_uit_na_graden_extra);
 
       if (settemp <= this.currentTemperature) {
+        var _payload = {
+          action: 'verwarming',
+          value: false
+        };
+        this.$store.dispatch('buttonaction', _payload);
         return false;
       }
 
+      var payload = {
+        action: 'verwarming',
+        value: true
+      };
+      this.$store.dispatch('buttonaction', payload);
+      false;
       return true;
     },
     verwarmingKnopStatus: function verwarmingKnopStatus() {
@@ -12392,11 +12403,11 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
   watch: {
     verwarmingStatus: function verwarmingStatus() {
       if (this.verwarmingStatus) {
-        var _payload = {
+        var _payload2 = {
           action: 'verwarming',
           value: true
         };
-        return this.$store.dispatch('buttonaction', _payload);
+        return this.$store.dispatch('buttonaction', _payload2);
       }
 
       var payload = {
@@ -12407,11 +12418,11 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     },
     verlichting: function verlichting() {
       if (this.verlichting) {
-        var _payload2 = {
+        var _payload3 = {
           action: 'verlichting',
           value: true
         };
-        return this.$store.dispatch('buttonaction', _payload2);
+        return this.$store.dispatch('buttonaction', _payload3);
       }
 
       var payload = {
