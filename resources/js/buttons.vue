@@ -319,17 +319,11 @@ export default {
                 }.bind(this), 2500);
         },
         readTemperature () {
-            console.log('reading temp')
-            console.log('config = ' + this.deviceConfig.room.verwarming)
             if (this.deviceConfig.room.verwarming) {
-                console.log('card read loop')
-                window.tempsensor.read(22, this.deviceConfig.room.tempsensor_pin, function(err, temperature, humidity) {
+                window.tempsensor.read(22, this.mainconfig.tempsensor_pin, function(err, temperature, humidity) {
                     if (!err) {
-                        console.log('should read temp now')
-                        console.log('temperature')
                         this.currentTemperature = Math.round(temperature * 10) / 10
                     }
-                    console.log(err)
                 }.bind(this));
             }
         },
@@ -470,17 +464,17 @@ export default {
     },
     created () {
         this.setTemperature = parseInt(this.deviceConfig.room.standaard_temperatuur)
-        // this.setUpPins()
+        this.setUpPins()
         this.readTemperature()
         this.tempReadLoop()
-        // this.startCardReadLoop()
+        this.startCardReadLoop()
     },
     mounted () {
         this.$store.dispatch('setCards')
-        // this.closeDoor()
-        // this.turnOffLightning()
-        // this.turnOffHeating()
-        // this.turnOnScreen()
+        this.closeDoor()
+        this.turnOffLightning()
+        this.turnOffHeating()
+        this.turnOnScreen()
         this.$store.dispatch('setCardsFromServer')
 
         this.echo = new Echo({

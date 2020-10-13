@@ -12317,19 +12317,11 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
       }.bind(this), 2500);
     },
     readTemperature: function readTemperature() {
-      console.log('reading temp');
-      console.log('config = ' + this.deviceConfig.room.verwarming);
-
       if (this.deviceConfig.room.verwarming) {
-        console.log('card read loop');
-        window.tempsensor.read(22, this.deviceConfig.room.tempsensor_pin, function (err, temperature, humidity) {
+        window.tempsensor.read(22, this.mainconfig.tempsensor_pin, function (err, temperature, humidity) {
           if (!err) {
-            console.log('should read temp now');
-            console.log('temperature');
             this.currentTemperature = Math.round(temperature * 10) / 10;
           }
-
-          console.log(err);
         }.bind(this));
       }
     },
@@ -12483,19 +12475,20 @@ window.io = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.i
     }
   },
   created: function created() {
-    this.setTemperature = parseInt(this.deviceConfig.room.standaard_temperatuur); // this.setUpPins()
-
+    this.setTemperature = parseInt(this.deviceConfig.room.standaard_temperatuur);
+    this.setUpPins();
     this.readTemperature();
-    this.tempReadLoop(); // this.startCardReadLoop()
+    this.tempReadLoop();
+    this.startCardReadLoop();
   },
   mounted: function mounted() {
     var _this2 = this;
 
-    this.$store.dispatch('setCards'); // this.closeDoor()
-    // this.turnOffLightning()
-    // this.turnOffHeating()
-    // this.turnOnScreen()
-
+    this.$store.dispatch('setCards');
+    this.closeDoor();
+    this.turnOffLightning();
+    this.turnOffHeating();
+    this.turnOnScreen();
     this.$store.dispatch('setCardsFromServer');
     this.echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
       broadcaster: 'socket.io',
