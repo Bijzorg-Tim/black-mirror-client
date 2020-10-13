@@ -320,10 +320,13 @@ export default {
         },
         readTemperature () {
             console.log('reading temp')
+            console.log('config = ' + this.deviceConfig.room.verwarming)
             if (this.deviceConfig.room.verwarming) {
                 console.log('card read loop')
                 window.tempsensor.read(22, this.deviceConfig.room.tempsensor_pin, function(err, temperature, humidity) {
                     if (!err) {
+                        console.log('should read temp now')
+                        console.log('temperature')
                         this.currentTemperature = Math.round(temperature * 10) / 10
                     }
                     console.log(err)
