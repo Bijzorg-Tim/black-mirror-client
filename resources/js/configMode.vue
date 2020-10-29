@@ -22,7 +22,8 @@
 <script>
 
 import Echo from 'laravel-echo'
-window.io = require('socket.io-client');
+// window.io = require('socket.io-client');
+window.Pusher = require('pusher-js')
 
 export default {
     components: {
@@ -49,9 +50,12 @@ export default {
             this.$store.dispatch('getTempConfig')
         })
         this.echo = new Echo({
-            broadcaster: 'socket.io',
-            host: 'http://' + this.mainconfig.api_url + ':6001',
-            authEndpoint: '/custom/broadcast/auth/route'
+            broadcaster: 'pusher',
+            key: 'your-pusher-key',
+            wsHost: 'toegang.hetdagelijksbestaan.nl',
+            wsPort: 6001,
+            forceTLS: false,
+            disableStats: true
         })
 
         this.echo.channel('deviceconfigchannel')

@@ -10,7 +10,7 @@
     "temp_read_interval_in_seconds": 60,
     "screen_timeout_in_seconds": 20,
     "screen_brightness": 50,
-    "api_url": "10.1.2.5",
+    "api_url": "toegang.hetdagelijksbestaan.nl",
     "api_port": "80",
     "black_mirror_location": "/home/pi/black-mirror-client",
     "interface_name": "wlan0",

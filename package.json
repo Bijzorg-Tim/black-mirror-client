@@ -47,6 +47,7 @@
     "moment": "^2.24.0",
     "node-dht-sensor": "^0.4.1",
     "onoff": "^5.0.1",
+    "pusher-js": "^7.0.0",
     "python-shell": "^1.0.8",
     "rpi-backlight": "^0.3.0",
     "rpi-gpio": "^2.1.5",
